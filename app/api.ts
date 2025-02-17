@@ -1,5 +1,5 @@
 import axios from "axios"
-const API_BASE_URL = "http://139.59.246.168:8040"
+const API_BASE_URL = "https://ravinduhiran.live"
 
 // Types
 export interface Material {
