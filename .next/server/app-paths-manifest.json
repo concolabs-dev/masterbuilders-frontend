@@ -1,0 +1,14 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/catalogue/page": "app/catalogue/page.js",
+  "/page": "app/page.js",
+  "/api/auth/roles/route": "app/api/auth/roles/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/about/page": "app/about/page.js",
+  "/login/page": "app/login/page.js",
+  "/api/auth/route": "app/api/auth/route.js",
+  "/services/page": "app/services/page.js",
+  "/test/page": "app/test/page.js",
+  "/api/auth/[auth0]/route": "app/api/auth/[auth0]/route.js",
+  "/admin/page": "app/admin/page.js"
+}
