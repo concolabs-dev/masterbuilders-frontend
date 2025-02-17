@@ -6,8 +6,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { motion } from "framer-motion"
 import { useInView } from "framer-motion"
 import { useRef } from "react"
+import { ReactNode } from "react"
 
-function FadeInWhenVisible({ children, delay = 0 }) {
+function FadeInWhenVisible({ children, delay = 0 }: { children: ReactNode, delay?: number }) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
 
