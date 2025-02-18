@@ -8,7 +8,7 @@ import { useInView } from "framer-motion"
 import { useRef } from "react"
 import { ReactNode } from "react"
 
-import { ReactNode } from "react"
+
 
 function FadeInWhenVisible({ children, delay = 0 }: { children: ReactNode, delay?: number }) {
   const ref = useRef(null)
