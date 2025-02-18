@@ -696,6 +696,7 @@ function MaterialsUI() {
                     location="National"
                     rating={4}
                     price={material.Prices.find((p) => p[1])?.[1] || 0}
+                    currency_t="LKR"
                     onClick={() => setSelectedMaterial(material)}
                   />
                   <Button
@@ -765,6 +766,7 @@ function MaterialsUI() {
                   date,
                   price,
                 }))}
+                currency="LKR"
                 onClose={() => setSelectedMaterial(null)}
               />
             </div>
