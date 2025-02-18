@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { motion } from "framer-motion"
 import { useInView } from "framer-motion"
 import { useRef } from "react"
+import { ReactNode } from "react"
 
 import { ReactNode } from "react"
 
