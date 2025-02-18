@@ -33,7 +33,10 @@ export interface Category {
 
 
 // Materials API calls
-
+export const getExchangeRates = async () => {
+  const response = await axios.get(`${API_BASE_URL}/forex`)
+  return response.data.major_currencies
+}
 
 export const searchMaterials = async (query: string, subcategory?: string) => {
   const params = new URLSearchParams({ q: query })

@@ -11,11 +11,12 @@ interface PricePoint {
 
 interface PriceChartProps {
   itemName: string
+  currency:string
   prices: PricePoint[]
   onClose: () => void
 }
 
-export function PriceChart({ itemName, prices, onClose }: PriceChartProps) {
+export function PriceChart({ itemName, prices, currency, onClose }: PriceChartProps) {
   const validPrices = prices.filter((p): p is { date: string; price: number } => p.price !== null)
 
   return (
@@ -49,7 +50,7 @@ export function PriceChart({ itemName, prices, onClose }: PriceChartProps) {
                             {new Date(payload[0].payload.date).toLocaleDateString()}
                           </div>
                           <div className="text-sm text-muted-foreground">Price</div>
-                          <div className="text-sm font-medium">Rs. {payload[0].value}</div>
+                          <div className="text-sm font-medium">{currency} {payload[0].value}</div>
                         </div>
                       </div>
                     )

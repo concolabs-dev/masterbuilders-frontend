@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card"
-import { Star } from "lucide-react"
+import { Currency, Star } from "lucide-react"
 
 interface MaterialCardProps {
   name: string
@@ -7,10 +7,11 @@ interface MaterialCardProps {
   location: string
   rating: number
   price: number
+  currency_t: string
   onClick?: () => void
 }
 
-export function MaterialCard({ name, unit, location, rating, price, onClick }: MaterialCardProps) {
+export function MaterialCard({ name, unit, location, rating, price, currency_t, onClick }: MaterialCardProps) {
   return (
     <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer" onClick={onClick}>
       <div className="flex items-start justify-between gap-4">
@@ -34,7 +35,7 @@ export function MaterialCard({ name, unit, location, rating, price, onClick }: M
         </div>
         <div className="text-right">
           <div className="text-sm text-muted-foreground">Total Price</div>
-          <div className="font-semibold">Rs. {Number(price).toFixed(2)}</div>
+          <div className="font-semibold"> {currency_t+" "+Number(price).toFixed(2)}</div>
 
         </div>
       </div>
