@@ -60,7 +60,10 @@ export const getSupplierById = async (id: string) => {
   const response = await axios.get<Supplier>(`${API_BASE_URL}/suppliers/${id}`)
   return response.data
 }
-
+export const getSupplierByEmail = async (email: string) => {
+  const response = await axios.get<Supplier>(`${API_BASE_URL}/suppliers/email/${email}`)
+  return response.data
+}
 export const createSupplier = async (supplier: Omit<Supplier, "id">) => {
   console.log(supplier)
   const response = await axios.post<Supplier>(`${API_BASE_URL}/suppliers`, supplier)
