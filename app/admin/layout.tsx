@@ -40,8 +40,9 @@ export default function AdminLayout({
         const res = await fetch("/api/auth", { credentials: "include" })
         const data = await res.json()
         const accessToken = data.session.idToken
-    
-        console.log(decryptToken(accessToken))
+        console.log(accessToken)  
+        console.log("methana thamai")
+        console.log( decryptToken(accessToken))
 
         // // Extract user information and roles
         // const username = decodedToken.email || decodedToken.sub

@@ -16,7 +16,7 @@ export function SiteFooter() {
             <Image
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Copy%20of%20CONCOLABS-z0CMXvjJH8p1tfKmL0IHBsrm0ZHfxO.svg"
               alt="Concolabs Logo"
-              width={120}
+              width={87}
               height={30}
               className="dark:invert"
             />

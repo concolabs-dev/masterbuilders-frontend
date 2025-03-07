@@ -1,4 +1,5 @@
 import axios from "axios"
+import { getAccessToken } from "@auth0/nextjs-auth0";
 const API_BASE_URL = "https://ravinduhiran.live"
 
 // Types
@@ -29,7 +30,51 @@ export interface Category {
     }[]
   }[]
 }
+// Suppliers Types and API calls
 
+export interface Location {
+  latitude: number
+  longitude: number
+}
+
+export interface Supplier {
+  id: string
+  email: string
+  pid: string
+  business_name: string
+  business_description: string
+  telephone: string
+  email_given: string
+  address: string
+  location: Location
+  profile_pic_url: string
+  cover_pic_url: string
+}
+
+export const getSuppliers = async () => {
+  const response = await axios.get<Supplier[]>(`${API_BASE_URL}/suppliers`)
+  return response.data
+}
+
+export const getSupplierById = async (id: string) => {
+  const response = await axios.get<Supplier>(`${API_BASE_URL}/suppliers/${id}`)
+  return response.data
+}
+
+export const createSupplier = async (supplier: Omit<Supplier, "id">) => {
+  console.log(supplier)
+  const response = await axios.post<Supplier>(`${API_BASE_URL}/suppliers`, supplier)
+  return response.data
+}
+
+export const updateSupplier = async (id: string, supplier: Partial<Supplier>) => {
+  const response = await axios.put<Supplier>(`${API_BASE_URL}/suppliers/${id}`, supplier)
+  return response.data
+}
+
+export const deleteSupplier = async (id: string) => {
+  await axios.delete(`${API_BASE_URL}/suppliers/${id}`)
+}
 
 
 // Materials API calls
@@ -81,6 +126,14 @@ export const deleteMaterial = async (id: string) => {
 
 // Types API calls
 export const getTypes = async () => {
+
+  try {
+    const token = await getAccessToken()
+    console.log(token)
+  } catch (err) {
+    console.log(err)
+  }
+
   const response = await axios.get<Category[]>(`${API_BASE_URL}/types`)
   console.log(response.data)
   return response.data

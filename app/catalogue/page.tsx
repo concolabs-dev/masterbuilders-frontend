@@ -301,7 +301,15 @@ export default function Catalogue() {
       setSearchQuery(tempsearchQuery)
     }
   }
-
+  const callAPI = async () => {
+    try {
+      const res = await fetch("/api/test")
+      const data = await res.json()
+      console.log(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -315,7 +323,9 @@ export default function Catalogue() {
         console.error("Error fetching categories:", error)
       }
     }
+
     fetchCategories()
+    callAPI()
   }, [])
 
   useEffect(() => {
