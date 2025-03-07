@@ -50,6 +50,19 @@ export interface Supplier {
   profile_pic_url: string
   cover_pic_url: string
 }
+export interface Item {
+  id: string
+  name: string
+  description: string
+  supplierPid: string
+  materialId: string
+  type: string
+  category: string
+  subcategory: string
+  unit: string
+  price: number
+  imgUrl: string
+}
 
 export const getSuppliers = async () => {
   const response = await axios.get<Supplier[]>(`${API_BASE_URL}/suppliers`)
@@ -160,4 +173,33 @@ export const updateType = async (id: string, type: Partial<Category>) => {
 export const deleteType = async (id: string) => {
   await axios.delete(`${API_BASE_URL}/types/${id}`)
 }
+//items api
+export const getItems = async () => {
+  const response = await axios.get<Item[]>(`${API_BASE_URL}/items`)
+  return response.data
+}
 
+export const getItemsBySupplier = async (supplierPid: string) => {
+  // URL encode the supplierPid in case it contains special characters like '|'
+  const response = await axios.get<Item[]>(`${API_BASE_URL}/items/supplier/${encodeURIComponent(supplierPid)}`)
+  return response.data
+}
+
+export const getItemsByMaterial = async (materialId: string) => {
+  const response = await axios.get<Item[]>(`${API_BASE_URL}/items/material/${materialId}`)
+  return response.data
+}
+
+export const createItem = async (item: Omit<Item, "id">) => {
+  const response = await axios.post<Item>(`${API_BASE_URL}/items`, item)
+  return response.data
+}
+
+export const updateItem = async (id: string, item: Partial<Item>) => {
+  const response = await axios.put<Item>(`${API_BASE_URL}/items/${id}`, item)
+  return response.data
+}
+
+export const deleteItem = async (id: string) => {
+  await axios.delete(`${API_BASE_URL}/items/${id}`)
+}
