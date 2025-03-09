@@ -64,6 +64,8 @@ export interface Item {
   imgUrl: string
 }
 
+
+
 export const getSuppliers = async () => {
   const response = await axios.get<Supplier[]>(`${API_BASE_URL}/suppliers`)
   return response.data
@@ -173,7 +175,7 @@ export const updateType = async (id: string, type: Partial<Category>) => {
 export const deleteType = async (id: string) => {
   await axios.delete(`${API_BASE_URL}/types/${id}`)
 }
-//items api
+//items api calls
 export const getItems = async () => {
   const response = await axios.get<Item[]>(`${API_BASE_URL}/items`)
   return response.data

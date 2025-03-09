@@ -21,7 +21,7 @@ export function SiteHeader() {
             <Input type="search" placeholder="Search..." className="h-9 md:w-[200px] lg:w-[300px]" />
           </div>
           {user ? (
-            <Button className="hidden md:flex">Dashboard</Button>
+            <Button className="hidden md:flex" >Dashboard</Button>
           ) : (
             <Button className="hidden md:flex">Get Started</Button>
           )}

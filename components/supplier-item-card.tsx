@@ -8,12 +8,14 @@ interface SupplierItemCardProps {
     id: string
     name: string
     description: string
+    supplierPid: string
+    materialId: string
+    type: string
     category: string
     subcategory: string
     unit: string
     price: number
-    stock: number
-    image: string
+    imgUrl: string
   }
   onEdit: () => void
   onDelete: () => void
@@ -21,10 +23,10 @@ interface SupplierItemCardProps {
 
 export function SupplierItemCard({ item, onEdit, onDelete }: SupplierItemCardProps) {
   return (
-    <Card className="overflow-hidden flex flex-col h-full">
+    <Card className="overflow-hidden flex flex-col  h-full">
       <div className="relative h-48 w-full">
         <Image
-          src={item.image || "/placeholder.svg?height=200&width=300"}
+          src={item.imgUrl || "/placeholder.svg?height=200&width=300"}
           alt={item.name}
           fill
           className="object-cover"
@@ -48,7 +50,7 @@ export function SupplierItemCard({ item, onEdit, onDelete }: SupplierItemCardPro
           <div className="text-right">
             <p className="text-sm text-muted-foreground">Stock</p>
             <p className="font-medium">
-              {item.stock} {item.unit}s
+              {item.unit}s
             </p>
           </div>
         </div>

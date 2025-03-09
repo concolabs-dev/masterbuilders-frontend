@@ -31,7 +31,7 @@ export function EditBusinessDetailsDialog({
 }: EditBusinessDetailsDialogProps) {
   const [details, setDetails] = useState<BusinessDetails>(currentDetails)
 
-  const handleChange = (field: keyof BusinessDetails, value: string) => {
+  const handleChange = (field: keyof BusinessDetails | "lat" | "lng", value: string) => {
     if (field === "lat" || field === "lng") {
       setDetails({
         ...details,

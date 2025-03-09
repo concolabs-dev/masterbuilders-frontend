@@ -1,6 +1,7 @@
+
 // "use client"
 
-// import { useState } from "react"
+// import { useState, useEffect, FormEvent } from "react"
 // import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 // import { Button } from "@/components/ui/button"
 // import { Input } from "@/components/ui/input"
@@ -21,65 +22,104 @@
 // import { SupplierItemCard } from "@/components/supplier-item-card"
 // import { SupplierItemList } from "@/components/supplier-item-list"
 // import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client"
-// import { getSupplierByEmail, getSupplierById, updateSupplier,deleteSupplier } from "@/app/api"
-// // Mock supplier data
-// const supplierData = {
-//   id: "1",
-//   name: "ABC Construction Supplies",
-//   email: "contact@abcsupplies.com",
-//   telephone: "+94 77 123 4567",
-//   address: "123 Main Street, Colombo 05, Sri Lanka",
-//   location: { lat: "6.9271", lng: "79.8612" },
-//   profileImage: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-FeUk0YmcJxiCmhBMqX8oqDjkv3GDb6.png",
-//   coverImage: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-5GQi5Q4D5LCFChBfhyTYAHrKIC2Q5X.png",
-//   description:
-//     "Leading provider of high-quality construction materials at competitive prices. We specialize in cement, steel, bricks, and finishing materials.",
-// }
-
-// // Mock catalogue items
-// const initialItems = [
-//   {
-//     id: "1",
-//     name: "Premium Cement",
-//     description: "High-quality cement suitable for all construction needs",
-//     category: "RAW MATERIAL",
-//     subcategory: "Cement",
-//     unit: "50kg bag",
-//     price: 1250,
-//     stock: 500,
-//     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-L2OQTXWXG3u8buSbv2GLEph1JMXdtL.png",
-//   },
-//   {
-//     id: "2",
-//     name: "Steel Rebar (12mm)",
-//     description: "Reinforcement steel bars for concrete structures",
-//     category: "RAW MATERIAL",
-//     subcategory: "Steel",
-//     unit: "rod",
-//     price: 2800,
-//     stock: 350,
-//     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-6O9uA1z7fyWWUrxLWAKJdaFxwiHViK.png",
-//   },
-//   {
-//     id: "3",
-//     name: "Clay Bricks",
-//     description: "Standard size clay bricks for walls and partitions",
-//     category: "RAW MATERIAL",
-//     subcategory: "Bricks",
-//     unit: "piece",
-//     price: 45,
-//     stock: 10000,
-//     image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-5GQi5Q4D5LCFChBfhyTYAHrKIC2Q5X.png",
-//   },
-// ]
+// import {
+//   getSupplierByEmail,
+//   getItemsBySupplier,
+//   createItem,
+//   updateItem,
+//   deleteItem,
+//   getTypes,
+//   getMaterialsByCategory,
+// } from "@/app/api"
+// import { Supplier, Item, Material, Category } from "@/app/api"
 
 // function SupplierDashboardPage() {
-//   const [items, setItems] = useState(initialItems)
-//   const [selectedItem, setSelectedItem] = useState<null | typeof initialItems[0]>(null)
+//   const { user, error: userError, isLoading: userLoading } = useUser()
+//   const [supplier, setSupplier] = useState<Supplier | null>(null)
+//   const [supplierLoading, setSupplierLoading] = useState(true)
+//   const [supplierError, setSupplierError] = useState<Error | null>(null)
+
+//   // Items loaded from the API.
+//   const [items, setItems] = useState<Item[]>([])
+//   const [selectedItem, setSelectedItem] = useState<Item | null>(null)
 //   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
 //   const [searchQuery, setSearchQuery] = useState("")
 
-//   // Filter items based on search query
+//   // State for new item dialog selections.
+//   const [types, setTypes] = useState<Category[]>([])
+//   const [selectedType, setSelectedType] = useState("")
+//   const [selectedCategory, setSelectedCategory] = useState("")
+//   const [selectedSubcategory, setSelectedSubcategory] = useState("")
+//   const [materials, setMaterials] = useState<Material[]>([])
+//   const [selectedMaterial, setSelectedMaterial] = useState("")
+
+//   // Fetch supplier using user's email.
+//   useEffect(() => {
+//     if (user && user.email) {
+//       getSupplierByEmail(user.email)
+//         .then((data) => {
+//           setSupplier(data)
+//           setSupplierLoading(false)
+//         })
+//         .catch((err) => {
+//           console.error("Error fetching supplier:", err)
+//           setSupplierError(err)
+//           setSupplierLoading(false)
+//         })
+//     } else {
+//       setSupplierLoading(false)
+//     }
+//   }, [user])
+
+//   // Fetch supplier items once the supplier data is loaded.
+//   useEffect(() => {
+//     if (supplier) {
+//       getItemsBySupplier(supplier.pid)
+//         .then((data) => setItems(data))
+//         .catch((err) => console.error("Error fetching items:", err))
+//     }
+//   }, [supplier])
+
+//   // Fetch available types for item creation.
+//   useEffect(() => {
+//     getTypes()
+//       .then((data) => setTypes(data))
+//       .catch((err) => console.error("Error fetching types:", err))
+//   }, [])
+
+//   // When category selections change, fetch materials matching those selections.
+//   useEffect(() => {
+//     if (selectedCategory && selectedSubcategory) {
+//       getMaterialsByCategory(selectedCategory, selectedSubcategory)
+//         .then((data) => setMaterials(data))
+//         .catch((err) => console.error("Error fetching materials:", err))
+//     } else if(selectedCategory) {
+//       getMaterialsByCategory(selectedCategory)
+//       .then((data) => setMaterials(data))
+//       .catch((err) => console.error("Error fetching materials:", err))
+//      } else {
+//       setMaterials([])
+//       setSelectedMaterial("")
+//     }
+//   }, [selectedCategory, selectedSubcategory])
+
+//   // Map API supplier to the shape required by SupplierProfile.
+//   const mapSupplierToProfile = (supplier: Supplier) => ({
+//     id: supplier.id,
+//     name: supplier.business_name,
+//     email: supplier.email,
+//     telephone: supplier.telephone,
+//     address: supplier.address,
+//     location: {
+//       lat: supplier.location.latitude.toString(),
+//       lng: supplier.location.longitude.toString(),
+//     },
+//     profileImage: supplier.profile_pic_url,
+//     coverImage: supplier.cover_pic_url,
+//     description: supplier.business_description,
+//   })
+
+//   // Filter items by search query.
 //   const filteredItems = items.filter(
 //     (item) =>
 //       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -87,36 +127,73 @@
 //       item.category.toLowerCase().includes(searchQuery.toLowerCase()),
 //   )
 
-//   const handleAddItem = (newItem: {
-//     name: string;
-//     description: string;
-//     category: string;
-//     subcategory: string;
-//     unit: string;
-//     price: number;
-//     stock: number;
-//     image: string;
-//   }) => {
-//     const itemWithId = {
-//       ...newItem,
-//       id: (items.length + 1).toString(),
+//   // Handle adding a new item using the API.
+//   const handleAddItem = async (e: FormEvent<HTMLFormElement>) => {
+//     e.preventDefault()
+//     const formData = new FormData(e.currentTarget)
+//     const newItem = {
+//       name: formData.get("name") as string,
+//       description: formData.get("description") as string,
+//       supplierPid: supplier?.pid || "",
+//       materialId: selectedMaterial,
+//       type: selectedType,
+//       category: selectedCategory,
+//       subcategory: selectedSubcategory,
+//       unit: formData.get("unit") as string,
+//       price: Number(formData.get("price")),
+//       imgUrl: formData.get("image") as string,
 //     }
-//     setItems([...items, itemWithId])
+//     try {
+//       const created = await createItem(newItem)
+//       setItems([...items, created])
+//       e.currentTarget.reset()
+//       // Reset selection states.
+//       setSelectedType("")
+//       setSelectedCategory("")
+//       setSelectedSubcategory("")
+//       setMaterials([])
+//       setSelectedMaterial("")
+//     } catch (err) {
+//       console.error("Error creating item", err)
+//     }
 //   }
 
-//   const handleUpdateItem = (id: string, updatedItem: any) => {
-//     setItems(items.map((item) => (item.id === id ? { ...item, ...updatedItem } : item)))
-//     setSelectedItem(null)
+//   // Handle updating an item.
+//   const handleUpdateItem = async (id: string, updatedItem: Partial<Item>) => {
+//     try {
+//       const updated = await updateItem(id, updatedItem)
+//       setItems(items.map((item) => (item.id === id ? updated : item)))
+//       setSelectedItem(null)
+//     } catch (err) {
+//       console.error("Error updating item", err)
+//     }
 //   }
 
-//   const handleDeleteItem = (id: string) => {
-//     setItems(items.filter((item) => item.id !== id))
+//   // Handle deleting an item.
+//   const handleDeleteItem = async (id: string) => {
+//     try {
+//       await deleteItem(id)
+//       setItems(items.filter((item) => item.id !== id))
+//     } catch (err) {
+//       console.error("Error deleting item", err)
+//     }
+//   }
+
+//   if (userLoading || supplierLoading) {
+//     return <div>Loading...</div>
+//   }
+
+//   if (userError || supplierError) {
+//     return <div>Error loading supplier data.</div>
+//   }
+
+//   if (!supplier) {
+//     return <div>No supplier found for {user?.email}.</div>
 //   }
 
 //   return (
 //     <div className="container mx-auto py-10">
-//       <SupplierProfile supplier={supplierData} />
-
+//       {supplier && <SupplierProfile supplier={mapSupplierToProfile(supplier)} />}
 //       <Tabs defaultValue="catalogue" className="mt-8">
 //         <div className="flex justify-between items-center mb-4">
 //           <TabsList>
@@ -162,26 +239,11 @@
 //               <DialogContent className="sm:max-w-[425px]">
 //                 <DialogHeader>
 //                   <DialogTitle>Add New Item</DialogTitle>
-//                   <DialogDescription>Add a new item to your catalogue. Click save when you're done.</DialogDescription>
+//                   <DialogDescription>
+//                     Add a new item to your catalogue. Select the type, category, subcategory and material.
+//                   </DialogDescription>
 //                 </DialogHeader>
-//                 <form
-//                   onSubmit={(e) => {
-//                     e.preventDefault()
-//                     const formData = new FormData(e.currentTarget)
-//                     const newItem = {
-//                       name: formData.get("name") as string,
-//                       description: formData.get("description") as string,
-//                       category: formData.get("category") as string,
-//                       subcategory: formData.get("subcategory") as string,
-//                       unit: formData.get("unit") as string,
-//                       price: Number(formData.get("price")),
-//                       stock: Number(formData.get("stock")),
-//                       image: formData.get("image") as string,
-//                     }
-//                     handleAddItem(newItem)
-//                     e.currentTarget.reset()
-//                   }}
-//                 >
+//                 <form onSubmit={handleAddItem}>
 //                   <div className="grid gap-4 py-4">
 //                     <div className="grid gap-2">
 //                       <Label htmlFor="name">Name</Label>
@@ -191,15 +253,95 @@
 //                       <Label htmlFor="description">Description</Label>
 //                       <Textarea id="description" name="description" />
 //                     </div>
-//                     <div className="grid grid-cols-2 gap-4">
-//                       <div className="grid gap-2">
-//                         <Label htmlFor="category">Category</Label>
-//                         <Input id="category" name="category" required />
-//                       </div>
-//                       <div className="grid gap-2">
-//                         <Label htmlFor="subcategory">Subcategory</Label>
-//                         <Input id="subcategory" name="subcategory" />
-//                       </div>
+//                     {/* Select for Type */}
+//                     <div className="grid gap-2">
+//                       <Label htmlFor="type">Type</Label>
+//                       <select
+//                         id="type"
+//                         value={selectedType}
+//                         onChange={(e) => {
+//                           setSelectedType(e.target.value)
+//                           // Reset dependent selections.
+//                           setSelectedCategory("")
+//                           setSelectedSubcategory("")
+//                         }}
+//                         className="p-2 border rounded"
+//                         required
+//                       >
+//                         <option value="">Select Type</option>
+//                         {types.map((t) => (
+//                           <option key={t.id} value={t.name}>
+//                             {t.name}
+//                           </option>
+//                         ))}
+//                       </select>
+//                     </div>
+//                     {/* Select for Category */}
+//                     <div className="grid gap-2">
+//                       <Label htmlFor="category">Category</Label>
+//                       <select
+//                         id="category"
+//                         value={selectedCategory}
+//                         onChange={(e) => {
+//                           setSelectedCategory(e.target.value)
+//                           setSelectedSubcategory("")
+//                         }}
+//                         className="p-2 border rounded"
+//                         required
+//                       >
+//                         <option value="">Select Category</option>
+//                         {selectedType &&
+//                           types
+//                             .find((t) => t.name === selectedType)
+//                             ?.categories.map((cat) => (
+//                               <option key={cat.name} value={cat.name}>
+//                                 {cat.name}
+//                               </option>
+//                             ))}
+//                       </select>
+//                     </div>
+//                     {/* Select for Subcategory */}
+//                     <div className="grid gap-2">
+//                       <Label htmlFor="subcategory">Subcategory</Label>
+//                       <select
+//                         id="subcategory"
+//                         value={selectedSubcategory}
+//                         onChange={(e) => setSelectedSubcategory(e.target.value)}
+//                         className="p-2 border rounded"
+//                         required
+//                       >
+//                         <option value="">Select Subcategory</option>
+//                         {selectedCategory && types
+//                             .find((t) => t.name === selectedType)
+//                             ?.categories.find((cat) => cat.name === selectedCategory)
+//                             ?.subcategories &&
+//                           types
+//                             .find((t) => t.name === selectedType)
+//                             ?.categories.find((cat) => cat.name === selectedCategory)
+//                             ?.subcategories.map((sub) => (
+//                               <option key={sub.name} value={sub.name}>
+//                                 {sub.name}
+//                               </option>
+//                             ))}
+//                       </select>
+//                     </div>
+//                     {/* Select for Material */}
+//                     <div className="grid gap-2">
+//                       <Label htmlFor="material">Material</Label>
+//                       <select
+//                         id="material"
+//                         value={selectedMaterial}
+//                         onChange={(e) => setSelectedMaterial(e.target.value)}
+//                         className="p-2 border rounded"
+//                         required
+//                       >
+//                         <option value="">Select Material</option>
+//                         {materials.map((mat) => (
+//                           <option key={mat.ID} value={mat.ID}>
+//                             {mat.Name}
+//                           </option>
+//                         ))}
+//                       </select>
 //                     </div>
 //                     <div className="grid grid-cols-2 gap-4">
 //                       <div className="grid gap-2">
@@ -210,10 +352,6 @@
 //                         <Label htmlFor="price">Price (Rs.)</Label>
 //                         <Input id="price" name="price" type="number" required />
 //                       </div>
-//                     </div>
-//                     <div className="grid gap-2">
-//                       <Label htmlFor="stock">Stock Quantity</Label>
-//                       <Input id="stock" name="stock" type="number" required />
 //                     </div>
 //                     <div className="grid gap-2">
 //                       <Label htmlFor="image">Image URL</Label>
@@ -227,7 +365,6 @@
 //               </DialogContent>
 //             </Dialog>
 //           </div>
-
 //           {viewMode === "grid" ? (
 //             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 //               {filteredItems.map((item) => (
@@ -285,7 +422,9 @@
 //         <DialogContent className="sm:max-w-[425px]">
 //           <DialogHeader>
 //             <DialogTitle>Edit Item</DialogTitle>
-//             <DialogDescription>Make changes to your item. Click save when you're done.</DialogDescription>
+//             <DialogDescription>
+//               Make changes to your item. Click save when you're done.
+//             </DialogDescription>
 //           </DialogHeader>
 //           {selectedItem && (
 //             <form
@@ -295,12 +434,13 @@
 //                 const updatedItem = {
 //                   name: formData.get("name") as string,
 //                   description: formData.get("description") as string,
+//                   // For simplicity, the edit dialog uses text inputs for category fields.
+//                   // You could extend this to use selects similar to the add dialog.
 //                   category: formData.get("category") as string,
 //                   subcategory: formData.get("subcategory") as string,
 //                   unit: formData.get("unit") as string,
 //                   price: Number(formData.get("price")),
-//                   stock: Number(formData.get("stock")),
-//                   image: formData.get("image") as string,
+//                   imgUrl: formData.get("image") as string,
 //                 }
 //                 handleUpdateItem(selectedItem.id, updatedItem)
 //               }}
@@ -314,15 +454,13 @@
 //                   <Label htmlFor="edit-description">Description</Label>
 //                   <Textarea id="edit-description" name="description" defaultValue={selectedItem.description} />
 //                 </div>
-//                 <div className="grid grid-cols-2 gap-4">
-//                   <div className="grid gap-2">
-//                     <Label htmlFor="edit-category">Category</Label>
-//                     <Input id="edit-category" name="category" defaultValue={selectedItem.category} required />
-//                   </div>
-//                   <div className="grid gap-2">
-//                     <Label htmlFor="edit-subcategory">Subcategory</Label>
-//                     <Input id="edit-subcategory" name="subcategory" defaultValue={selectedItem.subcategory} />
-//                   </div>
+//                 <div className="grid gap-2">
+//                   <Label htmlFor="edit-category">Category</Label>
+//                   <Input id="edit-category" name="category" defaultValue={selectedItem.category} required />
+//                 </div>
+//                 <div className="grid gap-2">
+//                   <Label htmlFor="edit-subcategory">Subcategory</Label>
+//                   <Input id="edit-subcategory" name="subcategory" defaultValue={selectedItem.subcategory} />
 //                 </div>
 //                 <div className="grid grid-cols-2 gap-4">
 //                   <div className="grid gap-2">
@@ -335,12 +473,8 @@
 //                   </div>
 //                 </div>
 //                 <div className="grid gap-2">
-//                   <Label htmlFor="edit-stock">Stock Quantity</Label>
-//                   <Input id="edit-stock" name="stock" type="number" defaultValue={selectedItem.stock} required />
-//                 </div>
-//                 <div className="grid gap-2">
 //                   <Label htmlFor="edit-image">Image URL</Label>
-//                   <Input id="edit-image" name="image" defaultValue={selectedItem.image} />
+//                   <Input id="edit-image" name="image" defaultValue={selectedItem.imgUrl} />
 //                 </div>
 //               </div>
 //               <DialogFooter>
@@ -354,10 +488,11 @@
 //   )
 // }
 
-// export default withPageAuthRequired(SupplierDashboardPage);
+// export default withPageAuthRequired(SupplierDashboardPage)
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, FormEvent } from "react"
+import Image from "next/image"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -378,48 +513,17 @@ import { SupplierProfile } from "@/components/supplier-profile"
 import { SupplierItemCard } from "@/components/supplier-item-card"
 import { SupplierItemList } from "@/components/supplier-item-list"
 import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client"
-import { getSupplierByEmail, getSupplierById, updateSupplier, deleteSupplier } from "@/app/api"
-import { Supplier } from "@/app/api" // ensure Supplier interface is exported from your API module
-
-// Mock catalogue items (unchanged)
-const initialItems = [
-  {
-    id: "1",
-    name: "Premium Cement",
-    description: "High-quality cement suitable for all construction needs",
-    category: "RAW MATERIAL",
-    subcategory: "Cement",
-    unit: "50kg bag",
-    price: 1250,
-    stock: 500,
-    image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-L2OQTXWXG3u8buSbv2GLEph1JMXdtL.png",
-  },
-  {
-    id: "2",
-    name: "Steel Rebar (12mm)",
-    description: "Reinforcement steel bars for concrete structures",
-    category: "RAW MATERIAL",
-    subcategory: "Steel",
-    unit: "rod",
-    price: 2800,
-    stock: 350,
-    image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-6O9uA1z7fyWWUrxLWAKJdaFxwiHViK.png",
-  },
-  {
-    id: "3",
-    name: "Clay Bricks",
-    description: "Standard size clay bricks for walls and partitions",
-    category: "RAW MATERIAL",
-    subcategory: "Bricks",
-    unit: "piece",
-    price: 45,
-    stock: 10000,
-    image:
-      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-5GQi5Q4D5LCFChBfhyTYAHrKIC2Q5X.png",
-  },
-]
+import {
+  getSupplierByEmail,
+  getItemsBySupplier,
+  createItem,
+  updateItem,
+  deleteItem,
+  getTypes,
+  getMaterialsByCategory,
+} from "@/app/api"
+import { Supplier, Item, Material, Category } from "@/app/api"
+import { ImageUpload } from "@/components/image-upload" // adjust path as needed
 
 function SupplierDashboardPage() {
   const { user, error: userError, isLoading: userLoading } = useUser()
@@ -427,7 +531,24 @@ function SupplierDashboardPage() {
   const [supplierLoading, setSupplierLoading] = useState(true)
   const [supplierError, setSupplierError] = useState<Error | null>(null)
 
-  // Fetch supplier data using the user's email.
+  // Items loaded from the API.
+  const [items, setItems] = useState<Item[]>([])
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null)
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
+  const [searchQuery, setSearchQuery] = useState("")
+
+  // State for new item dialog selections.
+  const [types, setTypes] = useState<Category[]>([])
+  const [selectedType, setSelectedType] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("")
+  const [selectedSubcategory, setSelectedSubcategory] = useState("")
+  const [materials, setMaterials] = useState<Material[]>([])
+  const [selectedMaterial, setSelectedMaterial] = useState("")
+
+  // State for image upload in add item dialog.
+  const [addImageUrl, setAddImageUrl] = useState("")
+
+  // Fetch supplier using user's email.
   useEffect(() => {
     if (user && user.email) {
       getSupplierByEmail(user.email)
@@ -444,30 +565,41 @@ function SupplierDashboardPage() {
       setSupplierLoading(false)
     }
   }, [user])
-// Map API supplier to SupplierProfileProps shape.
-const mapSupplierToProfile = (supplier: {
-    id: string
-    email: string
-    pid: string
-    business_name: string
-    business_description: string
-    telephone: string
-    email_given: string
-    address: string
-    location: { latitude: number; longitude: number }
-    profile_pic_url: string
-    cover_pic_url: string
-  }): {
-    id: string
-    name: string
-    email: string
-    telephone: string
-    address: string
-    location: { lat: string; lng: string }
-    profileImage: string
-    coverImage: string
-    description: string
-  } => ({
+
+  // Fetch supplier items once the supplier data is loaded.
+  useEffect(() => {
+    if (supplier) {
+      getItemsBySupplier(supplier.pid)
+        .then((data) => setItems(data))
+        .catch((err) => console.error("Error fetching items:", err))
+    }
+  }, [supplier])
+
+  // Fetch available types for item creation.
+  useEffect(() => {
+    getTypes()
+      .then((data) => setTypes(data))
+      .catch((err) => console.error("Error fetching types:", err))
+  }, [])
+
+  // When category selections change, fetch materials matching those selections.
+  useEffect(() => {
+    if (selectedCategory && selectedSubcategory) {
+      getMaterialsByCategory(selectedCategory, selectedSubcategory)
+        .then((data) => setMaterials(data))
+        .catch((err) => console.error("Error fetching materials:", err))
+    } else if (selectedCategory) {
+      getMaterialsByCategory(selectedCategory)
+        .then((data) => setMaterials(data))
+        .catch((err) => console.error("Error fetching materials:", err))
+    } else {
+      setMaterials([])
+      setSelectedMaterial("")
+    }
+  }, [selectedCategory, selectedSubcategory])
+
+  // Map API supplier to the shape required by SupplierProfile.
+  const mapSupplierToProfile = (supplier: Supplier) => ({
     id: supplier.id,
     name: supplier.business_name,
     email: supplier.email,
@@ -480,15 +612,9 @@ const mapSupplierToProfile = (supplier: {
     profileImage: supplier.profile_pic_url,
     coverImage: supplier.cover_pic_url,
     description: supplier.business_description,
-  });
-  
-  // Catalogue and view state.
-  const [items, setItems] = useState(initialItems)
-  const [selectedItem, setSelectedItem] = useState<null | typeof initialItems[0]>(null)
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
-  const [searchQuery, setSearchQuery] = useState("")
+  })
 
-  // Filter items based on search query.
+  // Filter items by search query.
   const filteredItems = items.filter(
     (item) =>
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -496,30 +622,66 @@ const mapSupplierToProfile = (supplier: {
       item.category.toLowerCase().includes(searchQuery.toLowerCase()),
   )
 
-  const handleAddItem = (newItem: {
-    name: string
-    description: string
-    category: string
-    subcategory: string
-    unit: string
-    price: number
-    stock: number
-    image: string
-  }) => {
-    const itemWithId = {
-      ...newItem,
-      id: (items.length + 1).toString(),
+  // Handle adding a new item using the API.
+  const handleAddItem = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    const newItem = {
+      name: formData.get("name") as string,
+      description: formData.get("description") as string,
+      supplierPid: supplier?.pid || "",
+      materialId: selectedMaterial,
+      type: selectedType,
+      category: selectedCategory,
+      subcategory: selectedSubcategory,
+      unit: formData.get("unit") as string,
+      price: Number(formData.get("price")),
+      // Use addImageUrl state instead of a plain text input.
+      imgUrl: addImageUrl,
     }
-    setItems([...items, itemWithId])
+    try {
+      const created = await createItem(newItem)
+      setItems([...items, created])
+      e.currentTarget.reset()
+      // Reset selection states.
+      setSelectedType("")
+      setSelectedCategory("")
+      setSelectedSubcategory("")
+      setMaterials([])
+      setSelectedMaterial("")
+      setAddImageUrl("")
+    } catch (err) {
+      console.error("Error creating item", err)
+    }
+    window.location.reload()
   }
 
-  const handleUpdateItem = (id: string, updatedItem: any) => {
-    setItems(items.map((item) => (item.id === id ? { ...item, ...updatedItem } : item)))
-    setSelectedItem(null)
+  // Handle updating an item.
+  const [editImageUrl, setEditImageUrl] = useState("")
+  useEffect(() => {
+    if (selectedItem) {
+      setEditImageUrl(selectedItem.imgUrl)
+    }
+  }, [selectedItem])
+  const handleUpdateItem = async (id: string, updatedItem: Partial<Item>) => {
+    try {
+      const updated = await updateItem(id, updatedItem)
+      setItems(items.map((item) => (item.id === id ? updated : item)))
+      setSelectedItem(null)
+      window.location.reload()
+    } catch (err) {
+      console.error("Error updating item", err)
+    }
   }
 
-  const handleDeleteItem = (id: string) => {
-    setItems(items.filter((item) => item.id !== id))
+  // Handle deleting an item.
+  const handleDeleteItem = async (id: string) => {
+    try {
+      await deleteItem(id)
+      setItems(items.filter((item) => item.id !== id))
+    } catch (err) {
+      console.error("Error deleting item", err)
+    }
   }
 
   if (userLoading || supplierLoading) {
@@ -536,9 +698,7 @@ const mapSupplierToProfile = (supplier: {
 
   return (
     <div className="container mx-auto py-10">
-      {/* Supplier profile fields are auto-filled from the fetched supplier object */}
       {supplier && <SupplierProfile supplier={mapSupplierToProfile(supplier)} />}
-
       <Tabs defaultValue="catalogue" className="mt-8">
         <div className="flex justify-between items-center mb-4">
           <TabsList>
@@ -581,29 +741,14 @@ const mapSupplierToProfile = (supplier: {
                   <Plus className="mr-2 h-4 w-4" /> Add Item
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
+              <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
                   <DialogTitle>Add New Item</DialogTitle>
-                  <DialogDescription>Add a new item to your catalogue. Click save when you're done.</DialogDescription>
+                  <DialogDescription>
+                    Add a new item to your catalogue. Select the type, category, subcategory and material.
+                  </DialogDescription>
                 </DialogHeader>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault()
-                    const formData = new FormData(e.currentTarget)
-                    const newItem = {
-                      name: formData.get("name") as string,
-                      description: formData.get("description") as string,
-                      category: formData.get("category") as string,
-                      subcategory: formData.get("subcategory") as string,
-                      unit: formData.get("unit") as string,
-                      price: Number(formData.get("price")),
-                      stock: Number(formData.get("stock")),
-                      image: formData.get("image") as string,
-                    }
-                    handleAddItem(newItem)
-                    e.currentTarget.reset()
-                  }}
-                >
+                <form onSubmit={handleAddItem}>
                   <div className="grid gap-4 py-4">
                     <div className="grid gap-2">
                       <Label htmlFor="name">Name</Label>
@@ -613,15 +758,92 @@ const mapSupplierToProfile = (supplier: {
                       <Label htmlFor="description">Description</Label>
                       <Textarea id="description" name="description" />
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="grid gap-2">
-                        <Label htmlFor="category">Category</Label>
-                        <Input id="category" name="category" required />
-                      </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="subcategory">Subcategory</Label>
-                        <Input id="subcategory" name="subcategory" />
-                      </div>
+                    {/* Select for Type */}
+                    <div className="grid gap-2">
+                      <Label htmlFor="type">Type</Label>
+                      <select
+                        id="type"
+                        value={selectedType}
+                        onChange={(e) => {
+                          setSelectedType(e.target.value)
+                          // Reset dependent selections.
+                          setSelectedCategory("")
+                          setSelectedSubcategory("")
+                        }}
+                        className="p-2 border rounded"
+                        required
+                      >
+                        <option value="">Select Type</option>
+                        {types.map((t) => (
+                          <option key={t.id} value={t.name}>
+                            {t.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    {/* Select for Category */}
+                    <div className="grid gap-2">
+                      <Label htmlFor="category">Category</Label>
+                      <select
+                        id="category"
+                        value={selectedCategory}
+                        onChange={(e) => {
+                          setSelectedCategory(e.target.value)
+                          setSelectedSubcategory("")
+                        }}
+                        className="p-2 border rounded"
+                        required
+                      >
+                        <option value="">Select Category</option>
+                        {selectedType &&
+                          types
+                            .find((t) => t.name === selectedType)
+                            ?.categories.map((cat) => (
+                              <option key={cat.name} value={cat.name}>
+                                {cat.name}
+                              </option>
+                            ))}
+                      </select>
+                    </div>
+                    {/* Select for Subcategory */}
+                    <div className="grid gap-2">
+                      <Label htmlFor="subcategory">Subcategory</Label>
+                      <select
+                        id="subcategory"
+                        value={selectedSubcategory}
+                        onChange={(e) => setSelectedSubcategory(e.target.value)}
+                        className="p-2 border rounded"
+                        
+                      >
+                        <option value="">Select Subcategory</option>
+                        {selectedCategory &&
+                          types
+                            .find((t) => t.name === selectedType)
+                            ?.categories.find((cat) => cat.name === selectedCategory)
+                            ?.subcategories?.map((sub) => (
+                              <option key={sub.name} value={sub.name}>
+                                {sub.name}
+                              </option>
+                            ))}
+                      </select>
+                    </div>
+                    {/* Select for Material */}
+                    <div className="grid gap-2">
+                      <Label htmlFor="material">Material</Label>
+                      <select
+                        id="material"
+                        value={selectedMaterial}
+                        onChange={(e) => setSelectedMaterial(e.target.value)}
+                        className="p-2 border rounded"
+                        required
+                      >
+                        <option value="">Select Material</option>
+                        {materials.map((mat) => (
+                          <option key={mat.ID} value={mat.ID}>
+                            {mat.Name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="grid gap-2">
@@ -633,13 +855,15 @@ const mapSupplierToProfile = (supplier: {
                         <Input id="price" name="price" type="number" required />
                       </div>
                     </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="stock">Stock Quantity</Label>
-                      <Input id="stock" name="stock" type="number" required />
-                    </div>
+                    {/* Replace plain input with ImageUpload for add item */}
                     <div className="grid gap-2">
                       <Label htmlFor="image">Image URL</Label>
-                      <Input id="image" name="image" placeholder="https://example.com/image.jpg" />
+                      <ImageUpload
+                        value={addImageUrl}
+                        onChange={(url) => setAddImageUrl(url)}
+                        label="Upload Image"
+                        description="Upload an image for the item"
+                      />
                     </div>
                   </div>
                   <DialogFooter>
@@ -649,9 +873,8 @@ const mapSupplierToProfile = (supplier: {
               </DialogContent>
             </Dialog>
           </div>
-
           {viewMode === "grid" ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {filteredItems.map((item) => (
                 <SupplierItemCard
                   key={item.id}
@@ -704,10 +927,12 @@ const mapSupplierToProfile = (supplier: {
           }
         }}
       >
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
             <DialogTitle>Edit Item</DialogTitle>
-            <DialogDescription>Make changes to your item. Click save when you're done.</DialogDescription>
+            <DialogDescription>
+              Make changes to your item. Click save when you're done.
+            </DialogDescription>
           </DialogHeader>
           {selectedItem && (
             <form
@@ -721,8 +946,7 @@ const mapSupplierToProfile = (supplier: {
                   subcategory: formData.get("subcategory") as string,
                   unit: formData.get("unit") as string,
                   price: Number(formData.get("price")),
-                  stock: Number(formData.get("stock")),
-                  image: formData.get("image") as string,
+                  imgUrl: editImageUrl,
                 }
                 handleUpdateItem(selectedItem.id, updatedItem)
               }}
@@ -736,15 +960,13 @@ const mapSupplierToProfile = (supplier: {
                   <Label htmlFor="edit-description">Description</Label>
                   <Textarea id="edit-description" name="description" defaultValue={selectedItem.description} />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="edit-category">Category</Label>
-                    <Input id="edit-category" name="category" defaultValue={selectedItem.category} required />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="edit-subcategory">Subcategory</Label>
-                    <Input id="edit-subcategory" name="subcategory" defaultValue={selectedItem.subcategory} />
-                  </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-category">Category</Label>
+                  <Input id="edit-category" name="category" defaultValue={selectedItem.category} required />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-subcategory">Subcategory</Label>
+                  <Input id="edit-subcategory" name="subcategory" defaultValue={selectedItem.subcategory} />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-2">
@@ -757,12 +979,13 @@ const mapSupplierToProfile = (supplier: {
                   </div>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="edit-stock">Stock Quantity</Label>
-                  <Input id="edit-stock" name="stock" type="number" defaultValue={selectedItem.stock} required />
-                </div>
-                <div className="grid gap-2">
                   <Label htmlFor="edit-image">Image URL</Label>
-                  <Input id="edit-image" name="image" defaultValue={selectedItem.image} />
+                  <ImageUpload
+                    value={editImageUrl}
+                    onChange={(url) => setEditImageUrl(url)}
+                    label="Upload Image"
+                    description="Upload an image for the item"
+                  />
                 </div>
               </div>
               <DialogFooter>

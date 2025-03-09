@@ -4,17 +4,19 @@ import { Button } from "@/components/ui/button"
 import { Pencil, Trash2 } from "lucide-react"
 
 interface SupplierItemListProps {
-  items: {
-    id: string
-    name: string
-    description: string
-    category: string
-    subcategory: string
-    unit: string
-    price: number
-    stock: number
-    image: string
-  }[]
+    items: {
+        id: string
+        name: string
+        description: string
+        supplierPid: string
+        materialId: string
+        type: string
+        category: string
+        subcategory: string
+        unit: string
+        price: number
+        imgUrl: string
+      }[]
   onEdit: (item: any) => void
   onDelete: (id: string) => void
 }
@@ -46,7 +48,7 @@ export function SupplierItemList({ items, onEdit, onDelete }: SupplierItemListPr
                 <TableCell>
                   <div className="relative h-10 w-10 rounded-md overflow-hidden">
                     <Image
-                      src={item.image || "/placeholder.svg?height=40&width=40"}
+                      src={item.imgUrl || "/placeholder.svg?height=40&width=40"}
                       alt={item.name}
                       fill
                       className="object-cover"
@@ -63,7 +65,7 @@ export function SupplierItemList({ items, onEdit, onDelete }: SupplierItemListPr
                 </TableCell>
                 <TableCell>Rs. {item.price.toLocaleString()}</TableCell>
                 <TableCell>
-                  {item.stock} {item.unit}s
+                   {item.unit}s
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
