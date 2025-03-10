@@ -2,7 +2,7 @@ import Image from "next/image"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Pencil, Trash2 } from "lucide-react"
-
+import { useRouter } from "next/navigation"
 interface SupplierItemListProps {
     items: {
         id: string
@@ -19,9 +19,12 @@ interface SupplierItemListProps {
       }[]
   onEdit: (item: any) => void
   onDelete: (id: string) => void
+  admin: boolean
 }
 
-export function SupplierItemList({ items, onEdit, onDelete }: SupplierItemListProps) {
+export function SupplierItemList({ items, onEdit, onDelete, admin }: SupplierItemListProps) {
+  const router = useRouter()
+
   return (
     <div className="rounded-md border">
       <Table>
@@ -31,8 +34,9 @@ export function SupplierItemList({ items, onEdit, onDelete }: SupplierItemListPr
             <TableHead>Name</TableHead>
             <TableHead>Category</TableHead>
             <TableHead>Price</TableHead>
-            <TableHead>Stock</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead>unit</TableHead>
+            {admin &&
+            <TableHead className="text-right">Actions</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -44,7 +48,12 @@ export function SupplierItemList({ items, onEdit, onDelete }: SupplierItemListPr
             </TableRow>
           ) : (
             items.map((item) => (
-              <TableRow key={item.id}>
+              <TableRow key={item.id}     className={!admin ? "cursor-pointer" : ""}
+              onClick={() => {
+                if (!admin) {
+                  router.push(`/supplier/${item.supplierPid}`)
+                }
+              }}>
                 <TableCell>
                   <div className="relative h-10 w-10 rounded-md overflow-hidden">
                     <Image
@@ -67,6 +76,7 @@ export function SupplierItemList({ items, onEdit, onDelete }: SupplierItemListPr
                 <TableCell>
                    {item.unit}s
                 </TableCell>
+                {admin && (
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
                     <Button variant="ghost" size="icon" onClick={() => onEdit(item)}>
@@ -76,7 +86,7 @@ export function SupplierItemList({ items, onEdit, onDelete }: SupplierItemListPr
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
-                </TableCell>
+                </TableCell>)}
               </TableRow>
             ))
           )}

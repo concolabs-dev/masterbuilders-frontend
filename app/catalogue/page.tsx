@@ -9,9 +9,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { ChevronDown, ChevronRight, Menu } from "lucide-react"
-
+import { Item, getItemsByMaterialID } from "@/app/api"
+import { SupplierItemList } from "@/components/supplier-item-list"
 interface Material {
-  ID: string
+
+  id: string
   Number: string
   Name: string
   Type: string
@@ -51,7 +53,17 @@ export default function Catalogue() {
   // New state for currency conversion:
   const [selectedCurrency, setSelectedCurrency] = useState<string>("LKR")
   const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({})
+  const [materialItems, setMaterialItems] = useState<Item[]>([])
 
+  useEffect(() => {
+    console.log(selectedMaterial?.Name)
+    if (selectedMaterial) {
+      getItemsByMaterialID(encodeURIComponent(selectedMaterial.id))
+        .then((data) => setMaterialItems(data))
+        .catch((err) => console.error("Error fetching items by material name:", err))
+    }
+    console.log(materialItems)
+  }, [selectedMaterial])
   // Fetch exchange rates from our API (returns major_currencies)
   useEffect(() => {
     async function fetchExchangeRates() {
@@ -335,6 +347,19 @@ export default function Catalogue() {
                 currency={selectedCurrency}
                 onClose={() => setSelectedMaterial(null)}
               />
+                        {selectedMaterial && materialItems&& (
+            <div className="mt-4">
+            <h2 className="text-lg font-semibold">Items</h2>
+            <div className="h-64 overflow-auto">
+              <SupplierItemList
+                items={materialItems}
+                onEdit={() => {}}
+                onDelete={() => {}}
+                admin={false}
+              />
+            </div>
+          </div>
+          )}
             </div>
           )}
         </DialogContent>

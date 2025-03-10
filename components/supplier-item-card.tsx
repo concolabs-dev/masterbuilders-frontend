@@ -19,9 +19,11 @@ interface SupplierItemCardProps {
   }
   onEdit: () => void
   onDelete: () => void
+  admin : boolean
 }
 
-export function SupplierItemCard({ item, onEdit, onDelete }: SupplierItemCardProps) {
+export function SupplierItemCard({ item, onEdit, onDelete , admin}: SupplierItemCardProps) {
+  console.log(item)
   return (
     <Card className="overflow-hidden flex flex-col  h-full">
       <div className="relative h-48 w-full">
@@ -55,6 +57,7 @@ export function SupplierItemCard({ item, onEdit, onDelete }: SupplierItemCardPro
           </div>
         </div>
       </CardContent>
+      {admin && (
       <CardFooter className="border-t pt-4 flex justify-between">
         <Button variant="outline" size="sm" onClick={onEdit}>
           <Pencil className="h-4 w-4 mr-2" />
@@ -64,7 +67,7 @@ export function SupplierItemCard({ item, onEdit, onDelete }: SupplierItemCardPro
           <Trash2 className="h-4 w-4 mr-2" />
           Delete
         </Button>
-      </CardFooter>
+      </CardFooter>)}
     </Card>
   )
 }

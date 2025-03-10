@@ -56,6 +56,9 @@ export function MainNav() {
         >
           Contact
         </a>
+        <Link href="/supplier" className="transition-colors hover:text-foreground/80 text-primary">
+          Suppliers
+        </Link>
         <Link href="/catalogue" className="transition-colors hover:text-foreground/80 text-primary">
           Catalogue
         </Link>

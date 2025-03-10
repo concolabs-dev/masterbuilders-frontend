@@ -4,7 +4,7 @@ const API_BASE_URL = "https://ravinduhiran.live"
 
 // Types
 export interface Material {
-  ID: string
+  id: string
   Number: string
   Name: string
   Type: string
@@ -17,6 +17,12 @@ export interface Material {
   Unit: string
   Prices: [string, number | null][]
   Source: string | null
+  Items?: MaterialItem[] 
+}
+export interface MaterialItem {
+  id: string
+  name: string
+  // Add additional properties as needed.
 }
 
 export interface Category {
@@ -75,6 +81,11 @@ export const getSupplierById = async (id: string) => {
   const response = await axios.get<Supplier>(`${API_BASE_URL}/suppliers/${id}`)
   return response.data
 }
+export const getSupplierByPID = async (pid: string) => {
+  const response = await axios.get<Supplier>(`${API_BASE_URL}/suppliers/pid/${pid}`)
+  return response.data
+}
+
 export const getSupplierByEmail = async (email: string) => {
   const response = await axios.get<Supplier>(`${API_BASE_URL}/suppliers/email/${email}`)
   return response.data
@@ -124,7 +135,7 @@ export const getMaterialsByCategory = async (category: string, subcategory?: str
   if (subcategory) params.append("subcategory", subcategory)
   if (subSubcategory) params.append("subSubcategory", subSubcategory)
   const response = await axios.get<Material[]>(`${API_BASE_URL}/materials/filter`, { params })
-  console.log(response.data)  
+  // console.log(response.data)  
   return response.data
 }
 
@@ -204,4 +215,10 @@ export const updateItem = async (id: string, item: Partial<Item>) => {
 
 export const deleteItem = async (id: string) => {
   await axios.delete(`${API_BASE_URL}/items/${id}`)
+}
+export const getItemsByMaterialID = async (materialId: string) => {
+
+  console.log(materialId) 
+  const response = await axios.get<Item[]>(`${API_BASE_URL}/items/material/${materialId}`)
+  return response.data
 }
