@@ -56,7 +56,7 @@ function SupplierDashboardPage() {
 
   const [materials, setMaterials] = useState<Material[]>([])
   const [selectedMaterial, setSelectedMaterial] = useState("")
-
+  const [unit, setUnit] = useState("")
   // State for image upload in add item dialog.
   const [addImageUrl, setAddImageUrl] = useState("")
 
@@ -134,7 +134,7 @@ function SupplierDashboardPage() {
   //     item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
   //     item.category.toLowerCase().includes(searchQuery.toLowerCase()),
   // )
-  const filteredItems = items.filter((item) => {
+  const filteredItems =items && items.filter((item) => {
     const matchesSearch =
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -159,7 +159,9 @@ function SupplierDashboardPage() {
     console.log(supplier?.id)
     console.log(selectedMaterial)
     e.preventDefault()
+
     const formData = new FormData(e.currentTarget)
+    const selectedMat = materials.find((m) => m.id === selectedMaterial)
     const newItem = {
       name: formData.get("name") as string,
       description: formData.get("description") as string,
@@ -168,7 +170,7 @@ function SupplierDashboardPage() {
       type: selectedType,
       category: selectedCategory,
       subcategory: selectedSubcategory || "",
-      unit: formData.get("unit") as string,
+      unit: unit,
       price: Number(formData.get("price")),
       // Use addImageUrl state instead of a plain text input.
       imgUrl: addImageUrl,
@@ -379,7 +381,8 @@ function SupplierDashboardPage() {
                       <select
                         id="material"
                         value={selectedMaterial}
-                        onChange={(e) => setSelectedMaterial(e.target.value)}
+                        onChange={(e) => {setSelectedMaterial(e.target.value);   const foundMat = materials.find((m) => m.id === e.target.value);
+                          setUnit(foundMat?.Unit || "")}}
                         className="p-2 border rounded"
                         required
                       >
@@ -394,7 +397,13 @@ function SupplierDashboardPage() {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="grid gap-2">
                         <Label htmlFor="unit">Unit</Label>
-                        <Input id="unit" name="unit" required />
+                          <input
+        id="unit"
+        name="unit"
+        value={unit}
+        onChange={(e) => setUnit(e.target.value)}
+        required
+      />
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="price">Price (Rs.)</Label>
@@ -421,7 +430,7 @@ function SupplierDashboardPage() {
           </div>
           {viewMode === "grid" ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredItems.map((item) => (
+              {filteredItems && filteredItems.map((item) => (
                 <SupplierItemCard
                   key={item.id}
                   item={item}
@@ -491,8 +500,7 @@ function SupplierDashboardPage() {
                 const updatedItem = {
                   name: formData.get("name") as string,
                   description: formData.get("description") as string,
-                  category: formData.get("category") as string,
-                  subcategory: formData.get("subcategory") as string,
+               
                   unit: formData.get("unit") as string,
                   price: Number(formData.get("price")),
                   imgUrl: editImageUrl,
@@ -509,14 +517,14 @@ function SupplierDashboardPage() {
                   <Label htmlFor="edit-description">Description</Label>
                   <Textarea id="edit-description" name="description" defaultValue={selectedItem.description} />
                 </div>
-                <div className="grid gap-2">
+                {/* <div className="grid gap-2">
                   <Label htmlFor="edit-category">Category</Label>
                   <Input id="edit-category" name="category" defaultValue={selectedItem.category} required />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="edit-subcategory">Subcategory</Label>
                   <Input id="edit-subcategory" name="subcategory" defaultValue={selectedItem.subcategory} />
-                </div>
+                </div> */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-2">
                     <Label htmlFor="edit-unit">Unit</Label>

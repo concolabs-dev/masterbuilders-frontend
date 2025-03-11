@@ -7,8 +7,15 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search } from "lucide-react"
 import { getSuppliers, Supplier } from "@/app/api"
-
-export default function SuppliersPage() {
+import { Suspense } from "react"
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading suppliers...</div>}>
+      <SuppliersPage />
+    </Suspense>
+  )
+}
+function SuppliersPage() {
   const searchParams = useSearchParams()
   const initialSearch = searchParams.get("search") || ""
   const [searchQuery, setSearchQuery] = useState(initialSearch)
@@ -56,6 +63,7 @@ export default function SuppliersPage() {
   }
 
   return (
+    
     <div className="container mx-auto py-8 px-4">
       <div className="text-sm text-muted-foreground mb-8">
         <Link href="/" className="hover:text-foreground">

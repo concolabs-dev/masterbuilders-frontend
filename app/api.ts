@@ -70,7 +70,20 @@ export interface Item {
   imgUrl: string
 }
 
+export interface Payment {
+  Month: string    // ISO date string (e.g. "2025-03-01T00:00:00.000Z")
+  Amount: number
+  paymentDate: string // ISO date string
+}
 
+// PaymentRecord model
+export interface PaymentRecord {
+  id: string
+  Supplierpid: string
+  Approved: boolean
+  Payments: Payment[]
+  Deleted: boolean
+}
 
 export const getSuppliers = async () => {
   const response = await axios.get<Supplier[]>(`${API_BASE_URL}/suppliers`)
@@ -83,6 +96,10 @@ export const getSupplierById = async (id: string) => {
 }
 export const getSupplierByPID = async (pid: string) => {
   const response = await axios.get<Supplier>(`${API_BASE_URL}/suppliers/pid/${pid}`)
+  return response.data
+}
+export const getSupplierByPPID = async (pid: string) => {
+  const response = await axios.get<Supplier>(`${API_BASE_URL}/suppliers/pid/napproved/${pid}`)
   return response.data
 }
 
@@ -221,4 +238,28 @@ export const getItemsByMaterialID = async (materialId: string) => {
   console.log(materialId) 
   const response = await axios.get<Item[]>(`${API_BASE_URL}/items/material/${materialId}`)
   return response.data
+}
+
+export const getPaymentRecords = async () => {
+  const response = await axios.get<PaymentRecord[]>(`${API_BASE_URL}/paymentRecords`)
+  return response.data
+}
+
+export const getPaymentRecordById = async (id: string) => {
+  const response = await axios.get<PaymentRecord>(`${API_BASE_URL}/paymentRecords/${id}`)
+  return response.data
+}
+
+export const createPaymentRecord = async (record: Omit<PaymentRecord, "id">) => {
+  const response = await axios.post<PaymentRecord>(`${API_BASE_URL}/paymentRecords`, record)
+  return response.data
+}
+
+export const updatePaymentRecord = async (id: string, record: Partial<PaymentRecord>) => {
+  const response = await axios.put<PaymentRecord>(`${API_BASE_URL}/paymentRecords/${id}`, record)
+  return response.data
+}
+
+export const deletePaymentRecord = async (id: string) => {
+  await axios.delete(`${API_BASE_URL}/paymentRecords/${id}`)
 }

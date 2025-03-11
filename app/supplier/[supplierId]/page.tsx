@@ -112,7 +112,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Grid, List, Plus } from "lucide-react"
 import CategorySidebar from "@/components/categorySidebar"
-
+import { Suspense } from "react"
 export default function PublicSupplierPage() {
   const { supplierId } = useParams<{ supplierId: string }>()
   const [supplier, setSupplier] = useState<Supplier | null>(null)
@@ -150,7 +150,7 @@ export default function PublicSupplierPage() {
   }, [])
 
   // Filter items by search query and type/category/subcategory
-  const filteredItems = items.filter((item) => {
+  const filteredItems = items && items.filter((item) => {
     const matchesSearch =
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.description.toLowerCase().includes(searchQuery.toLowerCase())
@@ -187,6 +187,7 @@ export default function PublicSupplierPage() {
   }
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <div className="container mx-auto py-10">
       <SupplierProfile supplier={profileData} admin={false} />
       <div className="mt-8 flex flex-col md:flex-row gap-4">
@@ -230,7 +231,7 @@ export default function PublicSupplierPage() {
           </div>
           {viewMode === "grid" ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {filteredItems.map((item) => (
+              {filteredItems && filteredItems.map((item) => (
                 <SupplierItemCard
                   key={item.id}
                   item={item}
@@ -251,5 +252,6 @@ export default function PublicSupplierPage() {
         </div>
       </div>
     </div>
+    </Suspense>
   )
 }

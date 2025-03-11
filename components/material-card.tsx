@@ -19,7 +19,7 @@ export function MaterialCard({ name, unit, location, rating, price, currency_t, 
           <h3 className="font-medium">{name}</h3>
           <div className="text-sm text-muted-foreground mt-1">
             <div className="flex items-center gap-2">
-              <span>Unit: {unit}</span>
+              {/* <span>Unit: {unit}</span> */}
               {/* <span>•</span> */}
               {/* <span>Location: {location}</span> */}
             </div>
@@ -34,8 +34,9 @@ export function MaterialCard({ name, unit, location, rating, price, currency_t, 
           </div>
         </div>
         <div className="text-right">
-          <div className="text-sm text-muted-foreground">Total Price</div>
-          <div className="font-semibold"> {currency_t+" "+Number(price).toFixed(2)}</div>
+          <div className="text-sm text-muted-foreground">Price</div>
+          <div className="font-semibold"> {currency_t+" "+Number(price).toFixed(2)} </div>
+          <span className="text-gray-700 text-sm">/{unit}</span>
 
         </div>
       </div>

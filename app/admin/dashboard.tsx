@@ -22,6 +22,7 @@ import { Label } from "@/components/ui/label"
 import { Plus, Pencil, Trash2 } from "lucide-react"
 import { MaterialCard } from "@/components/material-card"
 import { PriceChart } from "@/components/price-chart"
+import AdminSuppliersTab from "@/components/admin-suppliers"
 import {
   getMaterialsByCategory,
   getMaterials,
@@ -160,6 +161,8 @@ function AdminDashboard(
         <TabsList>
           <TabsTrigger value="materials">Materials</TabsTrigger>
           <TabsTrigger value="categories">Categories</TabsTrigger>
+          <TabsTrigger value="suppliers">Suppliers</TabsTrigger>
+          <TabsTrigger value="payments">Payments</TabsTrigger>
         </TabsList>
 
         <TabsContent value="materials" className="space-y-4">
@@ -266,6 +269,14 @@ function AdminDashboard(
               )}
             </CardContent>
           </Card>
+        </TabsContent>
+        <TabsContent value="suppliers" className="space-y-4">
+
+        <AdminSuppliersTab/>
+        </TabsContent>
+        <TabsContent value="payments" className="space-y-4">
+
+          <p>payments</p>
         </TabsContent>
       </Tabs>
 
@@ -483,7 +494,7 @@ function MaterialsUI() {
           "Sub subcategory": createSubSubcat || null,
         },
         Prices: [[newMonthString, null]] as [string, number | null][],
-        ID: "",
+        id: "",
         Qty: 0,
         Source: null,
       })

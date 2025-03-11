@@ -62,12 +62,12 @@ export default function AdminLayout({
       }
     }
 
-    checkAuth()
+    // checkAuth()
   }, [router])
 
-  if (isLoadingl) {
-    return <div>Loading...</div>
-  }
+  // if (isLoadingl) {
+  //   return <div>Loading...</div>
+  // }
 
   return <>{children}</>
 }

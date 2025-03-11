@@ -13,36 +13,6 @@ exports.id = "app/api/test/route";
 exports.ids = ["app/api/test/route"];
 exports.modules = {
 
-/***/ "../../client/components/action-async-storage.external":
-/*!*******************************************************************************!*\
-  !*** external "next/dist/client/components/action-async-storage.external.js" ***!
-  \*******************************************************************************/
-/***/ ((module) => {
-
-module.exports = require("next/dist/client/components/action-async-storage.external.js");
-
-/***/ }),
-
-/***/ "../../client/components/request-async-storage.external":
-/*!********************************************************************************!*\
-  !*** external "next/dist/client/components/request-async-storage.external.js" ***!
-  \********************************************************************************/
-/***/ ((module) => {
-
-module.exports = require("next/dist/client/components/request-async-storage.external.js");
-
-/***/ }),
-
-/***/ "../../client/components/static-generation-async-storage.external":
-/*!******************************************************************************************!*\
-  !*** external "next/dist/client/components/static-generation-async-storage.external.js" ***!
-  \******************************************************************************************/
-/***/ ((module) => {
-
-module.exports = require("next/dist/client/components/static-generation-async-storage.external.js");
-
-/***/ }),
-
 /***/ "next/dist/compiled/next-server/app-page.runtime.dev.js":
 /*!*************************************************************************!*\
   !*** external "next/dist/compiled/next-server/app-page.runtime.dev.js" ***!
@@ -63,156 +33,6 @@ module.exports = require("next/dist/compiled/next-server/app-route.runtime.dev.j
 
 /***/ }),
 
-/***/ "assert":
-/*!*************************!*\
-  !*** external "assert" ***!
-  \*************************/
-/***/ ((module) => {
-
-module.exports = require("assert");
-
-/***/ }),
-
-/***/ "buffer":
-/*!*************************!*\
-  !*** external "buffer" ***!
-  \*************************/
-/***/ ((module) => {
-
-module.exports = require("buffer");
-
-/***/ }),
-
-/***/ "crypto":
-/*!*************************!*\
-  !*** external "crypto" ***!
-  \*************************/
-/***/ ((module) => {
-
-module.exports = require("crypto");
-
-/***/ }),
-
-/***/ "events":
-/*!*************************!*\
-  !*** external "events" ***!
-  \*************************/
-/***/ ((module) => {
-
-module.exports = require("events");
-
-/***/ }),
-
-/***/ "http":
-/*!***********************!*\
-  !*** external "http" ***!
-  \***********************/
-/***/ ((module) => {
-
-module.exports = require("http");
-
-/***/ }),
-
-/***/ "https":
-/*!************************!*\
-  !*** external "https" ***!
-  \************************/
-/***/ ((module) => {
-
-module.exports = require("https");
-
-/***/ }),
-
-/***/ "os":
-/*!*********************!*\
-  !*** external "os" ***!
-  \*********************/
-/***/ ((module) => {
-
-module.exports = require("os");
-
-/***/ }),
-
-/***/ "querystring":
-/*!******************************!*\
-  !*** external "querystring" ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = require("querystring");
-
-/***/ }),
-
-/***/ "tty":
-/*!**********************!*\
-  !*** external "tty" ***!
-  \**********************/
-/***/ ((module) => {
-
-module.exports = require("tty");
-
-/***/ }),
-
-/***/ "url":
-/*!**********************!*\
-  !*** external "url" ***!
-  \**********************/
-/***/ ((module) => {
-
-module.exports = require("url");
-
-/***/ }),
-
-/***/ "util":
-/*!***********************!*\
-  !*** external "util" ***!
-  \***********************/
-/***/ ((module) => {
-
-module.exports = require("util");
-
-/***/ }),
-
-/***/ "zlib":
-/*!***********************!*\
-  !*** external "zlib" ***!
-  \***********************/
-/***/ ((module) => {
-
-module.exports = require("zlib");
-
-/***/ }),
-
-/***/ "node:buffer":
-/*!******************************!*\
-  !*** external "node:buffer" ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = require("node:buffer");
-
-/***/ }),
-
-/***/ "node:crypto":
-/*!******************************!*\
-  !*** external "node:crypto" ***!
-  \******************************/
-/***/ ((module) => {
-
-module.exports = require("node:crypto");
-
-/***/ }),
-
-/***/ "node:util":
-/*!****************************!*\
-  !*** external "node:util" ***!
-  \****************************/
-/***/ ((module) => {
-
-module.exports = require("node:util");
-
-/***/ }),
-
 /***/ "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Ftest%2Froute&page=%2Fapi%2Ftest%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Ftest%2Froute.ts&appDir=%2FUsers%2Fshakir%2FDesktop%2FConcolabs%2Fmb-frontend%2Fmasterbuilders-frontend%2Fapp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=%2FUsers%2Fshakir%2FDesktop%2FConcolabs%2Fmb-frontend%2Fmasterbuilders-frontend&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D!":
 /*!******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Ftest%2Froute&page=%2Fapi%2Ftest%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Ftest%2Froute.ts&appDir=%2FUsers%2Fshakir%2FDesktop%2FConcolabs%2Fmb-frontend%2Fmasterbuilders-frontend%2Fapp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=%2FUsers%2Fshakir%2FDesktop%2FConcolabs%2Fmb-frontend%2Fmasterbuilders-frontend&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D! ***!
@@ -229,17 +49,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \*******************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   GET: () => (/* binding */ GET)\n/* harmony export */ });\n/* harmony import */ var next_server__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! next/server */ \"(rsc)/./node_modules/next/dist/api/server.js\");\n/* harmony import */ var _lib_auth0__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/lib/auth0 */ \"(rsc)/./lib/auth0.ts\");\n/* harmony import */ var jose__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jose */ \"(rsc)/./node_modules/jose/dist/node/esm/jwt/decrypt.js\");\n/* harmony import */ var jose__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! jose */ \"(rsc)/./node_modules/jose/dist/node/esm/jwt/verify.js\");\n\n\n\nasync function decryptToken(token) {\n    console.log(process.env.AUTH0_SECRET);\n    const secretKey = new TextEncoder().encode(\"e35ab6e673abef5085d3a57593600be1\") // Replace with your actual secret key\n    ;\n    try {\n        const { payload } = await (0,jose__WEBPACK_IMPORTED_MODULE_2__.jwtDecrypt)(token, secretKey);\n        return payload;\n    } catch (error) {\n        console.error(\"Failed to decrypt token:\", error);\n        return null;\n    }\n}\nasync function verifyToken(token) {\n    const secretKey = new TextEncoder().encode(process.env.AUTH0_SECRET);\n    try {\n        const { payload } = await (0,jose__WEBPACK_IMPORTED_MODULE_3__.jwtVerify)(token, secretKey);\n        return payload;\n    } catch (error) {\n        console.error(\"Failed to verify token:\", error);\n        return null;\n    }\n}\nasync function GET() {\n    console.log(\"methana thamai\");\n    try {\n        // const token = await auth0.getAccessToken()\n        // const token = \"eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwiaXNzIjoiaHR0cHM6Ly9kZXYtaTN5dzZkNXVzcWtrYXNiMy51cy5hdXRoMC5jb20vIn0..gkRgfk47iaRV0WjT._hHiOcXZ0IXEXCChyspYAW6u-9UBE5JWCgFDGTKM3uQtNECK05OYHLDpOCLkfPwMqX2-BjsXy1nzm7q_OrkXeaHB4F4gLW08DOaRDDa-AsaWNmOfqd4RK5zGBKqbgSh-BE0Guwa-8x-Kd6np30WUEE9WvWqJKQ_FuPWet9IGkFm0M0crEU_sM9R70SNAFlM4Wy7s07Hn-xBWvjSDYqWOR13BOEJ4aFxXZ-0hnKbTRUcQiEHAqWftfvoBU9wskhAmO5XA_YYeo-RCdvuNiAoLyMwlXyUuGb9XUOVax_JhSTeDxrjlB2td8ax5kN-IQJ4RGjbeExIO0fRBRVPP1rOKMLmn.yvttTolfiF-2xodNgqdFdA\";\n        const token = await _lib_auth0__WEBPACK_IMPORTED_MODULE_1__.auth0.getAccessToken();\n        console.log(token);\n        if (token.accessToken) {\n            console.log(await decryptToken(token.accessToken));\n        } else {\n            console.error(\"Access token is undefined\");\n        }\n    // console.log(decryptToken(token.accessToken))\n    // console.log(verifyToken(token.accessToken))\n    } catch (err) {\n    // err will be an instance of AccessTokenError if an access token could not be obtained\n    }\n    return next_server__WEBPACK_IMPORTED_MODULE_0__.NextResponse.json({\n        message: \"Success!\"\n    });\n}\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHJzYykvLi9hcHAvYXBpL3Rlc3Qvcm91dGUudHMiLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7QUFBMEM7QUFFUDtBQUNRO0FBQzNDLGVBQWVJLGFBQWFDLEtBQWE7SUFDckNDLFFBQVFDLEdBQUcsQ0FBQ0MsUUFBUUMsR0FBRyxDQUFDQyxZQUFZO0lBQ3BDLE1BQU1DLFlBQVksSUFBSUMsY0FBY0MsTUFBTSxDQUFDLG9DQUFvQyxzQ0FBc0M7O0lBQ3JILElBQUk7UUFDRixNQUFNLEVBQUVDLE9BQU8sRUFBRSxHQUFHLE1BQU1aLGdEQUFVQSxDQUFDRyxPQUFPTTtRQUM1QyxPQUFPRztJQUNULEVBQUUsT0FBT0MsT0FBTztRQUNkVCxRQUFRUyxLQUFLLENBQUMsNEJBQTRCQTtRQUMxQyxPQUFPO0lBQ1Q7QUFDRjtBQUNBLGVBQWVDLFlBQVlYLEtBQWE7SUFDdEMsTUFBTU0sWUFBWSxJQUFJQyxjQUFjQyxNQUFNLENBQUNMLFFBQVFDLEdBQUcsQ0FBQ0MsWUFBWTtJQUNuRSxJQUFJO1FBQ0EsTUFBTSxFQUFFSSxPQUFPLEVBQUUsR0FBRyxNQUFNWCwrQ0FBU0EsQ0FBQ0UsT0FBT007UUFDM0MsT0FBT0c7SUFDWCxFQUFFLE9BQU9DLE9BQU87UUFDWlQsUUFBUVMsS0FBSyxDQUFDLDJCQUEyQkE7UUFDekMsT0FBTztJQUNYO0FBQ0o7QUFDTyxlQUFlRTtJQUNwQlgsUUFBUUMsR0FBRyxDQUFDO0lBQ1osSUFBSTtRQUNGLDZDQUE2QztRQUM3QyxpZ0JBQWlnQjtRQUNqZ0IsTUFBTUYsUUFBUSxNQUFNSiw2Q0FBS0EsQ0FBQ2lCLGNBQWM7UUFDeENaLFFBQVFDLEdBQUcsQ0FBQ0Y7UUFDWixJQUFJQSxNQUFNYyxXQUFXLEVBQUU7WUFDckJiLFFBQVFDLEdBQUcsQ0FBQyxNQUFNSCxhQUFhQyxNQUFNYyxXQUFXO1FBQ2xELE9BQU87WUFDTGIsUUFBUVMsS0FBSyxDQUFDO1FBQ2hCO0lBQ0EsK0NBQStDO0lBQy9DLDhDQUE4QztJQUVoRCxFQUFFLE9BQU9LLEtBQUs7SUFDWix1RkFBdUY7SUFDekY7SUFFQSxPQUFPcEIscURBQVlBLENBQUNxQixJQUFJLENBQUM7UUFDdkJDLFNBQVM7SUFDWDtBQUNGIiwic291cmNlcyI6WyJ3ZWJwYWNrOi8vbWFzdGVyYnVpbGRlcnMvLi9hcHAvYXBpL3Rlc3Qvcm91dGUudHM/NTUxMSJdLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBOZXh0UmVzcG9uc2UgfSBmcm9tIFwibmV4dC9zZXJ2ZXJcIlxuXG5pbXBvcnQgeyBhdXRoMCB9IGZyb20gXCJAL2xpYi9hdXRoMFwiXG5pbXBvcnQgeyBqd3REZWNyeXB0LGp3dFZlcmlmeSB9IGZyb20gXCJqb3NlXCJcbmFzeW5jIGZ1bmN0aW9uIGRlY3J5cHRUb2tlbih0b2tlbjogc3RyaW5nKSB7XG4gICAgY29uc29sZS5sb2cocHJvY2Vzcy5lbnYuQVVUSDBfU0VDUkVUKVxuICAgIGNvbnN0IHNlY3JldEtleSA9IG5ldyBUZXh0RW5jb2RlcigpLmVuY29kZShcImUzNWFiNmU2NzNhYmVmNTA4NWQzYTU3NTkzNjAwYmUxXCIpIC8vIFJlcGxhY2Ugd2l0aCB5b3VyIGFjdHVhbCBzZWNyZXQga2V5XG4gICAgdHJ5IHtcbiAgICAgIGNvbnN0IHsgcGF5bG9hZCB9ID0gYXdhaXQgand0RGVjcnlwdCh0b2tlbiwgc2VjcmV0S2V5KVxuICAgICAgcmV0dXJuIHBheWxvYWRcbiAgICB9IGNhdGNoIChlcnJvcikge1xuICAgICAgY29uc29sZS5lcnJvcihcIkZhaWxlZCB0byBkZWNyeXB0IHRva2VuOlwiLCBlcnJvcilcbiAgICAgIHJldHVybiBudWxsXG4gICAgfVxuICB9XG4gIGFzeW5jIGZ1bmN0aW9uIHZlcmlmeVRva2VuKHRva2VuOiBzdHJpbmcpIHtcbiAgICBjb25zdCBzZWNyZXRLZXkgPSBuZXcgVGV4dEVuY29kZXIoKS5lbmNvZGUocHJvY2Vzcy5lbnYuQVVUSDBfU0VDUkVUKTtcbiAgICB0cnkge1xuICAgICAgICBjb25zdCB7IHBheWxvYWQgfSA9IGF3YWl0IGp3dFZlcmlmeSh0b2tlbiwgc2VjcmV0S2V5KTtcbiAgICAgICAgcmV0dXJuIHBheWxvYWQ7XG4gICAgfSBjYXRjaCAoZXJyb3IpIHtcbiAgICAgICAgY29uc29sZS5lcnJvcihcIkZhaWxlZCB0byB2ZXJpZnkgdG9rZW46XCIsIGVycm9yKTtcbiAgICAgICAgcmV0dXJuIG51bGw7XG4gICAgfVxufVxuZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIEdFVCgpIHtcbiAgY29uc29sZS5sb2coXCJtZXRoYW5hIHRoYW1haVwiKVxuICB0cnkge1xuICAgIC8vIGNvbnN0IHRva2VuID0gYXdhaXQgYXV0aDAuZ2V0QWNjZXNzVG9rZW4oKVxuICAgIC8vIGNvbnN0IHRva2VuID0gXCJleUpoYkdjaU9pSmthWElpTENKbGJtTWlPaUpCTWpVMlIwTk5JaXdpYVhOeklqb2lhSFIwY0hNNkx5OWtaWFl0YVRONWR6WmtOWFZ6Y1d0cllYTmlNeTUxY3k1aGRYUm9NQzVqYjIwdkluMC4uZ2tSZ2ZrNDdpYVJWMFdqVC5faEhpT2NYWjBJWEVYQ0NoeXNwWUFXNnUtOVVCRTVKV0NnRkRHVEtNM3VRdE5FQ0swNU9ZSExEcE9DTGtmUHdNcVgyLUJqc1h5MW56bTdxX09ya1hlYUhCNEY0Z0xXMDhET2FSRERhLUFzYVdObU9mcWQ0Uks1ekdCS3FiZ1NoLUJFMEd1d2EtOHgtS2Q2bnAzMFdVRUU5V3ZXcUpLUV9GdVBXZXQ5SUdrRm0wTTBjckVVX3NNOVI3MFNOQUZsTTRXeTdzMDdIbi14Qld2alNEWXFXT1IxM0JPRUo0YUZ4WFotMGhuS2JUUlVjUWlFSEFxV2Z0ZnZvQlU5d3NraEFtTzVYQV9ZWWVvLVJDZHZ1TmlBb0x5TXdsWHlVdUdiOVhVT1ZheF9KaFNUZUR4cmpsQjJ0ZDhheDVrTi1JUUo0UkdqYmVFeElPMGZSQlJWUFAxck9LTUxtbi55dnR0VG9sZmlGLTJ4b2ROZ3FkRmRBXCI7XG4gICAgY29uc3QgdG9rZW4gPSBhd2FpdCBhdXRoMC5nZXRBY2Nlc3NUb2tlbigpO1xuICAgIGNvbnNvbGUubG9nKHRva2VuKVxuICAgIGlmICh0b2tlbi5hY2Nlc3NUb2tlbikge1xuICAgICAgY29uc29sZS5sb2coYXdhaXQgZGVjcnlwdFRva2VuKHRva2VuLmFjY2Vzc1Rva2VuKSk7XG4gICAgfSBlbHNlIHtcbiAgICAgIGNvbnNvbGUuZXJyb3IoXCJBY2Nlc3MgdG9rZW4gaXMgdW5kZWZpbmVkXCIpO1xuICAgIH1cbiAgICAvLyBjb25zb2xlLmxvZyhkZWNyeXB0VG9rZW4odG9rZW4uYWNjZXNzVG9rZW4pKVxuICAgIC8vIGNvbnNvbGUubG9nKHZlcmlmeVRva2VuKHRva2VuLmFjY2Vzc1Rva2VuKSlcblxuICB9IGNhdGNoIChlcnIpIHtcbiAgICAvLyBlcnIgd2lsbCBiZSBhbiBpbnN0YW5jZSBvZiBBY2Nlc3NUb2tlbkVycm9yIGlmIGFuIGFjY2VzcyB0b2tlbiBjb3VsZCBub3QgYmUgb2J0YWluZWRcbiAgfVxuXG4gIHJldHVybiBOZXh0UmVzcG9uc2UuanNvbih7XG4gICAgbWVzc2FnZTogXCJTdWNjZXNzIVwiLFxuICB9KVxufSJdLCJuYW1lcyI6WyJOZXh0UmVzcG9uc2UiLCJhdXRoMCIsImp3dERlY3J5cHQiLCJqd3RWZXJpZnkiLCJkZWNyeXB0VG9rZW4iLCJ0b2tlbiIsImNvbnNvbGUiLCJsb2ciLCJwcm9jZXNzIiwiZW52IiwiQVVUSDBfU0VDUkVUIiwic2VjcmV0S2V5IiwiVGV4dEVuY29kZXIiLCJlbmNvZGUiLCJwYXlsb2FkIiwiZXJyb3IiLCJ2ZXJpZnlUb2tlbiIsIkdFVCIsImdldEFjY2Vzc1Rva2VuIiwiYWNjZXNzVG9rZW4iLCJlcnIiLCJqc29uIiwibWVzc2FnZSJdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///(rsc)/./app/api/test/route.ts\n");
-
-/***/ }),
-
-/***/ "(rsc)/./lib/auth0.ts":
-/*!**********************!*\
-  !*** ./lib/auth0.ts ***!
-  \**********************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   auth0: () => (/* binding */ auth0)\n/* harmony export */ });\n/* harmony import */ var _auth0_nextjs_auth0__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @auth0/nextjs-auth0 */ \"(rsc)/./node_modules/@auth0/nextjs-auth0/dist/index.js\");\n/* harmony import */ var _auth0_nextjs_auth0__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_auth0_nextjs_auth0__WEBPACK_IMPORTED_MODULE_0__);\n// lib/auth0.ts\n\nconst auth0 = (0,_auth0_nextjs_auth0__WEBPACK_IMPORTED_MODULE_0__.initAuth0)({\n    secret: process.env.AUTH0_SECRET,\n    issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,\n    baseURL: process.env.AUTH0_BASE_URL,\n    clientID: process.env.AUTH0_CLIENT_ID,\n    clientSecret: process.env.AUTH0_CLIENT_SECRET,\n    routes: {\n        callback: \"/api/auth/callback\",\n        postLogoutRedirect: \"/\"\n    }\n});\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHJzYykvLi9saWIvYXV0aDAudHMiLCJtYXBwaW5ncyI6Ijs7Ozs7O0FBQUEsZUFBZTtBQUNpQztBQUV6QyxNQUFNQyxRQUFRRCw4REFBU0EsQ0FBQztJQUM3QkUsUUFBUUMsUUFBUUMsR0FBRyxDQUFDQyxZQUFZO0lBQ2hDQyxlQUFlSCxRQUFRQyxHQUFHLENBQUNHLHFCQUFxQjtJQUNoREMsU0FBU0wsUUFBUUMsR0FBRyxDQUFDSyxjQUFjO0lBQ25DQyxVQUFVUCxRQUFRQyxHQUFHLENBQUNPLGVBQWU7SUFDckNDLGNBQWNULFFBQVFDLEdBQUcsQ0FBQ1MsbUJBQW1CO0lBQzdDQyxRQUFRO1FBQ05DLFVBQVU7UUFDVkMsb0JBQW9CO0lBQ3RCO0FBQ0YsR0FBRyIsInNvdXJjZXMiOlsid2VicGFjazovL21hc3RlcmJ1aWxkZXJzLy4vbGliL2F1dGgwLnRzP2NkNmIiXSwic291cmNlc0NvbnRlbnQiOlsiLy8gbGliL2F1dGgwLnRzXG5pbXBvcnQgeyBpbml0QXV0aDAgfSBmcm9tICdAYXV0aDAvbmV4dGpzLWF1dGgwJztcblxuZXhwb3J0IGNvbnN0IGF1dGgwID0gaW5pdEF1dGgwKHtcbiAgc2VjcmV0OiBwcm9jZXNzLmVudi5BVVRIMF9TRUNSRVQsXG4gIGlzc3VlckJhc2VVUkw6IHByb2Nlc3MuZW52LkFVVEgwX0lTU1VFUl9CQVNFX1VSTCxcbiAgYmFzZVVSTDogcHJvY2Vzcy5lbnYuQVVUSDBfQkFTRV9VUkwsXG4gIGNsaWVudElEOiBwcm9jZXNzLmVudi5BVVRIMF9DTElFTlRfSUQsXG4gIGNsaWVudFNlY3JldDogcHJvY2Vzcy5lbnYuQVVUSDBfQ0xJRU5UX1NFQ1JFVCxcbiAgcm91dGVzOiB7XG4gICAgY2FsbGJhY2s6ICcvYXBpL2F1dGgvY2FsbGJhY2snLCAvLyBDYWxsYmFjayByb3V0ZSBmb3IgQXV0aDBcbiAgICBwb3N0TG9nb3V0UmVkaXJlY3Q6ICcvJywgLy8gUmVkaXJlY3QgYWZ0ZXIgbG9nb3V0XG4gIH0sXG59KTsiXSwibmFtZXMiOlsiaW5pdEF1dGgwIiwiYXV0aDAiLCJzZWNyZXQiLCJwcm9jZXNzIiwiZW52IiwiQVVUSDBfU0VDUkVUIiwiaXNzdWVyQmFzZVVSTCIsIkFVVEgwX0lTU1VFUl9CQVNFX1VSTCIsImJhc2VVUkwiLCJBVVRIMF9CQVNFX1VSTCIsImNsaWVudElEIiwiQVVUSDBfQ0xJRU5UX0lEIiwiY2xpZW50U2VjcmV0IiwiQVVUSDBfQ0xJRU5UX1NFQ1JFVCIsInJvdXRlcyIsImNhbGxiYWNrIiwicG9zdExvZ291dFJlZGlyZWN0Il0sInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///(rsc)/./lib/auth0.ts\n");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   GET: () => (/* binding */ GET)\n/* harmony export */ });\n/* harmony import */ var next_server__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! next/server */ \"(rsc)/./node_modules/next/dist/api/server.js\");\n\n// import { auth0 } from \"@/lib/auth0\"\n// import { jwtDecrypt,jwtVerify } from \"jose\"\n// async function decryptToken(token: string) {\n//     console.log(process.env.AUTH0_SECRET)\n//     const secretKey = new TextEncoder().encode(\"e35ab6e673abef5085d3a57593600be1\") // Replace with your actual secret key\n//     try {\n//       const { payload } = await jwtDecrypt(token, secretKey)\n//       return payload\n//     } catch (error) {\n//       console.error(\"Failed to decrypt token:\", error)\n//       return null\n//     }\n//   }\n//   async function verifyToken(token: string) {\n//     const secretKey = new TextEncoder().encode(process.env.AUTH0_SECRET);\n//     try {\n//         const { payload } = await jwtVerify(token, secretKey);\n//         return payload;\n//     } catch (error) {\n//         console.error(\"Failed to verify token:\", error);\n//         return null;\n//     }\n// }\nasync function GET() {\n    console.log(\"methana thamai\");\n    try {\n    // const token = await auth0.getAccessToken()\n    // const token = \"eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwiaXNzIjoiaHR0cHM6Ly9kZXYtaTN5dzZkNXVzcWtrYXNiMy51cy5hdXRoMC5jb20vIn0..gkRgfk47iaRV0WjT._hHiOcXZ0IXEXCChyspYAW6u-9UBE5JWCgFDGTKM3uQtNECK05OYHLDpOCLkfPwMqX2-BjsXy1nzm7q_OrkXeaHB4F4gLW08DOaRDDa-AsaWNmOfqd4RK5zGBKqbgSh-BE0Guwa-8x-Kd6np30WUEE9WvWqJKQ_FuPWet9IGkFm0M0crEU_sM9R70SNAFlM4Wy7s07Hn-xBWvjSDYqWOR13BOEJ4aFxXZ-0hnKbTRUcQiEHAqWftfvoBU9wskhAmO5XA_YYeo-RCdvuNiAoLyMwlXyUuGb9XUOVax_JhSTeDxrjlB2td8ax5kN-IQJ4RGjbeExIO0fRBRVPP1rOKMLmn.yvttTolfiF-2xodNgqdFdA\";\n    // const token = await auth0.getAccessToken();\n    // console.log(token)\n    // if (token.accessToken) {\n    //   console.log(await decryptToken(token.accessToken));\n    // } else {\n    //   console.error(\"Access token is undefined\");\n    // }\n    // console.log(decryptToken(token.accessToken))\n    // console.log(verifyToken(token.accessToken))\n    } catch (err) {\n    // err will be an instance of AccessTokenError if an access token could not be obtained\n    }\n    return next_server__WEBPACK_IMPORTED_MODULE_0__.NextResponse.json({\n        message: \"Success!\"\n    });\n}\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHJzYykvLi9hcHAvYXBpL3Rlc3Qvcm91dGUudHMiLCJtYXBwaW5ncyI6Ijs7Ozs7QUFBMEM7QUFFMUMsc0NBQXNDO0FBQ3RDLDhDQUE4QztBQUM5QywrQ0FBK0M7QUFDL0MsNENBQTRDO0FBQzVDLDRIQUE0SDtBQUM1SCxZQUFZO0FBQ1osK0RBQStEO0FBQy9ELHVCQUF1QjtBQUN2Qix3QkFBd0I7QUFDeEIseURBQXlEO0FBQ3pELG9CQUFvQjtBQUNwQixRQUFRO0FBQ1IsTUFBTTtBQUNOLGdEQUFnRDtBQUNoRCw0RUFBNEU7QUFDNUUsWUFBWTtBQUNaLGlFQUFpRTtBQUNqRSwwQkFBMEI7QUFDMUIsd0JBQXdCO0FBQ3hCLDJEQUEyRDtBQUMzRCx1QkFBdUI7QUFDdkIsUUFBUTtBQUNSLElBQUk7QUFDRyxlQUFlQztJQUNwQkMsUUFBUUMsR0FBRyxDQUFDO0lBQ1osSUFBSTtJQUNGLDZDQUE2QztJQUM3QyxpZ0JBQWlnQjtJQUNqZ0IsOENBQThDO0lBQzlDLHFCQUFxQjtJQUNyQiwyQkFBMkI7SUFDM0Isd0RBQXdEO0lBQ3hELFdBQVc7SUFDWCxnREFBZ0Q7SUFDaEQsSUFBSTtJQUNKLCtDQUErQztJQUMvQyw4Q0FBOEM7SUFFaEQsRUFBRSxPQUFPQyxLQUFLO0lBQ1osdUZBQXVGO0lBQ3pGO0lBRUEsT0FBT0oscURBQVlBLENBQUNLLElBQUksQ0FBQztRQUN2QkMsU0FBUztJQUNYO0FBQ0YiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly9tYXN0ZXJidWlsZGVycy8uL2FwcC9hcGkvdGVzdC9yb3V0ZS50cz81NTExIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IE5leHRSZXNwb25zZSB9IGZyb20gXCJuZXh0L3NlcnZlclwiXG5cbi8vIGltcG9ydCB7IGF1dGgwIH0gZnJvbSBcIkAvbGliL2F1dGgwXCJcbi8vIGltcG9ydCB7IGp3dERlY3J5cHQsand0VmVyaWZ5IH0gZnJvbSBcImpvc2VcIlxuLy8gYXN5bmMgZnVuY3Rpb24gZGVjcnlwdFRva2VuKHRva2VuOiBzdHJpbmcpIHtcbi8vICAgICBjb25zb2xlLmxvZyhwcm9jZXNzLmVudi5BVVRIMF9TRUNSRVQpXG4vLyAgICAgY29uc3Qgc2VjcmV0S2V5ID0gbmV3IFRleHRFbmNvZGVyKCkuZW5jb2RlKFwiZTM1YWI2ZTY3M2FiZWY1MDg1ZDNhNTc1OTM2MDBiZTFcIikgLy8gUmVwbGFjZSB3aXRoIHlvdXIgYWN0dWFsIHNlY3JldCBrZXlcbi8vICAgICB0cnkge1xuLy8gICAgICAgY29uc3QgeyBwYXlsb2FkIH0gPSBhd2FpdCBqd3REZWNyeXB0KHRva2VuLCBzZWNyZXRLZXkpXG4vLyAgICAgICByZXR1cm4gcGF5bG9hZFxuLy8gICAgIH0gY2F0Y2ggKGVycm9yKSB7XG4vLyAgICAgICBjb25zb2xlLmVycm9yKFwiRmFpbGVkIHRvIGRlY3J5cHQgdG9rZW46XCIsIGVycm9yKVxuLy8gICAgICAgcmV0dXJuIG51bGxcbi8vICAgICB9XG4vLyAgIH1cbi8vICAgYXN5bmMgZnVuY3Rpb24gdmVyaWZ5VG9rZW4odG9rZW46IHN0cmluZykge1xuLy8gICAgIGNvbnN0IHNlY3JldEtleSA9IG5ldyBUZXh0RW5jb2RlcigpLmVuY29kZShwcm9jZXNzLmVudi5BVVRIMF9TRUNSRVQpO1xuLy8gICAgIHRyeSB7XG4vLyAgICAgICAgIGNvbnN0IHsgcGF5bG9hZCB9ID0gYXdhaXQgand0VmVyaWZ5KHRva2VuLCBzZWNyZXRLZXkpO1xuLy8gICAgICAgICByZXR1cm4gcGF5bG9hZDtcbi8vICAgICB9IGNhdGNoIChlcnJvcikge1xuLy8gICAgICAgICBjb25zb2xlLmVycm9yKFwiRmFpbGVkIHRvIHZlcmlmeSB0b2tlbjpcIiwgZXJyb3IpO1xuLy8gICAgICAgICByZXR1cm4gbnVsbDtcbi8vICAgICB9XG4vLyB9XG5leHBvcnQgYXN5bmMgZnVuY3Rpb24gR0VUKCkge1xuICBjb25zb2xlLmxvZyhcIm1ldGhhbmEgdGhhbWFpXCIpXG4gIHRyeSB7XG4gICAgLy8gY29uc3QgdG9rZW4gPSBhd2FpdCBhdXRoMC5nZXRBY2Nlc3NUb2tlbigpXG4gICAgLy8gY29uc3QgdG9rZW4gPSBcImV5SmhiR2NpT2lKa2FYSWlMQ0psYm1NaU9pSkJNalUyUjBOTklpd2lhWE56SWpvaWFIUjBjSE02THk5a1pYWXRhVE41ZHpaa05YVnpjV3RyWVhOaU15NTFjeTVoZFhSb01DNWpiMjB2SW4wLi5na1JnZms0N2lhUlYwV2pULl9oSGlPY1haMElYRVhDQ2h5c3BZQVc2dS05VUJFNUpXQ2dGREdUS00zdVF0TkVDSzA1T1lITERwT0NMa2ZQd01xWDItQmpzWHkxbnptN3FfT3JrWGVhSEI0RjRnTFcwOERPYVJERGEtQXNhV05tT2ZxZDRSSzV6R0JLcWJnU2gtQkUwR3V3YS04eC1LZDZucDMwV1VFRTlXdldxSktRX0Z1UFdldDlJR2tGbTBNMGNyRVVfc005UjcwU05BRmxNNFd5N3MwN0huLXhCV3ZqU0RZcVdPUjEzQk9FSjRhRnhYWi0waG5LYlRSVWNRaUVIQXFXZnRmdm9CVTl3c2toQW1PNVhBX1lZZW8tUkNkdnVOaUFvTHlNd2xYeVV1R2I5WFVPVmF4X0poU1RlRHhyamxCMnRkOGF4NWtOLUlRSjRSR2piZUV4SU8wZlJCUlZQUDFyT0tNTG1uLnl2dHRUb2xmaUYtMnhvZE5ncWRGZEFcIjtcbiAgICAvLyBjb25zdCB0b2tlbiA9IGF3YWl0IGF1dGgwLmdldEFjY2Vzc1Rva2VuKCk7XG4gICAgLy8gY29uc29sZS5sb2codG9rZW4pXG4gICAgLy8gaWYgKHRva2VuLmFjY2Vzc1Rva2VuKSB7XG4gICAgLy8gICBjb25zb2xlLmxvZyhhd2FpdCBkZWNyeXB0VG9rZW4odG9rZW4uYWNjZXNzVG9rZW4pKTtcbiAgICAvLyB9IGVsc2Uge1xuICAgIC8vICAgY29uc29sZS5lcnJvcihcIkFjY2VzcyB0b2tlbiBpcyB1bmRlZmluZWRcIik7XG4gICAgLy8gfVxuICAgIC8vIGNvbnNvbGUubG9nKGRlY3J5cHRUb2tlbih0b2tlbi5hY2Nlc3NUb2tlbikpXG4gICAgLy8gY29uc29sZS5sb2codmVyaWZ5VG9rZW4odG9rZW4uYWNjZXNzVG9rZW4pKVxuXG4gIH0gY2F0Y2ggKGVycikge1xuICAgIC8vIGVyciB3aWxsIGJlIGFuIGluc3RhbmNlIG9mIEFjY2Vzc1Rva2VuRXJyb3IgaWYgYW4gYWNjZXNzIHRva2VuIGNvdWxkIG5vdCBiZSBvYnRhaW5lZFxuICB9XG5cbiAgcmV0dXJuIE5leHRSZXNwb25zZS5qc29uKHtcbiAgICBtZXNzYWdlOiBcIlN1Y2Nlc3MhXCIsXG4gIH0pXG59Il0sIm5hbWVzIjpbIk5leHRSZXNwb25zZSIsIkdFVCIsImNvbnNvbGUiLCJsb2ciLCJlcnIiLCJqc29uIiwibWVzc2FnZSJdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///(rsc)/./app/api/test/route.ts\n");
 
 /***/ })
 
@@ -250,7 +60,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 var __webpack_require__ = require("../../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, ["vendor-chunks/next","vendor-chunks/@auth0","vendor-chunks/tslib","vendor-chunks/openid-client","vendor-chunks/joi","vendor-chunks/@sideway","vendor-chunks/@hapi","vendor-chunks/debug","vendor-chunks/yallist","vendor-chunks/cookie","vendor-chunks/oidc-token-hash","vendor-chunks/@panva","vendor-chunks/ms","vendor-chunks/supports-color","vendor-chunks/url-join","vendor-chunks/has-flag","vendor-chunks/jose"], () => (__webpack_exec__("(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Ftest%2Froute&page=%2Fapi%2Ftest%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Ftest%2Froute.ts&appDir=%2FUsers%2Fshakir%2FDesktop%2FConcolabs%2Fmb-frontend%2Fmasterbuilders-frontend%2Fapp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=%2FUsers%2Fshakir%2FDesktop%2FConcolabs%2Fmb-frontend%2Fmasterbuilders-frontend&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D!")));
+var __webpack_exports__ = __webpack_require__.X(0, ["vendor-chunks/next"], () => (__webpack_exec__("(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fapi%2Ftest%2Froute&page=%2Fapi%2Ftest%2Froute&appPaths=&pagePath=private-next-app-dir%2Fapi%2Ftest%2Froute.ts&appDir=%2FUsers%2Fshakir%2FDesktop%2FConcolabs%2Fmb-frontend%2Fmasterbuilders-frontend%2Fapp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=%2FUsers%2Fshakir%2FDesktop%2FConcolabs%2Fmb-frontend%2Fmasterbuilders-frontend&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D!")));
 module.exports = __webpack_exports__;
 
 })();
