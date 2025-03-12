@@ -106,6 +106,11 @@ export default function Home() {
                       View Catalogue
                     </Button>
                   </Link>
+                  <Link href="/supplier/">
+                    <Button size="lg" className="w-full min-[400px]:w-auto">
+                      Search Suppliers
+                    </Button>
+                  </Link>
                   <Link href="#about">
                   <Button size="lg" variant="outline" className="w-full text-black min-[400px]:w-auto">
                     Learn More
