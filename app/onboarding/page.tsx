@@ -1,25 +1,45 @@
+
 // "use client"
 
 // import type React from "react"
-// import { useState } from "react"
+// import { useState, useEffect } from "react"
 // import { useRouter } from "next/navigation"
 // import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client"
 // import { Button } from "@/components/ui/button"
-// import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+// import {
+//   Card,
+//   CardContent,
+//   CardDescription,
+//   CardFooter,
+//   CardHeader,
+//   CardTitle,
+// } from "@/components/ui/card"
 // import { Input } from "@/components/ui/input"
 // import { Label } from "@/components/ui/label"
 // import { Textarea } from "@/components/ui/textarea"
 // import { Progress } from "@/components/ui/progress"
 // import { ImageUpload } from "@/components/image-upload"
 // import { Check, ChevronRight, MapPin } from "lucide-react"
-
+// import { createSupplier, getSupplierByPID, Supplier } from "../api" // adjust this import as necessary
+// import dynamic from "next/dynamic"
+// const DynamicMapPicker = dynamic(() => import("@/components/MapPicker"), { ssr: false })
 // function SupplierOnboarding() {
 //   const router = useRouter()
 //   const [step, setStep] = useState(1)
 //   const totalSteps = 5
 //   const progress = (step / totalSteps) * 100
-//   const {user, error, isLoading} = useUser();
+//   const { user, error, isLoading } = useUser()
 //   console.log(user)
+//   useEffect(() => {
+//     if (!user?.sub) return
+//     getSupplierByPID(user.sub).then((existing: Supplier | undefined) => {
+//       if (existing) {
+//         router.push("/supplier/dashboard")
+//       }
+//     }).catch((err) => {
+//       console.error("Failed checking supplier by PID:", err)
+//     })
+//   }, [user?.sub, router])
 //   const [formData, setFormData] = useState({
 //     name: "",
 //     email: "",
@@ -51,20 +71,42 @@
 
 //   const handleSubmit = async (e: React.FormEvent) => {
 //     e.preventDefault()
-//     // Here you would typically send the data to your API
-    
 //     console.log("Form submitted:", formData)
 
-//     // Redirect to success page or dashboard
-//     router.push("/onboarding/success")
+//     // Build supplier payload matching the API expectations.
+//     const supplierPayload = {
+//       email: formData.email,
+//       pid: user?.sub || "", // using Auth0 user sub as supplier PID
+//       business_name: formData.name,
+//       business_description: formData.description,
+//       telephone: formData.telephone,
+//       email_given: formData.email, // adjust if needed
+//       address: formData.address,
+//       location: {
+//         latitude: parseFloat(formData.location.lat),
+//         longitude: parseFloat(formData.location.lng),
+//       },
+//       profile_pic_url: formData.profileImage,
+//       cover_pic_url: formData.coverImage,
+//     }
+//     console.log("Supplier payload:", supplierPayload)
+//     try {
+//       const createdSupplier = await createSupplier(supplierPayload)
+//       console.log("Supplier created:", createdSupplier)
+//       router.push("/onboarding/success")
+//     } catch (err) {
+//       console.error("Failed to create supplier", err)
+//       // Optionally add error handling UI here.
+//     }
 //   }
-// // In a client component (e.g., within your ImageUpload component)
 
 //   return (
 //     <div className="container max-w-3xl py-10">
 //       <div className="mb-8 space-y-4">
 //         <h1 className="text-3xl font-bold">Supplier Onboarding</h1>
-//         <p className="text-muted-foreground">Complete your profile to join our network of trusted suppliers.</p>
+//         <p className="text-muted-foreground">
+//           Complete your profile to join our network of trusted suppliers.
+//         </p>
 //       </div>
 
 //       <div className="mb-8">
@@ -72,7 +114,9 @@
 //           <span className="text-sm font-medium">
 //             Step {step} of {totalSteps}
 //           </span>
-//           <span className="text-sm font-medium">{Math.round(progress)}% Complete</span>
+//           <span className="text-sm font-medium">
+//             {Math.round(progress)}% Complete
+//           </span>
 //         </div>
 //         <Progress value={progress} className="h-2" />
 //       </div>
@@ -110,9 +154,11 @@
 //                   <Label htmlFor="description">Business Description</Label>
 //                   <Textarea
 //                     id="description"
-//                     placeholder="Tell us about your business and the products/services you offer"
+//                     placeholder="Tell us about your business and the products"
 //                     value={formData.description}
-//                     onChange={(e) => updateFormData("description", e.target.value)}
+//                     onChange={(e) =>
+//                       updateFormData("description", e.target.value)
+//                     }
 //                     className="min-h-[120px]"
 //                   />
 //                 </div>
@@ -139,7 +185,9 @@
 //                     type="tel"
 //                     placeholder="Your contact number"
 //                     value={formData.telephone}
-//                     onChange={(e) => updateFormData("telephone", e.target.value)}
+//                     onChange={(e) =>
+//                       updateFormData("telephone", e.target.value)
+//                     }
 //                     required
 //                   />
 //                 </div>
@@ -168,7 +216,10 @@
 //                       onChange={(e) =>
 //                         setFormData({
 //                           ...formData,
-//                           location: { ...formData.location, lat: e.target.value },
+//                           location: {
+//                             ...formData.location,
+//                             lat: e.target.value,
+//                           },
 //                         })
 //                       }
 //                     />
@@ -182,7 +233,10 @@
 //                       onChange={(e) =>
 //                         setFormData({
 //                           ...formData,
-//                           location: { ...formData.location, lng: e.target.value },
+//                           location: {
+//                             ...formData.location,
+//                             lng: e.target.value,
+//                           },
 //                         })
 //                       }
 //                     />
@@ -192,8 +246,11 @@
 //                   <div className="text-center">
 //                     <MapPin className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
 //                     <p className="text-sm text-muted-foreground">
-//                       Map integration will be available soon. For now, please enter your coordinates manually.
-//                     </p>
+//   To find your coordinates: <br/>
+//   1) Open Google Maps and navigate to your address.<br/>
+//   2) Right-click the location and select “What’s here?”<br/>
+//   3) Copy the latitude and longitude shown.
+// </p>
 //                   </div>
 //                 </div>
 //               </div>
@@ -215,7 +272,10 @@
 //                   <Label>Cover Image</Label>
 //                   <ImageUpload
 //                     value={formData.coverImage}
-//                     onChange={(url) => {updateFormData("coverImage", url); console.log("efwfege",url)}}
+//                     onChange={(url) => {
+//                       updateFormData("coverImage", url)
+//                       console.log("cover image url:", url)
+//                     }}
 //                     label="Upload cover image"
 //                     description="This will be displayed at the top of your supplier profile"
 //                     imageClassName="w-full h-40 object-cover rounded-md"
@@ -248,7 +308,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client"
 import { Button } from "@/components/ui/button"
@@ -266,15 +326,31 @@ import { Textarea } from "@/components/ui/textarea"
 import { Progress } from "@/components/ui/progress"
 import { ImageUpload } from "@/components/image-upload"
 import { Check, ChevronRight, MapPin } from "lucide-react"
-import { createSupplier } from "../api" // adjust this import as necessary
+import { createSupplier, getSupplierByPID, Supplier, getSupplierByPPID } from "../api"
+import dynamic from "next/dynamic"
+
+const DynamicMapPicker = dynamic(() => import("@/components/MapPicker"), { ssr: false })
 
 function SupplierOnboarding() {
   const router = useRouter()
   const [step, setStep] = useState(1)
   const totalSteps = 5
   const progress = (step / totalSteps) * 100
-  const { user, error, isLoading } = useUser()
-  console.log(user)
+  const { user } = useUser()
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false)
+  useEffect(() => {
+    if (!user?.sub) return
+    getSupplierByPPID(user.sub)
+    .then((existing: Supplier | undefined) => {
+      if (existing) setAlreadyRegistered(true)
+    })
+    .catch((err) => console.error("Failed checking supplier by PID:", err))
+    getSupplierByPID(user.sub)
+      .then((existing: Supplier | undefined) => {
+        if (existing) router.push("/supplier/dashboard")
+      })
+      .catch((err) => console.error("Failed checking supplier by PID:", err))
+  }, [user?.sub, router])
 
   const [formData, setFormData] = useState({
     name: "",
@@ -286,15 +362,48 @@ function SupplierOnboarding() {
     coverImage: "",
     description: "",
   })
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const updateFormData = (field: string, value: string) => {
+  const updateFormData = (field: string, value: string) =>
     setFormData({ ...formData, [field]: value })
+
+  const validateStep = () => {
+    const newErrors: Record<string, string> = {}
+    if (step === 1) {
+      if (!formData.name) newErrors.name = "Business name is required"
+      if (!formData.description || formData.description.length < 20) {
+        newErrors.description = "Description must be at least 20 characters"
+      }
+    }
+    if (step === 2) {
+      if (!formData.email) newErrors.email = "Email is required"
+      else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+        newErrors.email = "Invalid email format"
+      }
+      if (!formData.telephone) newErrors.telephone = "Telephone is required"
+      else if (!/^(0\d{9}|\+\d{2}\d{9})$/.test(formData.telephone)) {
+        newErrors.telephone = "Invalid telephone number"}
+    }
+    if (step === 3) {
+      if (!formData.address) newErrors.address = "Address is required"
+      if (!formData.location.lat || !formData.location.lng) {
+        newErrors.location = "Coordinates are required"
+      }
+    }
+    if (step === 4) {
+      if (!formData.profileImage) newErrors.profileImage = "Profile image is required"
+      if (!formData.coverImage) newErrors.coverImage = "Cover image is required"
+    }
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
   }
 
   const handleNext = () => {
-    if (step < totalSteps) {
-      setStep(step + 1)
-      window.scrollTo(0, 0)
+    if (validateStep()) {
+      if (step < totalSteps) {
+        setStep(step + 1)
+        window.scrollTo(0, 0)
+      }
     }
   }
 
@@ -307,16 +416,16 @@ function SupplierOnboarding() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Form submitted:", formData)
+    // final validation
+    if (!validateStep()) return
 
-    // Build supplier payload matching the API expectations.
     const supplierPayload = {
       email: formData.email,
-      pid: user?.sub || "", // using Auth0 user sub as supplier PID
+      pid: user?.sub || "",
       business_name: formData.name,
       business_description: formData.description,
       telephone: formData.telephone,
-      email_given: formData.email, // adjust if needed
+      email_given: formData.email,
       address: formData.address,
       location: {
         latitude: parseFloat(formData.location.lat),
@@ -325,17 +434,23 @@ function SupplierOnboarding() {
       profile_pic_url: formData.profileImage,
       cover_pic_url: formData.coverImage,
     }
-    console.log("Supplier payload:", supplierPayload)
     try {
-      const createdSupplier = await createSupplier(supplierPayload)
-      console.log("Supplier created:", createdSupplier)
+      await createSupplier(supplierPayload)
       router.push("/onboarding/success")
     } catch (err) {
       console.error("Failed to create supplier", err)
-      // Optionally add error handling UI here.
     }
   }
-
+  if (alreadyRegistered) {
+    return (
+      <div className="container max-w-3xl py-10 text-center">
+        <h1 className="text-2xl font-bold mb-4">You’re already registered!</h1>
+        <p className="text-muted-foreground mb-8">
+          The dashboard will be available soon after approval.
+        </p>
+      </div>
+    )
+  }
   return (
     <div className="container max-w-3xl py-10">
       <div className="mb-8 space-y-4">
@@ -350,9 +465,7 @@ function SupplierOnboarding() {
           <span className="text-sm font-medium">
             Step {step} of {totalSteps}
           </span>
-          <span className="text-sm font-medium">
-            {Math.round(progress)}% Complete
-          </span>
+          <span className="text-sm font-medium">{Math.round(progress)}% Complete</span>
         </div>
         <Progress value={progress} className="h-2" />
       </div>
@@ -383,20 +496,21 @@ function SupplierOnboarding() {
                     placeholder="Your business name"
                     value={formData.name}
                     onChange={(e) => updateFormData("name", e.target.value)}
-                    required
                   />
+                  {errors.name && <p className="text-red-500">{errors.name}</p>}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="description">Business Description</Label>
                   <Textarea
                     id="description"
-                    placeholder="Tell us about your business and the products/services you offer"
+                    placeholder="Tell us about your business and the products"
                     value={formData.description}
-                    onChange={(e) =>
-                      updateFormData("description", e.target.value)
-                    }
+                    onChange={(e) => updateFormData("description", e.target.value)}
                     className="min-h-[120px]"
                   />
+                  {errors.description && (
+                    <p className="text-red-500">{errors.description}</p>
+                  )}
                 </div>
               </div>
             )}
@@ -411,8 +525,8 @@ function SupplierOnboarding() {
                     placeholder="your@email.com"
                     value={formData.email}
                     onChange={(e) => updateFormData("email", e.target.value)}
-                    required
                   />
+                  {errors.email && <p className="text-red-500">{errors.email}</p>}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="telephone">Telephone Number</Label>
@@ -421,11 +535,11 @@ function SupplierOnboarding() {
                     type="tel"
                     placeholder="Your contact number"
                     value={formData.telephone}
-                    onChange={(e) =>
-                      updateFormData("telephone", e.target.value)
-                    }
-                    required
+                    onChange={(e) => updateFormData("telephone", e.target.value)}
                   />
+                  {errors.telephone && (
+                    <p className="text-red-500">{errors.telephone}</p>
+                  )}
                 </div>
               </div>
             )}
@@ -439,8 +553,10 @@ function SupplierOnboarding() {
                     placeholder="Your business address"
                     value={formData.address}
                     onChange={(e) => updateFormData("address", e.target.value)}
-                    required
                   />
+                  {errors.address && (
+                    <p className="text-red-500">{errors.address}</p>
+                  )}
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -450,13 +566,10 @@ function SupplierOnboarding() {
                       placeholder="e.g. 6.9271"
                       value={formData.location.lat}
                       onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          location: {
-                            ...formData.location,
-                            lat: e.target.value,
-                          },
-                        })
+                        setFormData((prev) => ({
+                          ...prev,
+                          location: { ...prev.location, lat: e.target.value },
+                        }))
                       }
                     />
                   </div>
@@ -467,23 +580,25 @@ function SupplierOnboarding() {
                       placeholder="e.g. 79.8612"
                       value={formData.location.lng}
                       onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          location: {
-                            ...formData.location,
-                            lng: e.target.value,
-                          },
-                        })
+                        setFormData((prev) => ({
+                          ...prev,
+                          location: { ...prev.location, lng: e.target.value },
+                        }))
                       }
                     />
                   </div>
                 </div>
+                {errors.location && (
+                  <p className="text-red-500">{errors.location}</p>
+                )}
                 <div className="flex items-center justify-center p-4 border rounded-md border-dashed">
                   <div className="text-center">
                     <MapPin className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
                     <p className="text-sm text-muted-foreground">
-                      Map integration will be available soon. For now, please
-                      enter your coordinates manually.
+                      To find your coordinates: <br />
+                      1) Open Google Maps and navigate to your address.<br />
+                      2) Right-click the location and select “What’s here?”<br />
+                      3) Copy the latitude and longitude shown.
                     </p>
                   </div>
                 </div>
@@ -501,19 +616,22 @@ function SupplierOnboarding() {
                     description="This will be displayed on your supplier profile"
                     imageClassName="w-32 h-32 rounded-full object-cover"
                   />
+                        {errors.profileImage && (
+                    <p className="text-red-500">{errors.profileImage}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label>Cover Image</Label>
                   <ImageUpload
                     value={formData.coverImage}
-                    onChange={(url) => {
-                      updateFormData("coverImage", url)
-                      console.log("cover image url:", url)
-                    }}
+                    onChange={(url) => updateFormData("coverImage", url)}
                     label="Upload cover image"
                     description="This will be displayed at the top of your supplier profile"
                     imageClassName="w-full h-40 object-cover rounded-md"
                   />
+                        {errors.coverImage  && (
+                    <p className="text-red-500">{errors.coverImage}</p>
+                  )}
                 </div>
               </div>
             )}

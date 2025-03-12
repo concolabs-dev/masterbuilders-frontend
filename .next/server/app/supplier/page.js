@@ -12,7 +12,7 @@ exports.id = "app/supplier/page";
 exports.ids = ["app/supplier/page"];
 exports.modules = {
 
-/***/ "../../client/components/action-async-storage.external":
+/***/ "./action-async-storage.external":
 /*!*******************************************************************************!*\
   !*** external "next/dist/client/components/action-async-storage.external.js" ***!
   \*******************************************************************************/
@@ -23,7 +23,7 @@ module.exports = require("next/dist/client/components/action-async-storage.exter
 
 /***/ }),
 
-/***/ "../../client/components/request-async-storage.external":
+/***/ "./request-async-storage.external":
 /*!********************************************************************************!*\
   !*** external "next/dist/client/components/request-async-storage.external.js" ***!
   \********************************************************************************/
@@ -34,7 +34,7 @@ module.exports = require("next/dist/client/components/request-async-storage.exte
 
 /***/ }),
 
-/***/ "../../client/components/static-generation-async-storage.external":
+/***/ "./static-generation-async-storage.external":
 /*!******************************************************************************************!*\
   !*** external "next/dist/client/components/static-generation-async-storage.external.js" ***!
   \******************************************************************************************/
@@ -459,7 +459,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 var __webpack_require__ = require("../../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, ["vendor-chunks/next","vendor-chunks/@auth0","vendor-chunks/openid-client","vendor-chunks/joi","vendor-chunks/mime-db","vendor-chunks/axios","vendor-chunks/tailwind-merge","vendor-chunks/@radix-ui","vendor-chunks/@sideway","vendor-chunks/@hapi","vendor-chunks/follow-redirects","vendor-chunks/debug","vendor-chunks/tslib","vendor-chunks/lucide-react","vendor-chunks/form-data","vendor-chunks/yallist","vendor-chunks/asynckit","vendor-chunks/cookie","vendor-chunks/combined-stream","vendor-chunks/mime-types","vendor-chunks/oidc-token-hash","vendor-chunks/proxy-from-env","vendor-chunks/@panva","vendor-chunks/class-variance-authority","vendor-chunks/ms","vendor-chunks/supports-color","vendor-chunks/url-join","vendor-chunks/delayed-stream","vendor-chunks/@swc","vendor-chunks/clsx","vendor-chunks/has-flag"], () => (__webpack_exec__("(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fsupplier%2Fpage&page=%2Fsupplier%2Fpage&appPaths=%2Fsupplier%2Fpage&pagePath=private-next-app-dir%2Fsupplier%2Fpage.tsx&appDir=%2FUsers%2Fshakir%2FDesktop%2FConcolabs%2Fmb-frontend%2Fmasterbuilders-frontend%2Fapp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=%2FUsers%2Fshakir%2FDesktop%2FConcolabs%2Fmb-frontend%2Fmasterbuilders-frontend&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D!")));
+var __webpack_exports__ = __webpack_require__.X(0, ["vendor-chunks/next","vendor-chunks/@swc","vendor-chunks/@auth0","vendor-chunks/openid-client","vendor-chunks/joi","vendor-chunks/mime-db","vendor-chunks/axios","vendor-chunks/tailwind-merge","vendor-chunks/@radix-ui","vendor-chunks/@sideway","vendor-chunks/@hapi","vendor-chunks/follow-redirects","vendor-chunks/debug","vendor-chunks/tslib","vendor-chunks/lucide-react","vendor-chunks/form-data","vendor-chunks/yallist","vendor-chunks/asynckit","vendor-chunks/cookie","vendor-chunks/combined-stream","vendor-chunks/mime-types","vendor-chunks/oidc-token-hash","vendor-chunks/proxy-from-env","vendor-chunks/@panva","vendor-chunks/class-variance-authority","vendor-chunks/ms","vendor-chunks/supports-color","vendor-chunks/url-join","vendor-chunks/delayed-stream","vendor-chunks/clsx","vendor-chunks/has-flag"], () => (__webpack_exec__("(rsc)/./node_modules/next/dist/build/webpack/loaders/next-app-loader.js?name=app%2Fsupplier%2Fpage&page=%2Fsupplier%2Fpage&appPaths=%2Fsupplier%2Fpage&pagePath=private-next-app-dir%2Fsupplier%2Fpage.tsx&appDir=%2FUsers%2Fshakir%2FDesktop%2FConcolabs%2Fmb-frontend%2Fmasterbuilders-frontend%2Fapp&pageExtensions=tsx&pageExtensions=ts&pageExtensions=jsx&pageExtensions=js&rootDir=%2FUsers%2Fshakir%2FDesktop%2FConcolabs%2Fmb-frontend%2Fmasterbuilders-frontend&isDev=true&tsconfigPath=tsconfig.json&basePath=&assetPrefix=&nextConfigOutput=&preferredRegion=&middlewareConfig=e30%3D!")));
 module.exports = __webpack_exports__;
 
 })();

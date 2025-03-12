@@ -108,6 +108,7 @@ import { SupplierItemCard } from "@/components/supplier-item-card"
 import { SupplierItemList } from "@/components/supplier-item-list"
 import { getSupplierByPID, getItemsBySupplier, getTypes } from "@/app/api"
 import type { Supplier, Item, Category } from "@/app/api"
+import { getExchangeRates } from "@/app/api"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Grid, List, Plus } from "lucide-react"
@@ -123,7 +124,22 @@ export default function PublicSupplierPage() {
   const [selectedType, setSelectedType] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("")
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null)
-
+  const [selectedCurrency, setSelectedCurrency] = useState("LKR")
+  const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({})
+  
+  useEffect(() => {
+    async function fetchRates() {
+      try {
+        const rates = await getExchangeRates()
+        setExchangeRates(rates)
+      } catch (err) {
+        console.error("Failed to fetch exchange rates:", err)
+      }
+    }
+    fetchRates()
+  }, [])
+  const conversionRate =
+    selectedCurrency === "LKR" ? 1 : (exchangeRates[selectedCurrency] || 1)
   // Fetch supplier info
   useEffect(() => {
     if (supplierId) {
@@ -185,7 +201,10 @@ export default function PublicSupplierPage() {
     coverImage: supplier.cover_pic_url,
     description: supplier.business_description,
   }
-
+  const convertedItems = filteredItems &&filteredItems.map((item) => ({
+    ...item,
+    price: typeof item.price === 'number' ? item.price * conversionRate : item.price,
+  }))
   return (
     <Suspense fallback={<div>Loading...</div>}>
     <div className="container mx-auto py-10">
@@ -202,6 +221,7 @@ export default function PublicSupplierPage() {
           />
         </div>
         <div className="md:w-3/4">
+      
           <div className="flex justify-between items-center mb-4">
             <div className="flex-1 max-w-sm">
               <Input
@@ -210,6 +230,19 @@ export default function PublicSupplierPage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
+            <div>
+      <label>Currency:</label>
+      <select
+        value={selectedCurrency}
+        onChange={(e) => setSelectedCurrency(e.target.value)}
+      >
+        <option value="LKR">LKR</option>
+        {Object.keys(exchangeRates).map((c) => (
+          <option key={c} value={c}>{c}</option>
+        ))}
+      </select>
+      {/* ...render items with price * getConversionRate() */}
+    </div>
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
@@ -231,23 +264,27 @@ export default function PublicSupplierPage() {
           </div>
           {viewMode === "grid" ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {filteredItems && filteredItems.map((item) => (
+              {filteredItems && convertedItems.map((item) => (
                 <SupplierItemCard
                   key={item.id}
                   item={item}
                   onEdit={() => console.log(`Edit item ${item.id}`)}
                   onDelete={() => console.log(`Delete item ${item.id}`)}
                   admin={false}
+                  displayCurrency={selectedCurrency}
                 />
               ))}
             </div>
           ) : (
+            filteredItems && 
             <SupplierItemList
-              items={filteredItems}
-              onEdit={(id) => console.log(`Edit item ${id}`)}
-              onDelete={(id) => console.log(`Delete item ${id}`)}
-              admin={false}
-            />
+            items={convertedItems}
+            onEdit={(id) => console.log(`Edit item ${id}`)}
+            onDelete={(id) => console.log(`Delete item ${id}`)}
+            admin={false}
+            displayCurrency={selectedCurrency}
+          />
+            
           )}
         </div>
       </div>

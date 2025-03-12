@@ -351,12 +351,23 @@ export default function Catalogue() {
             <div className="mt-4">
             <h2 className="text-lg font-semibold">Items</h2>
             <div className="h-64 overflow-auto">
-              <SupplierItemList
-                items={materialItems}
-                onEdit={() => {}}
-                onDelete={() => {}}
-                admin={false}
-              />
+            <SupplierItemList
+  items={materialItems.map((item) => {
+    const conversionRate = selectedCurrency === "LKR"
+      ? 1
+      : (exchangeRates[selectedCurrency] || 1)
+    const convertedPrice = item.price * conversionRate
+
+    return {
+      ...item,
+      price: convertedPrice,     // overwrite price with converted
+    }
+  })}
+  onEdit={() => {}}
+  onDelete={() => {}}
+  admin={false}
+  displayCurrency={selectedCurrency}
+/>
             </div>
           </div>
           )}

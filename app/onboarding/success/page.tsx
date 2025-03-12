@@ -20,7 +20,7 @@ export default function SuccessPage() {
           </p>
         </CardContent>
         <CardFooter className="flex justify-center">
-          <Link href="/supplier">
+          <Link href="/supplier/dashboard/">
             <Button>Go to Profile</Button>
           </Link>
         </CardFooter>

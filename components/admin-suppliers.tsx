@@ -143,7 +143,7 @@ function AdminSuppliersTab() {
               <div className="mt-6">
                 <h3 className="text-lg font-semibold">Items</h3>
                 {supplierItems && 
-                <SupplierItemList items={supplierItems} onEdit={() => {}} onDelete={() => {}} admin={false} />}
+                <SupplierItemList items={supplierItems} onEdit={() => {}} onDelete={() => {}} admin={false} displayCurrency="Rs." />}
               </div>
             </>
           )}

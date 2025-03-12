@@ -25,6 +25,7 @@ import { SupplierItemCard } from "@/components/supplier-item-card"
 import { SupplierItemList } from "@/components/supplier-item-list"
 import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client"
 import {
+  getSupplierByPPID,
   getSupplierByEmail,
   getItemsBySupplier,
   createItem,
@@ -32,6 +33,7 @@ import {
   deleteItem,
   getTypes,
   getMaterialsByCategory,
+  getSupplierByPID,
 } from "@/app/api"
 import { Supplier, Item, Material, Category } from "@/app/api"
 import { ImageUpload } from "@/components/image-upload" // adjust path as needed
@@ -59,13 +61,22 @@ function SupplierDashboardPage() {
   const [unit, setUnit] = useState("")
   // State for image upload in add item dialog.
   const [addImageUrl, setAddImageUrl] = useState("")
-
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false)
   // Fetch supplier using user's email.
   useEffect(() => {
-    if (user && user.email) {
-      getSupplierByEmail(user.email)
+    if (user && typeof user.sub === 'string') {
+      console.log(user.sub)
+      if (!user?.sub) return
+      getSupplierByPPID(user.sub)
+      .then((existing: Supplier | undefined) => {
+        if (existing) setAlreadyRegistered(true)
+      })
+      .catch((err) => console.error("Failed checking supplier by PID:", err))
+      getSupplierByPID(user.sub)
         .then((data) => {
           setSupplier(data)
+          setAlreadyRegistered(false)
+          console.log("efef")
           setSupplierLoading(false)
         })
         .catch((err) => {
@@ -223,7 +234,16 @@ function SupplierDashboardPage() {
   if (userLoading || supplierLoading) {
     return <div>Loading...</div>
   }
-
+  if (alreadyRegistered) {
+    return (
+      <div className="container max-w-3xl py-10 text-center">
+        <h1 className="text-2xl font-bold mb-4">You’re already registered!</h1>
+        <p className="text-muted-foreground mb-8">
+          The dashboard will be available soon after approval.
+        </p>
+      </div>
+    )
+  }
   if (userError || supplierError) {
     return <div>Error loading supplier data.</div>
   }
@@ -231,7 +251,7 @@ function SupplierDashboardPage() {
   if (!supplier) {
     return <div>No supplier found for {user?.email}.</div>
   }
-
+ 
   return (
     <div className="container mx-auto py-10">
       {supplier && <SupplierProfile supplier={mapSupplierToProfile(supplier)} admin={true} />}
@@ -436,16 +456,18 @@ function SupplierDashboardPage() {
                   item={item}
                   onEdit={() => setSelectedItem(item)}
                   onDelete={() => handleDeleteItem(item.id)}
-                  admin = {true}
+                  admin={true}
+                  displayCurrency="Rs."
                 />
               ))}
             </div>
           ) : (
-            <SupplierItemList
+           filteredItems && <SupplierItemList
               items={filteredItems}
               onEdit={(item) => setSelectedItem(item)}
               onDelete={(id) => handleDeleteItem(id)}
-              admin = {true}
+              admin={true}
+              displayCurrency="Rs."
             />
           )}
           </div></div>

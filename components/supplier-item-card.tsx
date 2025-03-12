@@ -19,13 +19,13 @@ interface SupplierItemCardProps {
   }
   onEdit: () => void
   onDelete: () => void
-  admin : boolean
+  admin: boolean
+  displayCurrency: string
 }
 
-export function SupplierItemCard({ item, onEdit, onDelete , admin}: SupplierItemCardProps) {
-  console.log(item)
+export function SupplierItemCard({ item, onEdit, onDelete, admin, displayCurrency }: SupplierItemCardProps) {
   return (
-    <Card className="overflow-hidden flex flex-col  h-full">
+    <Card className="overflow-hidden flex flex-col h-full">
       <div className="relative h-48 w-full">
         <Image
           src={item.imgUrl || "/placeholder.svg?height=200&width=300"}
@@ -47,28 +47,26 @@ export function SupplierItemCard({ item, onEdit, onDelete , admin}: SupplierItem
         <div className="mt-4 flex justify-between items-center">
           <div>
             <p className="text-sm text-muted-foreground">Price</p>
-            <p className="font-bold">Rs. {item.price.toLocaleString()}</p>
+            <p className="font-bold">{displayCurrency} {item.price.toLocaleString()}</p>
           </div>
           <div className="text-right">
             <p className="text-sm text-muted-foreground">Stock</p>
-            <p className="font-medium">
-              {item.unit}s
-            </p>
+            <p className="font-medium">{item.unit}s</p>
           </div>
         </div>
       </CardContent>
       {admin && (
-      <CardFooter className="border-t pt-4 flex justify-between">
-        <Button variant="outline" size="sm" onClick={onEdit}>
-          <Pencil className="h-4 w-4 mr-2" />
-          Edit
-        </Button>
-        <Button variant="outline" size="sm" className="text-destructive hover:text-destructive" onClick={onDelete}>
-          <Trash2 className="h-4 w-4 mr-2" />
-          Delete
-        </Button>
-      </CardFooter>)}
+        <CardFooter className="border-t pt-4 flex justify-between">
+          <Button variant="outline" size="sm" onClick={onEdit}>
+            <Pencil className="h-4 w-4 mr-2" />
+            Edit
+          </Button>
+          <Button variant="outline" size="sm" className="text-destructive hover:text-destructive" onClick={onDelete}>
+            <Trash2 className="h-4 w-4 mr-2" />
+            Delete
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   )
 }
-
