@@ -1,7 +1,7 @@
 {
-  "/catalogue/page": "app/catalogue/page.js",
   "/page": "app/page.js",
-  "/supplier/[supplierId]/page": "app/supplier/[supplierId]/page.js",
+  "/catalogue/page": "app/catalogue/page.js",
   "/supplier/dashboard/page": "app/supplier/dashboard/page.js",
+  "/supplier/[supplierId]/page": "app/supplier/[supplierId]/page.js",
   "/admin/page": "app/admin/page.js"
 }

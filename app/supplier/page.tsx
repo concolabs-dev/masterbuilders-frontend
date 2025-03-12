@@ -65,10 +65,10 @@ function SuppliersPage() {
 
   return (
     <>
-        <Head>
+        {/* <Head>
         <title>Suppliers</title>
         <meta name="description" content="List of all the suppliers of the construction materials in Sri Lanka" />
-      </Head>
+      </Head> */}
     <div className="container mx-auto py-8 px-4">
       <div className="text-sm text-muted-foreground mb-8">
         <Link href="/" className="hover:text-foreground">

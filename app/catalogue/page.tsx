@@ -147,10 +147,11 @@ export default function Catalogue() {
   }
 
   return (
-    <>     <Head>
+    <>
+         {/* <Head>
     <title>Catalogue</title>
     <meta name="description" content="This is a catalogue of all the construction material items by various suppliers. Price vatriation by with the timeline and the currency conversion ability is also there. " />
-  </Head>
+  </Head> */}
     <div className="container mx-auto px-4 py-8">
       <Button className="md:hidden bg-slate-900 mb-4" onClick={() => setShowSidebar(!showSidebar)}>
         <Menu className="h-6 w-6" />
