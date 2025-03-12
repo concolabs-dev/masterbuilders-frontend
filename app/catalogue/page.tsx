@@ -11,6 +11,14 @@ import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { ChevronDown, ChevronRight, Menu } from "lucide-react"
 import { Item, getItemsByMaterialID } from "@/app/api"
 import { SupplierItemList } from "@/components/supplier-item-list"
+import { Head } from "next/document"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 interface Material {
 
   id: string
@@ -139,6 +147,10 @@ export default function Catalogue() {
   }
 
   return (
+    <>     <Head>
+    <title>Catalogue</title>
+    <meta name="description" content="This is a catalogue of all the construction material items by various suppliers. Price vatriation by with the timeline and the currency conversion ability is also there. " />
+  </Head>
     <div className="container mx-auto px-4 py-8">
       <Button className="md:hidden bg-slate-900 mb-4" onClick={() => setShowSidebar(!showSidebar)}>
         <Menu className="h-6 w-6" />
@@ -146,11 +158,25 @@ export default function Catalogue() {
       </Button>
 
       {/* Currency selection dropdown */}
+
       <div className="mb-4 flex items-center gap-2">
-        <label htmlFor="currency" className="font-medium">
+        {/* <label htmlFor="currency" className="font-medium">
           Currency:
-        </label>
-        <select
+        </label> */}
+        <Select onValueChange={(value) => setSelectedCurrency(value)}>
+  <SelectTrigger className="w-[180px]">
+    <SelectValue placeholder="Select Currency" />
+  </SelectTrigger>
+  <SelectContent>
+  {Object.keys(exchangeRates).map((currency) => (
+            <SelectItem key={currency} value={currency}>
+              {currency}
+            </SelectItem>
+          ))}
+
+  </SelectContent>
+</Select>
+        {/* <select
           id="currency"
           value={selectedCurrency}
           onChange={(e) => setSelectedCurrency(e.target.value)}
@@ -162,7 +188,7 @@ export default function Catalogue() {
               {currency}
             </option>
           ))}
-        </select>
+        </select> */}
       </div>
 
       <div className="grid gap-6 md:grid-cols-[400px_1fr]">
@@ -375,6 +401,6 @@ export default function Catalogue() {
           )}
         </DialogContent>
       </Dialog>
-    </div>
+    </div></>
   )
 }

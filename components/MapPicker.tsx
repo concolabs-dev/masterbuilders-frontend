@@ -1,29 +1,31 @@
-// MapPicker.tsx
-"use client"
-import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet"
-import "leaflet/dist/leaflet.css"
-export default function MapPicker({ lat, lng, onMapClick }: {
-  lat: number
-  lng: number
-  onMapClick: (lat: number, lng: number) => void
-}) {
-  function MapEventHandler() {
-    useMapEvents({
-      click(e) {
-        onMapClick(e.latlng.lat, e.latlng.lng)
-      },
-    })
-    return null
-  }
+// "use client"
+// import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
+// import type { LatLngExpression, LatLngTuple } from "leaflet"
+// import "leaflet/dist/leaflet.css"
+// import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css"
+// import "leaflet-defaulticon-compatibility"
 
-  return (
-    <MapContainer center={[51.505, -0.09]} zoom={7} >
-    <TileLayer
-      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-    />
-      <MapEventHandler />
-      <Marker position={[51.505, -0.09]} />
-    </MapContainer>
-  )
-}
+// interface MapProps {
+//   posix: LatLngExpression | LatLngTuple
+//   zoom?: number
+// }
+// const defaults = { zoom: 15 }
+
+// export default function Map({ posix, zoom = defaults.zoom }: MapProps) {
+//   return (
+//     <MapContainer
+//       center={posix}
+//       zoom={zoom}
+//       scrollWheelZoom={false}
+//       style={{ height: "100%", width: "100%" }}
+//     >
+//       <TileLayer
+//         attribution='&copy; OpenStreetMap contributors'
+//         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+//       />
+//       <Marker position={posix}>
+//         <Popup>Custom popup text</Popup>
+//       </Marker>
+//     </MapContainer>
+//   )
+// }

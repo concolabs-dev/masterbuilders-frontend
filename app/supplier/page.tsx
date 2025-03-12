@@ -6,6 +6,7 @@ import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search } from "lucide-react"
+import Head from 'next/head';
 import { getSuppliers, Supplier } from "@/app/api"
 import { Suspense } from "react"
 export default function Page() {
@@ -63,7 +64,11 @@ function SuppliersPage() {
   }
 
   return (
-    
+    <>
+        <Head>
+        <title>Suppliers</title>
+        <meta name="description" content="List of all the suppliers of the construction materials in Sri Lanka" />
+      </Head>
     <div className="container mx-auto py-8 px-4">
       <div className="text-sm text-muted-foreground mb-8">
         <Link href="/" className="hover:text-foreground">
@@ -129,6 +134,6 @@ function SuppliersPage() {
           </div>
         )}
       </div>
-    </div>
+    </div></>
   )
 }

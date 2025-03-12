@@ -37,6 +37,13 @@ import {
 } from "@/app/api"
 import { Supplier, Item, Material, Category } from "@/app/api"
 import { ImageUpload } from "@/components/image-upload" // adjust path as needed
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 function SupplierDashboardPage() {
   const { user, error: userError, isLoading: userLoading } = useUser()

@@ -327,9 +327,9 @@ import { Progress } from "@/components/ui/progress"
 import { ImageUpload } from "@/components/image-upload"
 import { Check, ChevronRight, MapPin } from "lucide-react"
 import { createSupplier, getSupplierByPID, Supplier, getSupplierByPPID } from "../api"
-import dynamic from "next/dynamic"
+// import dynamic from "next/dynamic"
 
-const DynamicMapPicker = dynamic(() => import("@/components/MapPicker"), { ssr: false })
+// const DynamicMapPicker = dynamic(() => import("@/components/MapPicker"), { ssr: false })
 
 function SupplierOnboarding() {
   const router = useRouter()

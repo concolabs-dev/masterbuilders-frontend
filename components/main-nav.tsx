@@ -24,12 +24,12 @@ export function MainNav() {
     <div className="mr-4 hidden md:flex">
      <Link href="/" className="mr-6 flex items-center space-x-2">
         <Image
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-FeUk0YmcJxiCmhBMqX8oqDjkv3GDb6.png"
+          src="/images/logobm.png"
           alt="Master Builders Logo"
           width={40}
           height={40}
         />
-        <span className="hidden font-bold sm:inline-block">Master Builders</span>
+        <span className="hidden font-bold sm:inline-block">BuildMastersLk</span>
       </Link>
       <nav className="flex items-center space-x-6 text-sm font-medium">
         <Link href="/" className="transition-colors hover:text-foreground/80 text-foreground">

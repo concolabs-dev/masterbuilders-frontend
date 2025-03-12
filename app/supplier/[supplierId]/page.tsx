@@ -112,6 +112,13 @@ import { getExchangeRates } from "@/app/api"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Grid, List, Plus } from "lucide-react"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select"
 import CategorySidebar from "@/components/categorySidebar"
 import { Suspense } from "react"
 export default function PublicSupplierPage() {
@@ -231,16 +238,19 @@ export default function PublicSupplierPage() {
               />
             </div>
             <div>
-      <label>Currency:</label>
-      <select
-        value={selectedCurrency}
-        onChange={(e) => setSelectedCurrency(e.target.value)}
-      >
-        <option value="LKR">LKR</option>
-        {Object.keys(exchangeRates).map((c) => (
-          <option key={c} value={c}>{c}</option>
-        ))}
-      </select>
+            <Select onValueChange={(value) => setSelectedCurrency(value)}>
+  <SelectTrigger className="w-[180px]">
+    <SelectValue placeholder="Select Currency" />
+  </SelectTrigger>
+  <SelectContent>
+  {Object.keys(exchangeRates).map((currency) => (
+            <SelectItem key={currency} value={currency}>
+              {currency}
+            </SelectItem>
+          ))}
+
+  </SelectContent>
+</Select>
       {/* ...render items with price * getConversionRate() */}
     </div>
             <div className="flex items-center gap-2">
