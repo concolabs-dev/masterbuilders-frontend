@@ -218,6 +218,21 @@ export default function Home() {
             </FadeInWhenVisible>
           </div>
         </section>
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-white text-white">
+          <div className="container px-4 md:px-6 text-center">
+            <FadeInWhenVisible>
+              <h2 className="text-3xl font-bold mb-4 text-black">Are you a supplier?</h2>
+              <p className="text-xl  mb-8 text-slate-900">
+                Find the best prices for construction materials and services.
+              </p>
+              <Link href="/onboarding">
+                <Button size="lg"  className=" text-white hover:text-slate-100">
+                  Register
+                </Button>
+              </Link>
+            </FadeInWhenVisible>
+          </div>
+        </section>
       </main>
     </div>
   )
