@@ -1,8 +1,1 @@
-{
-  "/onboarding/page": "app/onboarding/page.js",
-  "/api/s3-upload/route": "app/api/s3-upload/route.js",
-  "/onboarding/success/page": "app/onboarding/success/page.js",
-  "/catalogue/page": "app/catalogue/page.js",
-  "/page": "app/page.js",
-  "/api/auth/[auth0]/route": "app/api/auth/[auth0]/route.js"
-}
+{}
