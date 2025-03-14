@@ -143,7 +143,7 @@ export default function Home() {
               <SlideIn>
                 <div>
                   <p className="mb-4">
-                    Master Space Builders Pvt Ltd was founded with a vision to revolutionize the construction industry.
+                    Build Market Pvt Ltd was founded with a vision to revolutionize the construction industry.
                     As a forward-thinking construction solutions provider, we've dedicated ourselves to delivering
                     quality, cost-effective resources to professionals, investors, and companies in the construction
                     sector.
