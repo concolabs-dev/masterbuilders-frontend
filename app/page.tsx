@@ -106,6 +106,11 @@ export default function Home() {
                       View Catalogue
                     </Button>
                   </Link>
+                  <Link href="/supplier/">
+                    <Button size="lg" className="w-full min-[400px]:w-auto">
+                      Search Suppliers
+                    </Button>
+                  </Link>
                   <Link href="#about">
                   <Button size="lg" variant="outline" className="w-full text-black min-[400px]:w-auto">
                     Learn More
@@ -208,6 +213,21 @@ export default function Home() {
               <Link href="/catalogue">
                 <Button size="lg" variant="outline" className="bg-white text-slate-900 hover:bg-slate-100">
                   View Full Catalogue
+                </Button>
+              </Link>
+            </FadeInWhenVisible>
+          </div>
+        </section>
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-white text-white">
+          <div className="container px-4 md:px-6 text-center">
+            <FadeInWhenVisible>
+              <h2 className="text-3xl font-bold mb-4 text-black">Are you a supplier?</h2>
+              <p className="text-xl  mb-8 text-slate-900">
+                Find the best prices for construction materials and services.
+              </p>
+              <Link href="/onboarding">
+                <Button size="lg"  className=" text-white hover:text-slate-100">
+                  Register
                 </Button>
               </Link>
             </FadeInWhenVisible>

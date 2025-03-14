@@ -14,12 +14,12 @@ interface MaterialCardProps {
 export function MaterialCard({ name, unit, location, rating, price, currency_t, onClick }: MaterialCardProps) {
   return (
     <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer" onClick={onClick}>
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col items-start justify-between gap-4">
         <div className="flex-1">
           <h3 className="font-medium">{name}</h3>
           <div className="text-sm text-muted-foreground mt-1">
             <div className="flex items-center gap-2">
-              <span>Unit: {unit}</span>
+              {/* <span>Unit: {unit}</span> */}
               {/* <span>•</span> */}
               {/* <span>Location: {location}</span> */}
             </div>
@@ -33,9 +33,10 @@ export function MaterialCard({ name, unit, location, rating, price, currency_t, 
             </div> */}
           </div>
         </div>
-        <div className="text-right">
-          <div className="text-sm text-muted-foreground">Total Price</div>
-          <div className="font-semibold"> {currency_t+" "+Number(price).toFixed(2)}</div>
+        <div className="text-left rounded bg-gray-50 w-full border p-2">
+          <div className="text-sm text-muted-foreground">Price</div>
+          <div className="font-semibold"> {currency_t+" "+Number(price).toFixed(2)}<span className="text-gray-700 text-sm">/{unit}</span> </div>
+          
 
         </div>
       </div>
