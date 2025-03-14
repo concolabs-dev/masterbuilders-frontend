@@ -29,7 +29,7 @@ export function MainNav() {
           width={40}
           height={40}
         />
-        <span className="hidden font-bold sm:inline-block">BuildMastersLk</span>
+        <span className="hidden font-bold sm:inline-block">BuildMarketLk</span>
       </Link>
       <nav className="flex items-center space-x-6 text-sm font-medium">
         <Link href="/" className="transition-colors hover:text-foreground/80 text-foreground">
