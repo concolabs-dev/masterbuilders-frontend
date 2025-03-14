@@ -223,7 +223,7 @@ export default function Home() {
             <FadeInWhenVisible>
               <h2 className="text-3xl font-bold mb-4 text-black">Are you a supplier?</h2>
               <p className="text-xl  mb-8 text-slate-900">
-                Find the best prices for construction materials and services.
+                List your products and prices.
               </p>
               <Link href="/onboarding">
                 <Button size="lg"  className=" text-white hover:text-slate-100">
