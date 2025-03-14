@@ -102,17 +102,17 @@ export default function Home() {
                   transition={{ delay: 0.4, duration: 0.5 }}
                 >
                   <Link href="/catalogue">
-                    <Button size="lg" className="w-full min-[400px]:w-auto">
+                    <Button size="lg" className="w-full px-3 min-[50px]:w-auto">
                       View Catalogue
                     </Button>
                   </Link>
                   <Link href="/supplier/">
-                    <Button size="lg" className="w-full min-[400px]:w-auto">
+                    <Button size="lg" className="w-full px-3 min-[50px]:w-auto">
                       Search Suppliers
                     </Button>
                   </Link>
                   <Link href="#about">
-                  <Button size="lg" variant="outline" className="w-full text-black min-[400px]:w-auto">
+                  <Button size="lg" variant="outline" className="w-full px-3 text-black min-[50px]:w-auto">
                     Learn More
                   </Button>
                   </Link>
