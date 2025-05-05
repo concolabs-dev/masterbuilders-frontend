@@ -62,6 +62,9 @@ export function MainNav() {
         <Link href="/catalogue" className="transition-colors hover:text-foreground/80 text-primary">
           Catalogue
         </Link>
+        <Link href="/professionals" className="transition-colors hover:text-foreground/80 text-muted-foreground">
+          Professionals
+        </Link>
       </nav>
     </div>
   )
