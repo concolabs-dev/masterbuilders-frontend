@@ -74,6 +74,27 @@ export interface Item {
   price: number
   imgUrl: string
 }
+// Professional type definition matching the Go struct
+export interface Professional {
+  id: string
+  company_name: string
+  company_type: string
+  company_description: string
+  year_founded: number
+  number_of_employees: number
+  email: string
+  telephone_number: string
+  website: string
+  address: string
+  location: Location
+  specializations: string[]
+  services_offered: string[]
+  certifications_accreditations: string[]
+  company_logo_url: string
+  cover_image_url: string
+  pid: string
+}
+
 
 export interface Payment {
   Month: string    // ISO date string (e.g. "2025-03-01T00:00:00.000Z")
@@ -266,4 +287,41 @@ export const updatePaymentRecord = async (id: string, record: Partial<PaymentRec
 
 export const deletePaymentRecord = async (id: string) => {
   await backend_api_axios.delete(`/paymentRecords/${id}`)
+}
+
+
+
+// Professionals API calls
+export const getProfessionals = async () => {
+  const response = await backend_api_axios.get<Professional[]>("/professionals")
+  return response.data
+}
+
+export const getProfessionalById = async (id: string) => {
+  const response = await backend_api_axios.get<Professional>(`/professionals/${id}`)
+  return response.data
+}
+
+export const getProfessionalByPID = async (pid: string) => {
+  const response = await backend_api_axios.get<Professional>(`/professionals/pid/${pid}`)
+  return response.data
+}
+
+export const getProfessionalByEmail = async (email: string) => {
+  const response = await backend_api_axios.get<Professional>(`/professionals/email/${email}`)
+  return response.data
+}
+
+export const createProfessional = async (professional: Omit<Professional, "id">) => {
+  const response = await backend_api_axios.post<Professional>("/professionals", professional)
+  return response.data
+}
+
+export const updateProfessional = async (id: string, professional: Partial<Professional>) => {
+  const response = await backend_api_axios.put<Professional>(`/professionals/${id}`, professional)
+  return response.data
+}
+
+export const deleteProfessional = async (id: string) => {
+  await backend_api_axios.delete(`/professionals/${id}`)
 }

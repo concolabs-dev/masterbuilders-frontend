@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,12 +14,30 @@ import { ImageUpload } from "@/components/image-upload"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Check, ChevronRight, MapPin } from "lucide-react"
+import { createProfessional, getProfessionalByPID, Professional} from "@/app/api"
+import { useUser } from "@auth0/nextjs-auth0/client"
 
 export default function ProfessionalRegistration() {
   const router = useRouter()
   const [step, setStep] = useState(1)
   const totalSteps = 5
   const progress = (step / totalSteps) * 100
+
+  const { user } = useUser()
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false)
+    useEffect(() => {
+      if (!user?.sub) return
+      getProfessionalByPID(user.sub)
+      .then((existing: Professional | undefined) => {
+        if (existing) setAlreadyRegistered(true)
+      })
+      .catch((err) => console.error("Failed checking professional by PID:", err))
+      getProfessionalByPID(user.sub)
+        .then((existing: Professional | undefined) => {
+          if (existing) router.push("/professionals/dashboard")
+        })
+        .catch((err) => console.error("Failed checking professional by PID:", err))
+    }, [user?.sub, router])
 
   const [formData, setFormData] = useState({
     companyName: "",
@@ -59,11 +77,36 @@ export default function ProfessionalRegistration() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically send the data to your API
-    console.log("Form submitted:", formData)
 
-    // Redirect to success page
-    router.push("/professionals/register/success")
+    const professionalPayload = {
+      company_name: formData.companyName,
+      company_type: formData.type, // Default value or add a field to collect this
+      company_description: formData.description,
+      year_founded: parseInt(formData.founded, 10), // Convert to number
+      number_of_employees: 1, // Default value or add a field to collect this
+      email: formData.email,
+      telephone_number: formData.telephone,
+      website: "", // Default value or add a field to collect this
+      address: formData.address,
+      location: {
+        latitude: parseFloat(formData.location.lat),
+        longitude: parseFloat(formData.location.lng),
+      },
+      specializations: formData.specialties, // Default value or add a field to collect this
+      services_offered: formData.services, // Default value or add a field to collect this
+      certifications_accreditations:formData.certifications, // Default value or add a field to collect this
+      company_logo_url: formData.logo,
+      cover_image_url: formData.coverImage,
+      pid: user?.sub || ""
+    }
+    
+    try {
+      await createProfessional(professionalPayload)
+      router.push("/register/success")
+    } catch (err) {
+      console.error("Failed to create professional", err)
+    }
+
   }
 
   const professionalTypes = ["Architect", "Contractor", "Quantity Surveyor", "Interior Designer", "Structural Engineer"]
