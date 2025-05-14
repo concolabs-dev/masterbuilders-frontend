@@ -125,7 +125,7 @@ export default function ProfessionalsShowcasePage() {
 
   // Get visible professionals based on selected letter or search
   const visibleProfessionals = selectedLetter
-    ? { [selectedLetter]: filteredProfessionals[selectedLetter] }.filter(Boolean)
+    ? { [selectedLetter]: filteredProfessionals[selectedLetter] || [] }
     : filteredProfessionals
 
   const scrollToLetter = (letter: string) => {
@@ -224,7 +224,7 @@ export default function ProfessionalsShowcasePage() {
             variant={selectedLetter === letter ? "default" : "outline"}
             size="sm"
             className="w-8 h-8 p-0"
-            disabled={!professionals[letter]}
+            disabled={!professionals[letter as keyof typeof professionals]}
             onClick={() => scrollToLetter(letter)}
           >
             {letter}
