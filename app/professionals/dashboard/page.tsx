@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,52 +11,13 @@ import { ProjectCard } from "@/components/project-card"
 import { ProjectList } from "@/components/project-list"
 import { AddProjectDialog } from "@/components/add-project-dialog"
 import { EditProjectDialog } from "@/components/edit-project-dialog"
+import { useUser } from "@auth0/nextjs-auth0/client"
+import { Professional, getProfessionalByPID, updateProfessional } from "@/app/api"
+import Loading from "../loading" 
+import { AlertCircle } from "lucide-react"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
-// Mock professional company data
-const initialProfessionalData = {
-  id: "creative-design-associates",
-  name: "Creative Design Associates",
-  type: "Architect",
-  description:
-    "Creative Design Associates is a leading architectural firm with over 15 years of experience in designing innovative and sustainable buildings. Our team of skilled architects and designers is committed to creating spaces that inspire and enhance the quality of life.",
-  location: "123 Design Street, Colombo 03, Sri Lanka",
-  phone: "+94 77 123 4567",
-  email: "info@creativedesign.lk",
-  website: "www.creativedesign.lk",
-  founded: "2008",
-  employees: "25-50",
-  rating: 4.9,
-  reviews: 42,
-  coverImage: "/placeholder.svg?height=400&width=1200",
-  logo: "/placeholder.svg?height=200&width=200",
-  specialties: ["Modern Architecture", "Interior Design", "Landscape Design", "Sustainable Design", "Urban Planning"],
-  services: [
-    {
-      name: "Architectural Design",
-      description:
-        "Comprehensive architectural design services for residential, commercial, and institutional projects.",
-      icon: "Building",
-    },
-    {
-      name: "Interior Design",
-      description: "Creative interior design solutions that optimize space utilization and enhance aesthetics.",
-      icon: "Building",
-    },
-    {
-      name: "Landscape Design",
-      description: "Innovative landscape design that harmonizes with the built environment and natural surroundings.",
-      icon: "Building",
-    },
-    {
-      name: "Project Management",
-      description: "End-to-end project management services to ensure timely and quality execution of design projects.",
-      icon: "Building",
-    },
-  ],
-  certifications: ["Chartered Architects", "Green Building Council", "ISO 9001:2015"],
-}
-
-// Mock projects data
+// Mock projects data - keeping this for now
 const initialProjects = [
   {
     id: "1",
@@ -113,7 +74,12 @@ const initialProjects = [
 ]
 
 export default function ProfessionalDashboardPage() {
-  const [professionalData, setProfessionalData] = useState(initialProfessionalData)
+  const { user, isLoading: isUserLoading, error: userError } = useUser()
+  const [professionalData, setProfessionalData] = useState<Professional | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  
+  // Projects state (using dummy data for now)
   const [projects, setProjects] = useState(initialProjects)
   const [selectedProject, setSelectedProject] = useState(null)
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
@@ -121,10 +87,44 @@ export default function ProfessionalDashboardPage() {
   const [isAddProjectDialogOpen, setIsAddProjectDialogOpen] = useState(false)
   const [isEditProjectDialogOpen, setIsEditProjectDialogOpen] = useState(false)
 
-  const handleProfessionalUpdate = (updatedProfessional) => {
-    setProfessionalData(updatedProfessional)
-    // In a real app, you would save this to your backend
-    console.log("Professional updated:", updatedProfessional)
+  // Fetch professional data when user is loaded
+  useEffect(() => {
+    const fetchProfessionalData = async () => {
+      if (!user?.sub) return
+      
+      try {
+        setIsLoading(true)
+        const data = await getProfessionalByPID(user.sub)
+        setProfessionalData(data)
+        setError(null)
+      } catch (err) {
+        console.error("Failed to fetch professional data:", err)
+        setError("Failed to load your professional profile. Please try again later.")
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    if (user?.sub) {
+      fetchProfessionalData()
+    }
+  }, [user?.sub])
+
+  const handleProfessionalUpdate = async (updatedProfessional) => {
+    if (!professionalData?.id) return
+    
+    try {
+      // Assuming you have an updateProfessional function in your API
+      // const updated = await updateProfessional(professionalData.id, updatedProfessional)
+      // setProfessionalData(updated)
+      
+      // For now, just update the state
+      setProfessionalData({...professionalData, ...updatedProfessional})
+      await updateProfessional(professionalData.id, updatedProfessional)
+      console.log("Professional updated:", updatedProfessional)
+    } catch (err) {
+      console.error("Failed to update professional:", err)
+    }
   }
 
   // Filter projects based on search query
@@ -160,9 +160,80 @@ export default function ProfessionalDashboardPage() {
     setProjects(projects.map((project) => (project.id === id ? { ...project, featured: !project.featured } : project)))
   }
 
+  // Loading state
+  if (isUserLoading || isLoading) {
+    return (
+      <div className="container mx-auto py-10 space-y-6">
+        {/* <Skeleton className="h-[300px] w-full rounded-lg" />
+        <div className="space-y-2">
+          <Skeleton className="h-10 w-[250px]" />
+          <Skeleton className="h-4 w-[300px]" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Skeleton className="h-[200px] rounded-lg" />
+          <Skeleton className="h-[200px] rounded-lg" />
+        </div> */}
+        <Loading />
+      </div>
+    )
+  }
+
+  // Error state
+  if (userError || error) {
+    return (
+      <div className="container mx-auto py-10">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
+            {error || "There was an error loading your profile. Please try again later."}
+          </AlertDescription>
+        </Alert>
+      </div>
+    )
+  }
+
+  // No professional profile found
+  if (!professionalData) {
+    return (
+      <div className="container mx-auto py-10 text-center">
+        <h1 className="text-2xl font-bold mb-4">No Professional Profile Found</h1>
+        <p className="text-muted-foreground mb-6">
+          It seems you don't have a professional profile yet. Please complete the onboarding process.
+        </p>
+        <Button onClick={() => window.location.href = "/onboarding"}>
+          Complete Onboarding
+        </Button>
+      </div>
+    )
+  }
+
+  // Format the professional data for the profile component
+  const formattedProfessional = {
+    id: professionalData.id,
+    name: professionalData.company_name,
+    type: professionalData.company_type,
+    description: professionalData.company_description || "",
+    location: professionalData.address || "",
+    phone: professionalData.telephone_number || "",
+    email: professionalData.email || "",
+    website: professionalData.website || "",
+    founded: professionalData.year_founded?.toString() || "",
+    employees: professionalData.number_of_employees?.toString() || "",
+    coverImage: professionalData.cover_image_url || "/placeholder.svg?height=400&width=1200",
+    logo: professionalData.company_logo_url || "/placeholder.svg?height=200&width=200",
+    specialties: professionalData.specializations || [],
+    certifications: professionalData.certifications_accreditations || [],
+    services: (professionalData.services_offered || []).map(service => ({
+      name: service,
+      description: "",
+      icon: "Building"
+    }))
+  }
+
   return (
     <div className="container mx-auto py-10">
-      <ProfessionalProfile professional={professionalData} onUpdate={handleProfessionalUpdate} />
+      <ProfessionalProfile professional={formattedProfessional} onUpdate={handleProfessionalUpdate} />
 
       <Tabs defaultValue="projects" className="mt-8">
         <div className="flex justify-between items-center mb-4">
@@ -249,6 +320,27 @@ export default function ProfessionalDashboardPage() {
               <p className="text-muted-foreground mb-6">
                 Edit your services and specializations to showcase your expertise to potential clients.
               </p>
+              
+              <div className="mb-6">
+                <h3 className="text-lg font-medium mb-3">Your Services</h3>
+                <ul className="list-disc pl-5 space-y-2">
+                  {professionalData.services_offered?.map((service, index) => (
+                    <li key={index}>{service}</li>
+                  )) || <li className="text-muted-foreground">No services added yet</li>}
+                </ul>
+              </div>
+              
+              <div className="mb-6">
+                <h3 className="text-lg font-medium mb-3">Your Specializations</h3>
+                <div className="flex flex-wrap gap-2">
+                  {professionalData.specializations?.map((spec, index) => (
+                    <span key={index} className="bg-secondary text-secondary-foreground px-3 py-1 rounded-full text-sm">
+                      {spec}
+                    </span>
+                  )) || <span className="text-muted-foreground">No specializations added yet</span>}
+                </div>
+              </div>
+              
               <Button>Edit Services & Specializations</Button>
             </CardContent>
           </Card>
@@ -268,8 +360,35 @@ export default function ProfessionalDashboardPage() {
           <Card>
             <CardContent className="p-6">
               <h2 className="text-xl font-semibold mb-4">Account Settings</h2>
-              <p className="text-muted-foreground">Manage your account settings and preferences.</p>
-              <div className="text-center py-12 text-muted-foreground">Settings features coming soon.</div>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-medium mb-1">Company Name</h3>
+                  <p>{professionalData.company_name}</p>
+                </div>
+                <div>
+                  <h3 className="font-medium mb-1">Company Type</h3>
+                  <p>{professionalData.company_type}</p>
+                </div>
+                <div>
+                  <h3 className="font-medium mb-1">Email</h3>
+                  <p>{professionalData.email}</p>
+                </div>
+                <div>
+                  <h3 className="font-medium mb-1">Phone</h3>
+                  <p>{professionalData.telephone_number}</p>
+                </div>
+                <div>
+                  <h3 className="font-medium mb-1">Address</h3>
+                  <p>{professionalData.address}</p>
+                </div>
+                <div>
+                  <h3 className="font-medium mb-1">Website</h3>
+                  <p>{professionalData.website || "Not specified"}</p>
+                </div>
+              </div>
+              <div className="mt-6">
+                <Button>Edit Account Settings</Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
