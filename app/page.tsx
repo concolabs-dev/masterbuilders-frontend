@@ -31,8 +31,8 @@ const services = [
   },
   {
     icon: <FileSpreadsheet className="h-12 w-12 text-primary" />,
-    title: "Construction Trade Hub (Coming Soon!)",
-    description: "A one-stop digital marketplace for construction materials, tools, and equipment in Sri Lanka. Easily buy, sell, and compare prices while connecting with trusted suppliers and contractors—all in one convenient platform.",
+    title: "Cost Guide to Construction In Sri Lanka",
+    description: "We're committed to creating value in construction by making essential resources easily accessible and affordable for every builder, investor, and homeowner.",
   },
 ]
 
@@ -142,18 +142,27 @@ export default function Home() {
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <SlideIn>
                 <div>
-                  <p className="mb-4">
-                    Build Market Pvt Ltd was founded with a vision to revolutionize the construction industry.
-                    As a forward-thinking construction solutions provider, we've dedicated ourselves to delivering
-                    quality, cost-effective resources to professionals, investors, and companies in the construction
-                    sector.
-                  </p>
-                  <p className="mb-4">
-                    Our journey began with a simple idea: to bridge the gap between suppliers and builders, making
-                    construction processes more efficient and cost-friendly. Today, we're proud to be at the forefront
-                    of innovation in the industry, known for our transparency, reliability, and commitment to
-                    excellence.
-                  </p>
+                   <div>
+        <p className="mb-4 ">
+          <strong>BuildMarketLK</strong> is a pioneering joint venture formed by three industry leaders: the  
+          <strong> Ceylon Institute of Builders (CIOB)</strong>, <strong>VFORM Consultants</strong>, and <strong>Concolabs</strong>. 
+          Together, we are reshaping Sri Lanka's construction landscape by creating a transparent, efficient, and 
+          technology-driven marketplace for construction materials and services.
+        </p>
+        <p className="mb-4 ml-3">
+          <strong>CIOB</strong>, Sri Lanka’s oldest professional body for builders, brings decades of institutional 
+          knowledge, policy advocacy, and a commitment to elevating industry standards.
+        </p>
+        <p className="mb-4 ml-3">
+          <strong>VFORM Consultants</strong>, a quantity surveying firm, contributes deep expertise in cost management 
+          and project estimation, ensuring accuracy and financial efficiency across the platform.
+        </p>
+        <p className="mb-4 ml-3"> 
+          <strong>Concolabs</strong>, a construction technology company, powers the platform with cutting-edge digital 
+          tools, enabling real-time pricing, automated estimations, and seamless supplier integration.
+        </p>
+      </div>
+  
                   <h3 className="text-2xl font-semibold mb-2">Our Vision</h3>
                   <p>
                     Our vision is to empower construction projects worldwide by offering a reliable, detailed pricing
