@@ -317,7 +317,7 @@ export const createProfessional = async (professional: Omit<Professional, "id">)
   return response.data
 }
 
-export const updateProfessional = async (id: string, professional: Partial<Professional>) => {
+export const updateProfessional = async (id: string, professional: Professional) => {
   const response = await backend_api_axios.put<Professional>(`/professionals/${id}`, professional)
   return response.data
 }

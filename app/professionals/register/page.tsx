@@ -34,7 +34,7 @@ export default function ProfessionalRegistration() {
       .catch((err) => console.error("Failed checking professional by PID:", err))
       getProfessionalByPID(user.sub)
         .then((existing: Professional | undefined) => {
-          if (existing) router.push("/professionals/dashboard")
+        if (existing) router.push("/professionals/dashboard")
         })
         .catch((err) => console.error("Failed checking professional by PID:", err))
     }, [user?.sub, router])

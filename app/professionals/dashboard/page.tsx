@@ -110,7 +110,7 @@ export default function ProfessionalDashboardPage() {
     }
   }, [user?.sub])
 
-  const handleProfessionalUpdate = async (updatedProfessional) => {
+  const handleProfessionalUpdate = async (updatedProfessional:Professional) => {
     if (!professionalData?.id) return
     
     try {
@@ -152,11 +152,11 @@ export default function ProfessionalDashboardPage() {
     setIsEditProjectDialogOpen(false)
   }
 
-  const handleDeleteProject = (id) => {
+  const handleDeleteProject = (id:string) => {
     setProjects(projects.filter((project) => project.id !== id))
   }
 
-  const handleToggleFeature = (id) => {
+  const handleToggleFeature = (id:string) => {
     setProjects(projects.map((project) => (project.id === id ? { ...project, featured: !project.featured } : project)))
   }
 
@@ -208,32 +208,11 @@ export default function ProfessionalDashboardPage() {
     )
   }
 
-  // Format the professional data for the profile component
-  const formattedProfessional = {
-    id: professionalData.id,
-    name: professionalData.company_name,
-    type: professionalData.company_type,
-    description: professionalData.company_description || "",
-    location: professionalData.address || "",
-    phone: professionalData.telephone_number || "",
-    email: professionalData.email || "",
-    website: professionalData.website || "",
-    founded: professionalData.year_founded?.toString() || "",
-    employees: professionalData.number_of_employees?.toString() || "",
-    coverImage: professionalData.cover_image_url || "/placeholder.svg?height=400&width=1200",
-    logo: professionalData.company_logo_url || "/placeholder.svg?height=200&width=200",
-    specialties: professionalData.specializations || [],
-    certifications: professionalData.certifications_accreditations || [],
-    services: (professionalData.services_offered || []).map(service => ({
-      name: service,
-      description: "",
-      icon: "Building"
-    }))
-  }
+
 
   return (
     <div className="container mx-auto py-10">
-      <ProfessionalProfile professional={formattedProfessional} onUpdate={handleProfessionalUpdate} />
+      <ProfessionalProfile professional={professionalData} onUpdate={handleProfessionalUpdate} />
 
       <Tabs defaultValue="projects" className="mt-8">
         <div className="flex justify-between items-center mb-4">
