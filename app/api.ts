@@ -294,6 +294,7 @@ export const deletePaymentRecord = async (id: string) => {
 // Professionals API calls
 export const getProfessionals = async () => {
   const response = await backend_api_axios.get<Professional[]>("/professionals")
+  console.log(response.data)
   return response.data
 }
 
@@ -314,6 +315,7 @@ export const getProfessionalByEmail = async (email: string) => {
 
 export const createProfessional = async (professional: Omit<Professional, "id">) => {
   const response = await backend_api_axios.post<Professional>("/professionals", professional)
+  console.log(response.data)
   return response.data
 }
 

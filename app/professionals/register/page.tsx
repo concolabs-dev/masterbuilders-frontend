@@ -77,7 +77,7 @@ export default function ProfessionalRegistration() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
+    console.log("Form submitted:", formData)
     const professionalPayload = {
       company_name: formData.companyName,
       company_type: formData.type, // Default value or add a field to collect this
@@ -102,6 +102,7 @@ export default function ProfessionalRegistration() {
     
     try {
       await createProfessional(professionalPayload)
+      console.log("Professional created successfully")
       router.push("/register/success")
     } catch (err) {
       console.error("Failed to create professional", err)
