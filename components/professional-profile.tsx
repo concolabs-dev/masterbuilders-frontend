@@ -10,29 +10,9 @@ import { EditCoverImageDialog } from "./edit-cover-image-dialog"
 import { EditProfessionalDetailsDialog } from "./edit-professional-details-dialog"
 import { EditServicesDialog } from "./edit-services-dialog"
 import { Badge } from "./ui/badge"
-
+import { updateProfessional, Professional } from "@/app/api"
 interface ProfessionalProfileProps {
-  professional: {
-    id: string
-    name: string
-    type: string
-    description: string
-    location: string
-    phone: string
-    email: string
-    website: string
-    founded: string
-    employees: string
-    coverImage: string
-    logo: string
-    specialties: string[]
-    services: {
-      name: string
-      description: string
-      icon: string
-    }[]
-    certifications: string[]
-  }
+  professional: Professional
   onUpdate?: (updatedProfessional: ProfessionalProfileProps["professional"]) => void
 }
 
@@ -43,29 +23,41 @@ export function ProfessionalProfile({ professional, onUpdate }: ProfessionalProf
   const [isProfessionalDetailsDialogOpen, setIsProfessionalDetailsDialogOpen] = useState(false)
   const [isServicesDialogOpen, setIsServicesDialogOpen] = useState(false)
 
-  const handleProfileImageUpdate = (imageUrl: string) => {
-    const updatedProfessional = {
+  const handleProfileImageUpdate = async (imageUrl: string) => {
+    const updatedProfessional: Professional = {
       ...currentProfessional,
-      logo: imageUrl,
+      company_logo_url: imageUrl,
     }
     setCurrentProfessional(updatedProfessional)
+    await updateProfessional(currentProfessional.id, updatedProfessional)
     if (onUpdate) onUpdate(updatedProfessional)
+
   }
 
-  const handleCoverImageUpdate = (imageUrl: string) => {
-    const updatedProfessional = {
+  const handleCoverImageUpdate =async (imageUrl: string) => {
+    const updatedProfessional: Professional = {
       ...currentProfessional,
-      coverImage: imageUrl,
+      cover_image_url: imageUrl,
     }
+    await updateProfessional(currentProfessional.id, updatedProfessional)
     setCurrentProfessional(updatedProfessional)
     if (onUpdate) onUpdate(updatedProfessional)
   }
 
   const handleProfessionalDetailsUpdate = (details: any) => {
-    const updatedProfessional = {
+    const updatedProfessional: Professional = {
       ...currentProfessional,
-      ...details,
+      company_name: details.name,
+      company_type: details.type,
+      company_description: details.description,
+      email: details.email,
+      telephone_number: details.phone,
+      website: details.website,
+      address: details.address,
+      year_founded: details.founded ? parseInt(details.founded) : currentProfessional.year_founded,
+      number_of_employees: details.employees ? parseInt(details.employees) : currentProfessional.number_of_employees
     }
+    
     setCurrentProfessional(updatedProfessional)
     if (onUpdate) onUpdate(updatedProfessional)
   }
@@ -86,8 +78,8 @@ export function ProfessionalProfile({ professional, onUpdate }: ProfessionalProf
       <Card className="overflow-hidden">
         <div className="relative h-48 md:h-64 w-full">
           <Image
-            src={currentProfessional.coverImage || "/placeholder.svg?height=400&width=1200"}
-            alt={`${currentProfessional.name} cover`}
+            src={currentProfessional.cover_image_url || "/placeholder.svg?height=400&width=1200"}
+            alt={`${currentProfessional.company_name} cover`}
             fill
             className="object-cover"
           />
@@ -105,8 +97,8 @@ export function ProfessionalProfile({ professional, onUpdate }: ProfessionalProf
           <div className="flex flex-col md:flex-row gap-6 -mt-12 md:-mt-16">
             <div className="relative h-24 w-24 md:h-32 md:w-32 rounded-full border-4 border-background overflow-hidden bg-background">
               <Image
-                src={currentProfessional.logo || "/placeholder.svg?height=200&width=200"}
-                alt={currentProfessional.name}
+                src={currentProfessional.company_logo_url || "/placeholder.svg?height=200&width=200"}
+                alt={currentProfessional.company_name}
                 fill
                 className="object-cover"
               />
@@ -124,12 +116,12 @@ export function ProfessionalProfile({ professional, onUpdate }: ProfessionalProf
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <h1 className="text-2xl font-bold">{currentProfessional.name}</h1>
+                    <h1 className="text-2xl font-bold">{currentProfessional.company_name}</h1>
                     <Badge variant="secondary" className="font-medium">
-                      {currentProfessional.type}
+                      {currentProfessional.company_type}
                     </Badge>
                   </div>
-                  <p className="text-muted-foreground mt-1">{currentProfessional.description}</p>
+                  <p className="text-muted-foreground mt-1">{currentProfessional.company_description}</p>
                 </div>
                 <Button onClick={() => setIsProfessionalDetailsDialogOpen(true)}>
                   <Edit className="h-4 w-4 mr-2" />
@@ -139,11 +131,11 @@ export function ProfessionalProfile({ professional, onUpdate }: ProfessionalProf
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
                 <div className="flex items-center text-sm text-muted-foreground">
                   <MapPin className="h-4 w-4 mr-2" />
-                  {currentProfessional.location}
+                  {typeof currentProfessional.location === "string" ? currentProfessional.location : JSON.stringify(currentProfessional.location)}
                 </div>
                 <div className="flex items-center text-sm text-muted-foreground">
                   <Phone className="h-4 w-4 mr-2" />
-                  {currentProfessional.phone}
+                  {currentProfessional.telephone_number}
                 </div>
                 <div className="flex items-center text-sm text-muted-foreground">
                   <Mail className="h-4 w-4 mr-2" />
@@ -155,7 +147,7 @@ export function ProfessionalProfile({ professional, onUpdate }: ProfessionalProf
                 </div>
               </div>
               <div className="flex flex-wrap gap-2 mt-4">
-                {currentProfessional.specialties.map((specialty, index) => (
+                {currentProfessional.specializations.map((specialty, index) => (
                   <Badge key={index} variant="outline" className="bg-primary/5">
                     {specialty}
                   </Badge>
@@ -173,14 +165,14 @@ export function ProfessionalProfile({ professional, onUpdate }: ProfessionalProf
       <EditProfileImageDialog
         open={isProfileImageDialogOpen}
         onOpenChange={setIsProfileImageDialogOpen}
-        currentImage={currentProfessional.logo}
+        currentImage={currentProfessional.company_logo_url}
         onSave={handleProfileImageUpdate}
       />
 
       <EditCoverImageDialog
         open={isCoverImageDialogOpen}
         onOpenChange={setIsCoverImageDialogOpen}
-        currentImage={currentProfessional.coverImage}
+        currentImage={currentProfessional.cover_image_url}
         onSave={handleCoverImageUpdate}
       />
 
@@ -188,15 +180,15 @@ export function ProfessionalProfile({ professional, onUpdate }: ProfessionalProf
         open={isProfessionalDetailsDialogOpen}
         onOpenChange={setIsProfessionalDetailsDialogOpen}
         currentDetails={{
-          name: currentProfessional.name,
-          type: currentProfessional.type,
-          description: currentProfessional.description,
+          name: currentProfessional.company_name,
+          type: currentProfessional.company_type,
+          description: currentProfessional.company_description,
           email: currentProfessional.email,
-          phone: currentProfessional.phone,
+          phone: currentProfessional.telephone_number,
           website: currentProfessional.website,
-          address: currentProfessional.location,
-          founded: currentProfessional.founded,
-          employees: currentProfessional.employees,
+          address: currentProfessional.address,
+          founded: JSON.stringify(currentProfessional.year_founded),
+          employees: JSON.stringify(currentProfessional.number_of_employees),
         }}
         onSave={handleProfessionalDetailsUpdate}
       />
@@ -204,9 +196,13 @@ export function ProfessionalProfile({ professional, onUpdate }: ProfessionalProf
       <EditServicesDialog
         open={isServicesDialogOpen}
         onOpenChange={setIsServicesDialogOpen}
-        currentServices={currentProfessional.services}
-        currentSpecialties={currentProfessional.specialties}
-        currentCertifications={currentProfessional.certifications}
+        currentServices={(currentProfessional.services_offered || []).map(service => ({
+          name: service,
+          description: "",
+          icon: "Building"
+        }))}
+        currentSpecialties={currentProfessional.specializations}
+        currentCertifications={currentProfessional.certifications_accreditations}
         onSave={handleServicesUpdate}
       />
     </>
