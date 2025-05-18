@@ -81,7 +81,7 @@ export default function ProfessionalDashboardPage() {
   
   // Projects state (using dummy data for now)
   const [projects, setProjects] = useState(initialProjects)
-  const [selectedProject, setSelectedProject] = useState(null)
+  const [selectedProject, setSelectedProject] = useState<null | typeof initialProjects[0]>(null)
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [searchQuery, setSearchQuery] = useState("")
   const [isAddProjectDialogOpen, setIsAddProjectDialogOpen] = useState(false)
@@ -136,7 +136,7 @@ export default function ProfessionalDashboardPage() {
       project.location.toLowerCase().includes(searchQuery.toLowerCase()),
   )
 
-  const handleAddProject = (newProject) => {
+  const handleAddProject = (newProject: any) => {
     const projectWithId = {
       ...newProject,
       id: (projects.length + 1).toString(),
@@ -146,7 +146,7 @@ export default function ProfessionalDashboardPage() {
     setIsAddProjectDialogOpen(false)
   }
 
-  const handleUpdateProject = (id, updatedProject) => {
+  const handleUpdateProject = (id: string, updatedProject: any) => {
     setProjects(projects.map((project) => (project.id === id ? { ...project, ...updatedProject } : project)))
     setSelectedProject(null)
     setIsEditProjectDialogOpen(false)
@@ -385,7 +385,7 @@ export default function ProfessionalDashboardPage() {
         open={isEditProjectDialogOpen}
         onOpenChange={setIsEditProjectDialogOpen}
         project={selectedProject}
-        onSubmit={(updatedProject) => handleUpdateProject(selectedProject?.id, updatedProject)}
+        onSubmit={(updatedProject) => handleUpdateProject(selectedProject?.id ?? "", updatedProject)}
       />
     </div>
   )
