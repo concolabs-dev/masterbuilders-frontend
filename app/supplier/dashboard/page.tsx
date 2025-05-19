@@ -23,6 +23,7 @@ import { Plus, Grid, List } from "lucide-react"
 import { SupplierProfile } from "@/components/supplier-profile"
 import { SupplierItemCard } from "@/components/supplier-item-card"
 import { SupplierItemList } from "@/components/supplier-item-list"
+import { useRouter } from "next/navigation"
 import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client"
 import {
   getSupplierByPPID,
@@ -34,7 +35,10 @@ import {
   getTypes,
   getMaterialsByCategory,
   getSupplierByPID,
+  getProfessionalByPID,
 } from "@/app/api"
+import Loading from "@/components/loading"
+
 import { Supplier, Item, Material, Category } from "@/app/api"
 import { ImageUpload } from "@/components/image-upload" // adjust path as needed
 import {
@@ -62,7 +66,7 @@ function SupplierDashboardPage() {
   const [selectedType, setSelectedType] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("")
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null)
-
+  const router = useRouter()
   const [materials, setMaterials] = useState<Material[]>([])
   const [selectedMaterial, setSelectedMaterial] = useState("")
   const [unit, setUnit] = useState("")
@@ -71,29 +75,38 @@ function SupplierDashboardPage() {
   const [alreadyRegistered, setAlreadyRegistered] = useState(false)
   // Fetch supplier using user's email.
   useEffect(() => {
-    if (user && typeof user.sub === 'string') {
-      console.log(user.sub)
-      if (!user?.sub) return
-      getSupplierByPPID(user.sub)
-      .then((existing: Supplier | undefined) => {
-        if (existing) setAlreadyRegistered(true)
-      })
-      .catch((err) => console.error("Failed checking supplier by PID:", err))
-      getSupplierByPID(user.sub)
-        .then((data) => {
-          setSupplier(data)
-          setAlreadyRegistered(false)
-          console.log("efef")
-          setSupplierLoading(false)
+    async function fetchData(){
+      if (user && typeof user.sub === 'string') {
+        console.log(user.sub)
+        if (!user?.sub) return
+        const professional =  getProfessionalByPID(user.sub)
+        if (await professional) {
+          // Redirect to professional dashboard if a professional exists
+          router.push("/professionals/dashboard")
+          return
+        }
+        getSupplierByPPID(user.sub)
+        .then((existing: Supplier | undefined) => {
+          if (existing) setAlreadyRegistered(true)
         })
-        .catch((err) => {
-          console.error("Error fetching supplier:", err)
-          setSupplierError(err)
-          setSupplierLoading(false)
-        })
-    } else {
-      setSupplierLoading(false)
+        .catch((err) => console.error("Failed checking supplier by PID:", err))
+        getSupplierByPID(user.sub)
+          .then((data) => {
+            setSupplier(data)
+            setAlreadyRegistered(false)
+            console.log("efef")
+            setSupplierLoading(false)
+          })
+          .catch((err) => {
+            console.error("Error fetching supplier:", err)
+            setSupplierError(err)
+            setSupplierLoading(false)
+          })
+      } else {
+        setSupplierLoading(false)
+      }
     }
+   fetchData()
   }, [user])
 
   // Fetch supplier items once the supplier data is loaded.
@@ -239,7 +252,7 @@ function SupplierDashboardPage() {
   }
 
   if (userLoading || supplierLoading) {
-    return <div>Loading...</div>
+    return <Loading />
   }
   if (alreadyRegistered) {
     return (
