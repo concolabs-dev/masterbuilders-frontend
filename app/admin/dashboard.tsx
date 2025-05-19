@@ -1,13 +1,18 @@
+"use client";
 
-"use client"
-
-import { ChevronDown, ChevronRight, Menu } from "lucide-react"
-import { useState, useEffect } from "react"
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { ChevronDown, ChevronRight, Menu } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -16,13 +21,20 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Label } from "@/components/ui/label"
-import { Plus, Pencil, Trash2 } from "lucide-react"
-import { MaterialCard } from "@/components/material-card"
-import { PriceChart } from "@/components/price-chart"
-import AdminSuppliersTab from "@/components/admin-suppliers"
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Label } from "@/components/ui/label";
+import { Plus, Pencil, Trash2 } from "lucide-react";
+import { MaterialCard } from "@/components/material-card";
+import { PriceChart } from "@/components/price-chart";
+import AdminSuppliersTab from "@/components/admin-suppliers";
 import {
   getMaterialsByCategory,
   getMaterials,
@@ -35,39 +47,41 @@ import {
   deleteType,
   type Material,
   searchMaterials,
-} from "../api"
-import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0/client'
-import withAuth from "../hoc/withAuth"
+} from "../api";
+import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
+import { withRoleGuard } from "../hoc/withRoleGuard";
 
 interface SubSubcategory {
-  name: string
-  sub_subcategories: string[]
+  name: string;
+  sub_subcategories: string[];
 }
 
 interface Subcategory {
-  name: string
-  subcategories: SubSubcategory[]
+  name: string;
+  subcategories: SubSubcategory[];
 }
 
 interface Category {
-  id: string
-  name: string
-  categories: Subcategory[]
+  id: string;
+  name: string;
+  categories: Subcategory[];
 }
 
-
-function AdminDashboard(
-) {
-  const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(null)
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
-  const {user, error, isLoading} = useUser();
-  console.log(user)
-  const queryClient = useQueryClient()
+function AdminDashboard() {
+  const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(
+    null
+  );
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null
+  );
+  const { user, error, isLoading } = useUser();
+  console.log(user);
+  const queryClient = useQueryClient();
 
   const { data: materials = [] } = useQuery<Material[]>({
     queryKey: ["materials"],
     queryFn: getMaterials,
-  })
+  });
 
   const {
     data: categories = [],
@@ -76,78 +90,95 @@ function AdminDashboard(
   } = useQuery<Category[]>({
     queryKey: ["categories"],
     queryFn: getTypes,
-  })
+  });
 
   const createMaterialMutation = useMutation({
     mutationFn: createMaterial,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["materials"] })
+      queryClient.invalidateQueries({ queryKey: ["materials"] });
     },
-  })
+  });
 
   const updateMaterialMutation = useMutation({
-    mutationFn: ({ id, material }: { id: string; material: Partial<Material> }) => updateMaterial(id, material),
+    mutationFn: ({
+      id,
+      material,
+    }: {
+      id: string;
+      material: Partial<Material>;
+    }) => updateMaterial(id, material),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["materials"] })
+      queryClient.invalidateQueries({ queryKey: ["materials"] });
     },
-  })
+  });
 
   const deleteMaterialMutation = useMutation({
     mutationFn: deleteMaterial,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["materials"] })
+      queryClient.invalidateQueries({ queryKey: ["materials"] });
     },
-  })
+  });
 
   const createCategoryMutation = useMutation({
     mutationFn: createType,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] })
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
-  })
+  });
 
   const updateCategoryMutation = useMutation({
-    mutationFn: ({ id, category }: { id: string; category: Partial<Category> }) => updateType(id, category),
+    mutationFn: ({
+      id,
+      category,
+    }: {
+      id: string;
+      category: Partial<Category>;
+    }) => updateType(id, category),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] })
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
-  })
+  });
 
   const deleteCategoryMutation = useMutation({
     mutationFn: deleteType,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] })
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
-  })
+  });
 
   const handleCreateMaterial = (newMaterial: Omit<Material, "Number">) => {
-    createMaterialMutation.mutate(newMaterial)
-  }
+    createMaterialMutation.mutate(newMaterial);
+  };
 
-  const handleUpdateMaterial = (id: string, updatedMaterial: Partial<Material>) => {
-    updateMaterialMutation.mutate({ id, material: updatedMaterial })
-  }
+  const handleUpdateMaterial = (
+    id: string,
+    updatedMaterial: Partial<Material>
+  ) => {
+    updateMaterialMutation.mutate({ id, material: updatedMaterial });
+  };
 
   const handleDeleteMaterial = (id: string) => {
-    deleteMaterialMutation.mutate(id)
-  }
+    deleteMaterialMutation.mutate(id);
+  };
 
   const handleCreateCategory = (newCategory: Omit<Category, "id">) => {
-    createCategoryMutation.mutate(newCategory)
-  }
+    createCategoryMutation.mutate(newCategory);
+  };
 
-  const handleUpdateCategory = (id: string, updatedCategory: Partial<Category>) => {
-    updateCategoryMutation.mutate({ id, category: updatedCategory })
-  }
+  const handleUpdateCategory = (
+    id: string,
+    updatedCategory: Partial<Category>
+  ) => {
+    updateCategoryMutation.mutate({ id, category: updatedCategory });
+  };
 
   const handleDeleteCategory = (id: string) => {
-    deleteCategoryMutation.mutate(id)
-  }
+    deleteCategoryMutation.mutate(id);
+  };
   const handleLogout = async () => {
-    
     window.location.href = "/api/auth/logout";
   };
-  
+
   return (
     <div className="container mx-auto py-10">
       <div className="flex justify-between items-center mb-8">
@@ -166,7 +197,7 @@ function AdminDashboard(
         </TabsList>
 
         <TabsContent value="materials" className="space-y-4">
-         <MaterialsUI/>
+          <MaterialsUI />
         </TabsContent>
 
         <TabsContent value="categories" className="space-y-4">
@@ -175,7 +206,9 @@ function AdminDashboard(
               <div className="flex justify-between items-center">
                 <div>
                   <CardTitle>Types</CardTitle>
-                  <CardDescription>Manage your material types, categories and subcategories.</CardDescription>
+                  <CardDescription>
+                    Manage your material types, categories and subcategories.
+                  </CardDescription>
                 </div>
                 <Dialog>
                   <DialogTrigger asChild>
@@ -187,23 +220,29 @@ function AdminDashboard(
                   <DialogContent>
                     <DialogHeader>
                       <DialogTitle>Add New Type</DialogTitle>
-                      <DialogDescription>Add a new category to organize your materials.</DialogDescription>
+                      <DialogDescription>
+                        Add a new category to organize your materials.
+                      </DialogDescription>
                     </DialogHeader>
                     <form
                       onSubmit={(e) => {
-                        e.preventDefault()
-                        const formData = new FormData(e.currentTarget)
+                        e.preventDefault();
+                        const formData = new FormData(e.currentTarget);
                         const newCategory = {
                           name: formData.get("name") as string,
                           categories: [],
-                        }
-                        handleCreateCategory(newCategory)
+                        };
+                        handleCreateCategory(newCategory);
                       }}
                     >
                       <div className="grid gap-4 py-4">
                         <div className="grid gap-2">
                           <Label htmlFor="categoryName">Type Name</Label>
-                          <Input id="categoryName" name="name" placeholder="Category name" />
+                          <Input
+                            id="categoryName"
+                            name="name"
+                            placeholder="Category name"
+                          />
                         </div>
                       </div>
                       <DialogFooter>
@@ -230,40 +269,48 @@ function AdminDashboard(
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-  {Array.isArray(categories) ? (
-    categories.map((category) => (
-      <TableRow key={category.id}>
-        <TableCell className="font-medium">{category.name}</TableCell>
-        <TableCell>
-          {Array.isArray(category.categories)
-            ? category.categories.map((subcat) => subcat.name).join(", ")
-            : "No subcategories"}
-        </TableCell>
-        <TableCell className="text-right space-x-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setSelectedCategory(category)}
-          >
-            <Pencil className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-destructive"
-            onClick={() => handleDeleteCategory(category.id!)} // Use id instead of name
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </TableCell>
-      </TableRow>
-    ))
-  ) : (
-    <TableRow>
-      <TableCell colSpan={3}>No categories available</TableCell>
-    </TableRow>
-  )}
-</TableBody>
+                      {Array.isArray(categories) ? (
+                        categories.map((category) => (
+                          <TableRow key={category.id}>
+                            <TableCell className="font-medium">
+                              {category.name}
+                            </TableCell>
+                            <TableCell>
+                              {Array.isArray(category.categories)
+                                ? category.categories
+                                    .map((subcat) => subcat.name)
+                                    .join(", ")
+                                : "No subcategories"}
+                            </TableCell>
+                            <TableCell className="text-right space-x-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => setSelectedCategory(category)}
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="text-destructive"
+                                onClick={() =>
+                                  handleDeleteCategory(category.id!)
+                                } // Use id instead of name
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={3}>
+                            No categories available
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
                   </Table>
                 </div>
               )}
@@ -271,50 +318,60 @@ function AdminDashboard(
           </Card>
         </TabsContent>
         <TabsContent value="suppliers" className="space-y-4">
-
-        <AdminSuppliersTab/>
+          <AdminSuppliersTab />
         </TabsContent>
         <TabsContent value="payments" className="space-y-4">
-
           <p>payments</p>
         </TabsContent>
       </Tabs>
 
       {/* Edit Category Dialog */}
-      <Dialog open={!!selectedCategory} onOpenChange={() => setSelectedCategory(null)}>
+      <Dialog
+        open={!!selectedCategory}
+        onOpenChange={() => setSelectedCategory(null)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Type</DialogTitle>
-            <DialogDescription>Update the details of your type.</DialogDescription>
+            <DialogDescription>
+              Update the details of your type.
+            </DialogDescription>
           </DialogHeader>
           <form
-  onSubmit={(e) => {
-    e.preventDefault()
-    if (selectedCategory) {
-      const formData = new FormData(e.currentTarget)
-      const updatedCategory = {
-        name: formData.get("name") as string,
-        categories: selectedCategory.categories.map((subcat) => ({
-          ...subcat,
-          name: formData.get(`subcat-${subcat.name}`) as string,
-        })),
-      }
-      // Pass selectedCategory.id here, not the name
-      handleUpdateCategory(selectedCategory.id!, updatedCategory)
-      setSelectedCategory(null)
-    }
-  }}
->
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (selectedCategory) {
+                const formData = new FormData(e.currentTarget);
+                const updatedCategory = {
+                  name: formData.get("name") as string,
+                  categories: selectedCategory.categories.map((subcat) => ({
+                    ...subcat,
+                    name: formData.get(`subcat-${subcat.name}`) as string,
+                  })),
+                };
+                // Pass selectedCategory.id here, not the name
+                handleUpdateCategory(selectedCategory.id!, updatedCategory);
+                setSelectedCategory(null);
+              }
+            }}
+          >
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
                 <Label htmlFor="edit-category-name">Type Name</Label>
-                <Input id="edit-category-name" name="name" defaultValue={selectedCategory?.name} />
+                <Input
+                  id="edit-category-name"
+                  name="name"
+                  defaultValue={selectedCategory?.name}
+                />
               </div>
               <div className="grid gap-2">
                 <Label>Categories</Label>
                 {selectedCategory?.categories.map((subcat, index) => (
                   <div key={index} className="flex items-center gap-2">
-                    <Input name={`subcat-${subcat.name}`} defaultValue={subcat.name} />
+                    <Input
+                      name={`subcat-${subcat.name}`}
+                      defaultValue={subcat.name}
+                    />
                     <Button
                       type="button"
                       variant="ghost"
@@ -324,9 +381,11 @@ function AdminDashboard(
                         if (selectedCategory) {
                           const updatedCategory = {
                             ...selectedCategory,
-                            categories: selectedCategory.categories.filter((_, i) => i !== index) as Subcategory[],
-                          }
-                          setSelectedCategory(updatedCategory as Category)
+                            categories: selectedCategory.categories.filter(
+                              (_, i) => i !== index
+                            ) as Subcategory[],
+                          };
+                          setSelectedCategory(updatedCategory as Category);
                         }
                       }}
                     >
@@ -347,8 +406,8 @@ function AdminDashboard(
                           ...selectedCategory.categories,
                           { name: "", sub_subcategories: [] },
                         ],
-                      }
-                      setSelectedCategory(updatedCategory as Category)
+                      };
+                      setSelectedCategory(updatedCategory as Category);
                     }
                   }}
                 >
@@ -364,125 +423,134 @@ function AdminDashboard(
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }
 
-
 function MaterialsUI() {
-  const [materials, setMaterials] = useState<Material[]>([])
-  const [categories, setCategories] = useState<Category[]>([])
-  const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(null)
-  const [expandedTypes, setExpandedTypes] = useState<string[]>([])
-  const [expandedCategories, setExpandedCategories] = useState<string[]>([])
-  const [selectedType, setSelectedType] = useState<string | null>(null)
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [tempsearchQuery, setTempSearchQuery] = useState("")
-  const [showSidebar, setShowSidebar] = useState(false)
+  const [materials, setMaterials] = useState<Material[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(
+    null
+  );
+  const [expandedTypes, setExpandedTypes] = useState<string[]>([]);
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
+  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(
+    null
+  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [tempsearchQuery, setTempSearchQuery] = useState("");
+  const [showSidebar, setShowSidebar] = useState(false);
 
   // Admin edit state
-  const [editingMaterial, setEditingMaterial] = useState<Material | null>(null)
-  const [editDialogOpen, setEditDialogOpen] = useState(false)
-  const [editName, setEditName] = useState("")
-  const [editUnit, setEditUnit] = useState("")
-  const [editType, setEditType] = useState("")
-  const [editCategory, setEditCategory] = useState("")
-  const [editSubcategory, setEditSubcategory] = useState("")
-  const [editSubSubcategory, setEditSubSubcategory] = useState("")
-  const [editPrices, setEditPrices] = useState<[string, number | null][]>([])
+  const [editingMaterial, setEditingMaterial] = useState<Material | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editUnit, setEditUnit] = useState("");
+  const [editType, setEditType] = useState("");
+  const [editCategory, setEditCategory] = useState("");
+  const [editSubcategory, setEditSubcategory] = useState("");
+  const [editSubSubcategory, setEditSubSubcategory] = useState("");
+  const [editPrices, setEditPrices] = useState<[string, number | null][]>([]);
 
   // Create material dialog state
-  const [createDialogOpen, setCreateDialogOpen] = useState(false)
-  const [createName, setCreateName] = useState("")
-  const [createUnit, setCreateUnit] = useState("")
-  const [createType, setCreateType] = useState("")
-  const [createCat, setCreateCat] = useState("")
-  const [createSubcat, setCreateSubcat] = useState("")
-  const [createSubSubcat, setCreateSubSubcat] = useState("")
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [createName, setCreateName] = useState("");
+  const [createUnit, setCreateUnit] = useState("");
+  const [createType, setCreateType] = useState("");
+  const [createCat, setCreateCat] = useState("");
+  const [createSubcat, setCreateSubcat] = useState("");
+  const [createSubSubcat, setCreateSubSubcat] = useState("");
 
   const handleButtonClick = () => {
-    setSearchQuery(tempsearchQuery)
-  }
+    setSearchQuery(tempsearchQuery);
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      setSearchQuery(tempsearchQuery)
+      setSearchQuery(tempsearchQuery);
     }
-  }
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const data = await getTypes()
-        setCategories(data)
+        const data = await getTypes();
+        setCategories(data);
         if (data.length && data[0].categories.length) {
-          setSelectedType(data[0].name)
-          setSelectedCategory(data[0].categories[0].name)
+          setSelectedType(data[0].name);
+          setSelectedCategory(data[0].categories[0].name);
         }
       } catch (error) {
-        console.error("Error fetching categories:", error)
+        console.error("Error fetching categories:", error);
       }
-    }
-    fetchCategories()
-  }, [])
+    };
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     const fetchMaterials = async () => {
       try {
         if (tempsearchQuery.trim()) {
-          const data = await searchMaterials(searchQuery, selectedSubcategory || undefined)
-          setTempSearchQuery("")
-          setMaterials(data)
+          const data = await searchMaterials(
+            searchQuery,
+            selectedSubcategory || undefined
+          );
+          setTempSearchQuery("");
+          setMaterials(data);
         } else if (selectedCategory) {
-          const data = await getMaterialsByCategory(selectedCategory, selectedSubcategory || undefined)
-          setMaterials(data)
+          const data = await getMaterialsByCategory(
+            selectedCategory,
+            selectedSubcategory || undefined
+          );
+          setMaterials(data);
         }
       } catch (error) {
-        console.error("Error fetching materials:", error)
+        console.error("Error fetching materials:", error);
       }
-    }
-    fetchMaterials()
-  }, [selectedCategory, selectedSubcategory, searchQuery])
+    };
+    fetchMaterials();
+  }, [selectedCategory, selectedSubcategory, searchQuery]);
 
   const openEditDialog = (material: Material) => {
-    setEditingMaterial(material)
-    setEditName(material.Name)
-    setEditUnit(material.Unit)
-    setEditType(material.Type || "")
-    setEditCategory(material.Category.Category || "")
-    setEditSubcategory(material.Category.Subcategory || "")
-    setEditSubSubcategory(material.Category["Sub subcategory"] || "")
-    setEditPrices(material.Prices)
-    setEditDialogOpen(true)
-  }
+    setEditingMaterial(material);
+    setEditName(material.Name);
+    setEditUnit(material.Unit);
+    setEditType(material.Type || "");
+    setEditCategory(material.Category.Category || "");
+    setEditSubcategory(material.Category.Subcategory || "");
+    setEditSubSubcategory(material.Category["Sub subcategory"] || "");
+    setEditPrices(material.Prices);
+    setEditDialogOpen(true);
+  };
 
   const closeEditDialog = () => {
-    setEditDialogOpen(false)
-    setEditingMaterial(null)
-  }
+    setEditDialogOpen(false);
+    setEditingMaterial(null);
+  };
 
   // Create
   const openCreateDialog = () => {
-    setCreateName("")
-    setCreateUnit("")
-    setCreateType("")
-    setCreateCat("")
-    setCreateSubcat("")
-    setCreateSubSubcat("")
-    setCreateDialogOpen(true)
-  }
+    setCreateName("");
+    setCreateUnit("");
+    setCreateType("");
+    setCreateCat("");
+    setCreateSubcat("");
+    setCreateSubSubcat("");
+    setCreateDialogOpen(true);
+  };
 
   const closeCreateDialog = () => {
-    setCreateDialogOpen(false)
-  }
+    setCreateDialogOpen(false);
+  };
 
   const handleCreateMaterial = async () => {
     try {
-      const newMonth = new Date()
-      newMonth.setMonth(newMonth.getMonth())
-      newMonth.setDate(1)
-      const newMonthString = newMonth.toISOString().split("T")[0] + " 00:00:00"
+      const newMonth = new Date();
+      newMonth.setMonth(newMonth.getMonth());
+      newMonth.setDate(1);
+      const newMonthString = newMonth.toISOString().split("T")[0] + " 00:00:00";
 
       await createMaterial({
         Name: createName,
@@ -497,35 +565,35 @@ function MaterialsUI() {
         id: "",
         Qty: 0,
         Source: null,
-      })
+      });
       // refetch
-      const data = await getMaterialsByCategory(createCat)
-      setMaterials(data)
+      const data = await getMaterialsByCategory(createCat);
+      setMaterials(data);
     } catch (error) {
-      console.error("Error creating material:", error)
+      console.error("Error creating material:", error);
     }
-    closeCreateDialog()
-  }
+    closeCreateDialog();
+  };
 
   // Edits
   const handleTypeChange = (value: string) => {
-    setEditType(value)
-    setEditCategory("")
-    setEditSubcategory("")
-    setEditSubSubcategory("")
-  }
+    setEditType(value);
+    setEditCategory("");
+    setEditSubcategory("");
+    setEditSubSubcategory("");
+  };
   const handleCategoryChange = (value: string) => {
-    setEditCategory(value)
-    setEditSubcategory("")
-    setEditSubSubcategory("")
-  }
+    setEditCategory(value);
+    setEditSubcategory("");
+    setEditSubSubcategory("");
+  };
   const handleSubcategoryChange = (value: string) => {
-    setEditSubcategory(value)
-    setEditSubSubcategory("")
-  }
+    setEditSubcategory(value);
+    setEditSubSubcategory("");
+  };
 
   const handleEditSave = async () => {
-    if (!editingMaterial) return
+    if (!editingMaterial) return;
     try {
       await updateMaterial(editingMaterial.Number, {
         Name: editName,
@@ -537,56 +605,76 @@ function MaterialsUI() {
           "Sub subcategory": editSubSubcategory,
         },
         Prices: editPrices,
-      })
+      });
       if (createCat) {
-        const data = await getMaterialsByCategory(createCat, selectedSubcategory || undefined)
-        setMaterials(data)
+        const data = await getMaterialsByCategory(
+          createCat,
+          selectedSubcategory || undefined
+        );
+        setMaterials(data);
       } else if (selectedCategory) {
-        const data = await getMaterialsByCategory(selectedCategory, selectedSubcategory || undefined)
-        setMaterials(data)
+        const data = await getMaterialsByCategory(
+          selectedCategory,
+          selectedSubcategory || undefined
+        );
+        setMaterials(data);
       }
     } catch (error) {
-      console.error("Error updating material:", error)
+      console.error("Error updating material:", error);
     }
-    closeEditDialog()
-  }
+    closeEditDialog();
+  };
 
   const addNewMonthToAllMaterials = async () => {
-    const newMonth = new Date()
-    newMonth.setMonth(newMonth.getMonth())
-    newMonth.setDate(1)
-    const newMonthString = newMonth.toISOString().split("T")[0] + " 00:00:00"
+    const newMonth = new Date();
+    newMonth.setMonth(newMonth.getMonth());
+    newMonth.setDate(1);
+    const newMonthString = newMonth.toISOString().split("T")[0] + " 00:00:00";
 
     try {
-      const allMaterials = await getMaterials()
+      const allMaterials = await getMaterials();
       const updatedMaterials = allMaterials.map((material) => {
-        const monthExists = material.Prices.some(([date]) => date === newMonthString)
+        const monthExists = material.Prices.some(
+          ([date]) => date === newMonthString
+        );
         if (monthExists) {
-          throw new Error(`Month ${newMonthString} already exists for material ${material.Name}`)
+          throw new Error(
+            `Month ${newMonthString} already exists for material ${material.Name}`
+          );
         }
         return {
           ...material,
-          Prices: [...material.Prices, [newMonthString, null] as [string, number | null]],
-        }
-      })
+          Prices: [
+            ...material.Prices,
+            [newMonthString, null] as [string, number | null],
+          ],
+        };
+      });
       await Promise.all(
         updatedMaterials.map((material) =>
           updateMaterial(material.Number, { Prices: material.Prices })
         )
-      )
-      setMaterials(updatedMaterials)
+      );
+      setMaterials(updatedMaterials);
     } catch (error) {
-      console.error("Error adding new month to materials:", error)
+      console.error("Error adding new month to materials:", error);
     }
-  }
+  };
 
-  const currentType = categories.find((t) => t.name === editType)
-  const currentCat = currentType?.categories?.find((c) => c.name === editCategory)
-  const currentSub = currentCat?.subcategories?.find((s) => s.name === editSubcategory)
+  const currentType = categories.find((t) => t.name === editType);
+  const currentCat = currentType?.categories?.find(
+    (c) => c.name === editCategory
+  );
+  const currentSub = currentCat?.subcategories?.find(
+    (s) => s.name === editSubcategory
+  );
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Button className="md:hidden bg-slate-900 mb-4" onClick={() => setShowSidebar(!showSidebar)}>
+      <Button
+        className="md:hidden bg-slate-900 mb-4"
+        onClick={() => setShowSidebar(!showSidebar)}
+      >
         <Menu className="h-6 w-6" />
         Categories
       </Button>
@@ -605,10 +693,12 @@ function MaterialsUI() {
                   selectedType === type.name ? "font-bold" : ""
                 }`}
                 onClick={() => {
-                  setSelectedType(type.name)
+                  setSelectedType(type.name);
                   setExpandedTypes((prev) =>
-                    prev.includes(type.name) ? prev.filter((t) => t !== type.name) : [...prev, type.name]
-                  )
+                    prev.includes(type.name)
+                      ? prev.filter((t) => t !== type.name)
+                      : [...prev, type.name]
+                  );
                 }}
               >
                 {expandedTypes.includes(type.name) ? (
@@ -628,11 +718,13 @@ function MaterialsUI() {
                           selectedCategory === cat.name ? "font-bold" : ""
                         }`}
                         onClick={() => {
-                          setSelectedCategory(cat.name)
-                          setSelectedSubcategory(null)
+                          setSelectedCategory(cat.name);
+                          setSelectedSubcategory(null);
                           setExpandedCategories((prev) =>
-                            prev.includes(cat.name) ? prev.filter((c) => c !== cat.name) : [...prev, cat.name]
-                          )
+                            prev.includes(cat.name)
+                              ? prev.filter((c) => c !== cat.name)
+                              : [...prev, cat.name]
+                          );
                         }}
                       >
                         {expandedCategories.includes(cat.name) ? (
@@ -642,24 +734,27 @@ function MaterialsUI() {
                         )}
                         {cat.name}
                       </Button>
-                      {expandedCategories.includes(cat.name) && cat.subcategories && (
-                        <div className="ml-6">
-                          {cat.subcategories.map((sub) => (
-                            <Button
-                              key={sub.name}
-                              variant="ghost"
-                              className={`w-full justify-start pl-8 text-slate-400 hover:text-white hover:bg-slate-800 ${
-                                selectedSubcategory === sub.name ? "font-bold" : ""
-                              }`}
-                              onClick={() => {
-                                setSelectedSubcategory(sub.name)
-                              }}
-                            >
-                              {sub.name}
-                            </Button>
-                          ))}
-                        </div>
-                      )}
+                      {expandedCategories.includes(cat.name) &&
+                        cat.subcategories && (
+                          <div className="ml-6">
+                            {cat.subcategories.map((sub) => (
+                              <Button
+                                key={sub.name}
+                                variant="ghost"
+                                className={`w-full justify-start pl-8 text-slate-400 hover:text-white hover:bg-slate-800 ${
+                                  selectedSubcategory === sub.name
+                                    ? "font-bold"
+                                    : ""
+                                }`}
+                                onClick={() => {
+                                  setSelectedSubcategory(sub.name);
+                                }}
+                              >
+                                {sub.name}
+                              </Button>
+                            ))}
+                          </div>
+                        )}
                     </div>
                   ))}
                 </div>
@@ -682,8 +777,8 @@ function MaterialsUI() {
             <Button
               variant="outline"
               onClick={() => {
-                setTempSearchQuery("")
-                setSearchQuery("")
+                setTempSearchQuery("");
+                setSearchQuery("");
               }}
             >
               Clear
@@ -728,18 +823,25 @@ function MaterialsUI() {
       </div>
 
       {/* View Material Dialog */}
-      <Dialog open={!!selectedMaterial} onOpenChange={() => setSelectedMaterial(null)}>
+      <Dialog
+        open={!!selectedMaterial}
+        onOpenChange={() => setSelectedMaterial(null)}
+      >
         <DialogContent className="max-w-2xl">
           {selectedMaterial && (
             <div className="p-4 space-y-4 bg-white rounded-lg">
-              <h2 className="text-2xl font-bold text-center mb-4">{selectedMaterial.Name}</h2>
+              <h2 className="text-2xl font-bold text-center mb-4">
+                {selectedMaterial.Name}
+              </h2>
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2 text-center">
                   <p className="text-gray-700 text-lg">
                     Latest Price:{" "}
                     <span className="text-green-600">
                       $
-                      {selectedMaterial.Prices.find((p) => p[1])?.[1]?.toFixed(2) || 0}
+                      {selectedMaterial.Prices.find((p) => p[1])?.[1]?.toFixed(
+                        2
+                      ) || 0}
                     </span>
                   </p>
                 </div>
@@ -767,7 +869,8 @@ function MaterialsUI() {
                 )}
                 <div>
                   <p className="text-gray-600">
-                    <span className="font-semibold">Unit:</span> {selectedMaterial.Unit}
+                    <span className="font-semibold">Unit:</span>{" "}
+                    {selectedMaterial.Unit}
                   </p>
                 </div>
               </div>
@@ -852,7 +955,9 @@ function MaterialsUI() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium">Sub-Subcategory</label>
+              <label className="block text-sm font-medium">
+                Sub-Subcategory
+              </label>
               <select
                 className="w-full border p-2 mt-1"
                 value={editSubSubcategory}
@@ -882,11 +987,11 @@ function MaterialsUI() {
                     type="number"
                     value={price[1] ?? ""}
                     onChange={(e) => {
-                      const newPrices = [...editPrices]
+                      const newPrices = [...editPrices];
                       newPrices[index][1] = e.target.value
                         ? parseFloat(e.target.value)
-                        : null
-                      setEditPrices(newPrices)
+                        : null;
+                      setEditPrices(newPrices);
                     }}
                     className="w-1/2"
                   />
@@ -983,7 +1088,9 @@ function MaterialsUI() {
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium">Sub-Subcategory</label>
+              <label className="block text-sm font-medium">
+                Sub-Subcategory
+              </label>
               {createSubcat ? (
                 <select
                   className="w-full border p-2 mt-1"
@@ -1017,6 +1124,6 @@ function MaterialsUI() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }
-export default AdminDashboard
+export default withRoleGuard(AdminDashboard, ["admin"]);
