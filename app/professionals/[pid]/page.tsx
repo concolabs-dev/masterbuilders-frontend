@@ -36,9 +36,13 @@ export default function ProfessionalCompanyPage({ params }: { params: { pid: str
         setProjects(projects)
 
         // Set the first project as the selected project
+        if(projects){
         if (projects.length > 0) {
           setSelectedProject(projects[0])
         }
+      }else{
+        setSelectedProject(null)  
+      }
 
         setError(null)
       } catch (err) {
@@ -174,7 +178,7 @@ export default function ProfessionalCompanyPage({ params }: { params: { pid: str
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="md:col-span-1 space-y-4">
               <h3 className="text-lg font-semibold mb-4">Projects</h3>
-              {projects.map((project) => (
+              {projects &&projects.map((project) => (
                 <Card
                   key={project.id}
                   className={`cursor-pointer hover:border-primary transition-colors ${

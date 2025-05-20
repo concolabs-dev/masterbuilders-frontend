@@ -49,7 +49,7 @@ export function SiteHeader() {
           {user ? (
             <Button className="hidden md:flex" onClick={()=>{router.push("/supplier/dashboard/")}} >Dashboard</Button>
           ) : (
-            <Button className="hidden md:flex" onClick={()=>{router.push("/onboarding/")}}> Get Started</Button>
+            <Button className="hidden md:flex" onClick={()=>{router.push("/register/")}}> Get Started</Button>
           )}
        
         </div>

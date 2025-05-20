@@ -230,9 +230,9 @@ export default function Home() {
         <section className="w-full py-12 md:py-24 lg:py-32 bg-white text-white">
           <div className="container px-4 md:px-6 text-center">
             <FadeInWhenVisible>
-              <h2 className="text-3xl font-bold mb-4 text-black">Are you a supplier?</h2>
+              <h2 className="text-3xl font-bold mb-4 text-black">Are you a supplier or a professional?</h2>
               <p className="text-xl  mb-8 text-slate-900">
-                List your products and prices.
+                Join us and boost your business visibility and reach a wider audience.
               </p>
               <Link href="/onboarding">
                 <Button size="lg"  className=" text-white hover:text-slate-100">

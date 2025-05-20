@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import Loading from "@/components/loading"
 interface Material {
 
   id: string
@@ -57,13 +58,14 @@ export default function Catalogue() {
   const [searchQuery, setSearchQuery] = useState<string>("")
   const [tempsearchQuery, setTempSearchQuery] = useState<string>("")
   const [showSidebar, setShowSidebar] = useState<boolean>(false)
-
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   // New state for currency conversion:
   const [selectedCurrency, setSelectedCurrency] = useState<string>("LKR")
   const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({})
   const [materialItems, setMaterialItems] = useState<Item[]>([])
 
   useEffect(() => {
+    setIsLoading(true)
     console.log(selectedMaterial?.Name)
     if (selectedMaterial) {
       getItemsByMaterialID(encodeURIComponent(selectedMaterial.id))
@@ -71,6 +73,7 @@ export default function Catalogue() {
         .catch((err) => console.error("Error fetching items by material name:", err))
     }
     console.log(materialItems)
+    setIsLoading(false)
   }, [selectedMaterial])
   // Fetch exchange rates from our API (returns major_currencies)
   useEffect(() => {
@@ -104,6 +107,7 @@ export default function Catalogue() {
     }
   }
   useEffect(() => {
+    setIsLoading(true)
     const fetchCategories = async () => {
       try {
         const data = await getTypes()
@@ -114,6 +118,9 @@ export default function Catalogue() {
         }
       } catch (error) {
         console.error("Error fetching categories:", error)
+      }
+      finally {
+        setIsLoading(false)
       }
     }
 
@@ -148,6 +155,7 @@ export default function Catalogue() {
 
   return (
     <>
+    {isLoading && <Loading/>}
          {/* <Head>
     <title>Catalogue</title>
     <meta name="description" content="This is a catalogue of all the construction material items by various suppliers. Price vatriation by with the timeline and the currency conversion ability is also there. " />

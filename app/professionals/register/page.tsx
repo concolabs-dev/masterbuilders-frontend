@@ -15,9 +15,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Check, ChevronRight, MapPin } from "lucide-react"
 import { createProfessional, getProfessionalByPID, Professional} from "@/app/api"
-import { useUser } from "@auth0/nextjs-auth0/client"
+import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client"
 
-export default function ProfessionalRegistration() {
+
+function ProfessionalRegistration() {
   const router = useRouter()
   const [step, setStep] = useState(1)
   const totalSteps = 5
@@ -79,31 +80,32 @@ export default function ProfessionalRegistration() {
     e.preventDefault()
     console.log("Form submitted:", formData)
     const professionalPayload = {
-      company_name: formData.companyName,
-      company_type: formData.type, // Default value or add a field to collect this
-      company_description: formData.description,
-      year_founded: parseInt(formData.founded, 10), // Convert to number
-      number_of_employees: 1, // Default value or add a field to collect this
-      email: formData.email,
-      telephone_number: formData.telephone,
-      website: "", // Default value or add a field to collect this
-      address: formData.address,
+      company_name: formData.companyName, // Maps to CompanyName in Go
+      company_type: formData.type, // Maps to CompanyType in Go
+      company_description: formData.description, // Maps to CompanyDescription in Go
+      year_founded: parseInt(formData.founded, 10), // Maps to YearFounded in Go
+      number_of_employees: parseInt(formData.employees, 10) || 1, // Maps to NumberOfEmployees in Go
+      email: formData.email, // Maps to Email in Go
+      telephone_number: formData.telephone, // Maps to TelephoneNumber in Go
+      website: formData.website || "", // Maps to Website in Go
+      address: formData.address || "", // Maps to Address in Go
       location: {
-        latitude: parseFloat(formData.location.lat),
-        longitude: parseFloat(formData.location.lng),
+        latitude: parseFloat(formData.location.lat) || 0, // Maps to Location.Latitude in Go
+        longitude: parseFloat(formData.location.lng) || 0, // Maps to Location.Longitude in Go
       },
-      specializations: formData.specialties, // Default value or add a field to collect this
-      services_offered: formData.services, // Default value or add a field to collect this
-      certifications_accreditations:formData.certifications, // Default value or add a field to collect this
-      company_logo_url: formData.logo,
-      cover_image_url: formData.coverImage,
-      pid: user?.sub || ""
-    }
-    
+      specializations: formData.specialties || [], // Maps to Specializations in Go
+      services_offered: formData.services || [], // Maps to ServicesOffered in Go
+      certifications_accreditations: formData.certifications || [], // Maps to CertificationsAccreditations in Go
+      company_logo_url: formData.logo || "", // Maps to CompanyLogoUrl in Go
+      cover_image_url: formData.coverImage || "", // Maps to CoverImageURL in Go
+      pid: user?.sub || "", // Maps to PID in Go
+    };
+    console.log("Professional Payload:", professionalPayload)
+  
     try {
       await createProfessional(professionalPayload)
       console.log("Professional created successfully")
-      router.push("/register/success")
+      router.push("professionals/register/success")
     } catch (err) {
       console.error("Failed to create professional", err)
     }
@@ -453,3 +455,5 @@ export default function ProfessionalRegistration() {
     </div>
   )
 }
+
+export default withPageAuthRequired(ProfessionalRegistration);
