@@ -178,6 +178,9 @@ export default function ProfessionalCompanyPage({ params }: { params: { pid: str
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="md:col-span-1 space-y-4">
               <h3 className="text-lg font-semibold mb-4">Projects</h3>
+              {!projects && (
+                <p className="text-muted-foreground">No projects available.</p>
+              )}
               {projects &&projects.map((project) => (
                 <Card
                   key={project.id}

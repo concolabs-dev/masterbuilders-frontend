@@ -179,7 +179,7 @@ export default function RegisterSelectionPage() {
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Link href="/onboarding/supplier">
-            <Button size="lg">Register as a Supplier</Button>
+            <Button size="lg" variant="outline">Register as a Supplier</Button>
           </Link>
           <Link href="/professionals/register">
             <Button size="lg" variant="outline">

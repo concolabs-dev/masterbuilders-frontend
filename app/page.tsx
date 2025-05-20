@@ -234,7 +234,7 @@ export default function Home() {
               <p className="text-xl  mb-8 text-slate-900">
                 Join us and boost your business visibility and reach a wider audience.
               </p>
-              <Link href="/onboarding">
+              <Link href="/register">
                 <Button size="lg"  className=" text-white hover:text-slate-100">
                   Register
                 </Button>
