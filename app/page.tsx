@@ -134,7 +134,7 @@ export default function Home() {
                   className="mx-auto aspect-video overflow-hidden rounded-xl object-cover"
                 /> */}
                                <Image
-  src="/images/cover2.jpg"
+  src="/images/cover3.jpg"
   alt="Construction professionals reviewing building blueprints while wearing safety gear"
   width={500}
   height={500} // Ensure height matches width for a 1:1 aspect ratio
@@ -156,7 +156,33 @@ export default function Home() {
               <h2 className="text-3xl font-bold mb-8 text-center">Explore Our Platform</h2>
             </FadeInWhenVisible>
 
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <FadeInWhenVisible>
+                <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col">
+                  <div className="relative h-48">
+                    <Image
+                      src="/images/catalogue.jpg"
+                      alt="Construction suppliers"
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <h3 className="absolute bottom-4 left-4 text-xl font-semibold text-white">Catalogue</h3>
+                  </div>
+                  <CardContent className="flex-1 p-6">
+                    <p className="text-slate-600 mb-4">
+                    Find the best prices for construction materials and services.
+                    </p>
+                    <div className="mt-auto">
+                      <Link href="/catalogue">
+                        <Button variant="outline" className="w-full">
+                          Explore Catalogue
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              </FadeInWhenVisible>
               <FadeInWhenVisible>
                 <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col">
                   <div className="relative h-48">

@@ -172,19 +172,7 @@ export default function Catalogue() {
         {/* <label htmlFor="currency" className="font-medium">
           Currency:
         </label> */}
-        <Select onValueChange={(value) => setSelectedCurrency(value)}>
-  <SelectTrigger className="w-[180px]">
-    <SelectValue placeholder="Select Currency" />
-  </SelectTrigger>
-  <SelectContent>
-  {Object.keys(exchangeRates).map((currency) => (
-            <SelectItem key={currency} value={currency}>
-              {currency}
-            </SelectItem>
-          ))}
-
-  </SelectContent>
-</Select>
+ 
         {/* <select
           id="currency"
           value={selectedCurrency}
@@ -298,6 +286,20 @@ export default function Catalogue() {
             >
               Clear
             </Button>
+            <Select onValueChange={(value) => setSelectedCurrency(value)}>
+  <SelectTrigger className="w-[180px] bg-primary text-white font-semibold hover:bg-primary/90 focus:ring-2 focus:ring-primary/50 rounded-lg ">
+    <span className="text-white">
+      <SelectValue placeholder="Select Currency" />
+    </span>
+  </SelectTrigger>
+  <SelectContent>
+    {Object.keys(exchangeRates).map((currency) => (
+      <SelectItem key={currency} value={currency}>
+        {currency}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {materials.length > 0 ? (
@@ -333,7 +335,11 @@ export default function Catalogue() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2 text-center">
                   {(() => {
-                    const latestPriceLKR = selectedMaterial.Prices.find((p) => p[1])?.[1] || 0
+                    const latestPriceLKR =
+                    selectedMaterial.Prices
+                      .slice() // Create a shallow copy to avoid mutating the original array
+                      .sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime()) // Sort by date descending
+                      .find((p) => p[1])?.[1] || 0
                     const conversionRate = getConversionRate()
                     const displayedPrice = latestPriceLKR * conversionRate
                     return (
