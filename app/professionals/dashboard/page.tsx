@@ -12,8 +12,15 @@ import { ProjectList } from "@/components/project-list"
 import { AddProjectDialog } from "@/components/add-project-dialog"
 import { EditProjectDialog } from "@/components/edit-project-dialog"
 import { useUser } from "@auth0/nextjs-auth0/client"
-import { Professional, getProfessionalByPID, updateProfessional } from "@/app/api"
-import Loading from "../loading" 
+import {
+  Professional,
+  Project,
+  getProfessionalByPID,
+  getProjectsByPID,
+  createProject,
+  updateProfessional,
+} from "@/app/api"
+import Loading from "../loading"
 import { AlertCircle } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
@@ -89,38 +96,49 @@ export default function ProfessionalDashboardPage() {
 
   // Fetch professional data when user is loaded
   useEffect(() => {
-    const fetchProfessionalData = async () => {
+    const fetchData = async () => {
       if (!user?.sub) return
-      
+
       try {
         setIsLoading(true)
-        const data = await getProfessionalByPID(user.sub)
-        setProfessionalData(data)
+
+        // Fetch professional data
+        const professional = await getProfessionalByPID(user.sub)
+        console.log(professional)
+        setProfessionalData(professional)
+
+        // Fetch projects associated with the professional's PID
+        const projects = await getProjectsByPID(user.sub)
+        if (projects){
+        setProjects(projects.map(project => ({
+          ...project,
+          id: project.id ?? "", // Ensure id is always a string
+          featured: project.featured ?? false,
+        })))}else{
+          setProjects([])
+        }
+
         setError(null)
       } catch (err) {
-        console.error("Failed to fetch professional data:", err)
-        setError("Failed to load your professional profile. Please try again later.")
+        console.error("Failed to fetch data:", err)
+        setError("Failed to load your data. Please try again later.")
       } finally {
         setIsLoading(false)
       }
     }
 
     if (user?.sub) {
-      fetchProfessionalData()
+      fetchData()
     }
   }, [user?.sub])
 
-  const handleProfessionalUpdate = async (updatedProfessional:Professional) => {
+
+  const handleProfessionalUpdate = async (updatedProfessional: Professional) => {
     if (!professionalData?.id) return
-    
+
     try {
-      // Assuming you have an updateProfessional function in your API
-      // const updated = await updateProfessional(professionalData.id, updatedProfessional)
-      // setProfessionalData(updated)
-      
-      // For now, just update the state
-      setProfessionalData({...professionalData, ...updatedProfessional})
       await updateProfessional(professionalData.id, updatedProfessional)
+      setProfessionalData({ ...professionalData, ...updatedProfessional })
       console.log("Professional updated:", updatedProfessional)
     } catch (err) {
       console.error("Failed to update professional:", err)
@@ -136,28 +154,44 @@ export default function ProfessionalDashboardPage() {
       project.location.toLowerCase().includes(searchQuery.toLowerCase()),
   )
 
-  const handleAddProject = (newProject: any) => {
-    const projectWithId = {
-      ...newProject,
-      id: (projects.length + 1).toString(),
-      featured: false,
+  const handleAddProject = async (newProject: Omit<Project, "id" | "pid">) => {
+    if (!professionalData?.pid) return
+
+    try {
+      const createdProject = await createProject({
+        ...newProject,
+        pid: professionalData.pid, // Associate the project with the professional's PID
+      })
+      setProjects([...projects, { ...createdProject, id: createdProject.id ?? "" }])
+      setIsAddProjectDialogOpen(false)
+    } catch (err) {
+      console.error("Failed to add project:", err)
     }
-    setProjects([...projects, projectWithId])
-    setIsAddProjectDialogOpen(false)
   }
 
-  const handleUpdateProject = (id: string, updatedProject: any) => {
-    setProjects(projects.map((project) => (project.id === id ? { ...project, ...updatedProject } : project)))
-    setSelectedProject(null)
-    setIsEditProjectDialogOpen(false)
+  const handleUpdateProject = async (id: string, updatedProject: Partial<Project>) => {
+    try {
+      const updatedProjects = projects.map((project) =>
+        project.id === id ? { ...project, ...updatedProject } : project,
+      )
+      setProjects(updatedProjects)
+      setSelectedProject(null)
+      setIsEditProjectDialogOpen(false)
+    } catch (err) {
+      console.error("Failed to update project:", err)
+    }
   }
 
-  const handleDeleteProject = (id:string) => {
+  const handleDeleteProject = (id: string) => {
     setProjects(projects.filter((project) => project.id !== id))
   }
 
-  const handleToggleFeature = (id:string) => {
-    setProjects(projects.map((project) => (project.id === id ? { ...project, featured: !project.featured } : project)))
+  const handleToggleFeature = (id: string) => {
+    setProjects(
+      projects.map((project) =>
+        project.id === id ? { ...project, featured: !project.featured } : project,
+      ),
+    )
   }
 
   // Loading state

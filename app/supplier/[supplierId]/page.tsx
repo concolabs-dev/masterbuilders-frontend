@@ -121,6 +121,7 @@ import {
   } from "@/components/ui/select"
 import CategorySidebar from "@/components/categorySidebar"
 import { Suspense } from "react"
+import Loading from "@/components/loading"
 export default function PublicSupplierPage() {
   const { supplierId } = useParams<{ supplierId: string }>()
   const [supplier, setSupplier] = useState<Supplier | null>(null)
@@ -133,7 +134,7 @@ export default function PublicSupplierPage() {
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null)
   const [selectedCurrency, setSelectedCurrency] = useState("LKR")
   const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({})
-  
+  const [isLoading, setIsLoading] = useState(false)
   useEffect(() => {
     async function fetchRates() {
       try {
@@ -149,10 +150,12 @@ export default function PublicSupplierPage() {
     selectedCurrency === "LKR" ? 1 : (exchangeRates[selectedCurrency] || 1)
   // Fetch supplier info
   useEffect(() => {
+    setIsLoading(true)
     if (supplierId) {
         getSupplierByPID(supplierId)
         .then((data) => setSupplier(data))
         .catch((err) => console.error("Error fetching supplier:", err))
+        .finally(() => setIsLoading(false))
     }
   }, [supplierId])
 
@@ -214,6 +217,7 @@ export default function PublicSupplierPage() {
   }))
   return (
     <Suspense fallback={<div>Loading...</div>}>
+      {isLoading && <Loading/>}
     <div className="container mx-auto py-10">
       <SupplierProfile supplier={profileData} admin={false} />
       <div className="mt-8 flex flex-col md:flex-row gap-4">

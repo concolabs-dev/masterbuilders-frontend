@@ -74,7 +74,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
-        <section className="w-full py-16 md:py-24 lg:py-32 bg-slate-900 text-white">
+        <section className="w-full py-3 md:py-24 lg:py-32 bg-slate-900 text-white">
           <div className="container px-4 md:px-6">
             <div className="grid gap-8 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
               <motion.div
@@ -90,7 +90,9 @@ export default function Home() {
                   transition={{ delay: 0.2, duration: 0.5 }}
                 >
                   <TaglineCarousel />
-                  <p className="max-w-[600px] text-slate-300 md:text-xl">
+                  <p className="max-w-[600px] text-slate-300 md:text-xl"> BuildMarketLK: Your all-in-one digital gateway to construction insights, investments, costs, products, and services.</p>
+                 
+                  <p className="max-w-[600px] text-slate-300 md:text-xl ">
                     We're committed to creating value in construction by making essential resources easily accessible
                     and affordable for every builder, investor, and homeowner.
                   </p>
@@ -124,66 +126,249 @@ export default function Home() {
                 transition={{ delay: 0.6, duration: 0.5 }}
                 className="flex items-center justify-center"
               >
-                <Image
+                {/* <Image
                   src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-5GQi5Q4D5LCFChBfhyTYAHrKIC2Q5X.png"
                   alt="Construction professionals reviewing building blueprints while wearing safety gear"
                   width={600}
                   height={400}
                   className="mx-auto aspect-video overflow-hidden rounded-xl object-cover"
-                />
+                /> */}
+                               <Image
+  src="/images/cover3.jpg"
+  alt="Construction professionals reviewing building blueprints while wearing safety gear"
+  width={500}
+  height={500} // Ensure height matches width for a 1:1 aspect ratio
+  className="mx-auto aspect-square overflow-hidden rounded-xl object-contain opacity-90"
+/>
               </motion.div>
             </div>
           </div>
         </section>
 
-        <section id="about" className="w-full py-12 md:py-24 lg:py-32 bg-white">
-          <div className="container px-4 md:px-6">
-            <h2 className="text-3xl font-bold mb-8">About Us</h2>
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <SlideIn>
-                <div>
-                   <div>
-        <p className="mb-4 ">
-          <strong>BuildMarketLK</strong> is a pioneering joint venture formed by three industry leaders: the  
-          <strong> Ceylon Institute of Builders (CIOB)</strong>, <strong>VFORM Consultants</strong>, and <strong>Concolabs</strong>. 
-          Together, we are reshaping Sri Lanka's construction landscape by creating a transparent, efficient, and 
-          technology-driven marketplace for construction materials and services.
-        </p>
-        <p className="mb-4 ml-3">
-          <strong>CIOB</strong>, Sri Lanka’s oldest professional body for builders, brings decades of institutional 
-          knowledge, policy advocacy, and a commitment to elevating industry standards.
-        </p>
-        <p className="mb-4 ml-3">
-          <strong>VFORM Consultants</strong>, a quantity surveying firm, contributes deep expertise in cost management 
-          and project estimation, ensuring accuracy and financial efficiency across the platform.
-        </p>
-        <p className="mb-4 ml-3"> 
-          <strong>Concolabs</strong>, a construction technology company, powers the platform with cutting-edge digital 
-          tools, enabling real-time pricing, automated estimations, and seamless supplier integration.
-        </p>
-      </div>
-  
-                  <h3 className="text-2xl font-semibold mb-2">Our Vision</h3>
-                  <p>
-                    Our vision is to empower construction projects worldwide by offering a reliable, detailed pricing
-                    catalog that makes resource allocation simple and efficient. We believe in building a future where
-                    quality construction resources are accessible, transparent, and economically feasible for all.
-                  </p>
-                </div>
-              </SlideIn>
-              <SlideIn direction="right">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-primary/20 -rotate-6 rounded-3xl" />
-                  <Image
-                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-L2OQTXWXG3u8buSbv2GLEph1JMXdtL.png"
-                    alt="Construction tools including hard hat, blueprints, and various tools"
-                    width={500}
-                    height={300}
-                    className="relative rounded-2xl object-cover"
-                  />
-                </div>
-              </SlideIn>
+        <section
+  id="about"
+  className="w-full py-12 md:py-24 lg:py-32 bg-cover bg-center relative"
+  style={{ backgroundImage: "url('/images/cover2.jpg')" }} // Replace with your background image path
+>
+<div className="absolute inset-0 bg-white/100"></div>
+          <div className="container px-4 md:px-6 relative z-10">
+            <FadeInWhenVisible>
+              <h2 className="text-3xl font-bold mb-8 text-center">Explore Our Platform</h2>
+            </FadeInWhenVisible>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <FadeInWhenVisible>
+                <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col">
+                  <div className="relative h-48">
+                    <Image
+                      src="/images/catalogue.jpg"
+                      alt="Construction suppliers"
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <h3 className="absolute bottom-4 left-4 text-xl font-semibold text-white">Catalogue</h3>
+                  </div>
+                  <CardContent className="flex-1 p-6">
+                    <p className="text-slate-600 mb-4">
+                    Find the best prices for construction materials and services.
+                    </p>
+                    <div className="mt-auto">
+                      <Link href="/catalogue">
+                        <Button variant="outline" className="w-full">
+                          Explore Catalogue
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              </FadeInWhenVisible>
+              <FadeInWhenVisible>
+                <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col">
+                  <div className="relative h-48">
+                    <Image
+                      src="/images/professional.jpg"
+                      alt="Construction suppliers"
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <h3 className="absolute bottom-4 left-4 text-xl font-semibold text-white">Browse Suppliers</h3>
+                  </div>
+                  <CardContent className="flex-1 p-6">
+                    <p className="text-slate-600 mb-4">
+                      Find trusted suppliers for all your construction needs, from building materials to equipment
+                      rentals and specialized services.
+                    </p>
+                    <div className="mt-auto">
+                      <Link href="/supplier">
+                        <Button variant="outline" className="w-full">
+                          Explore Suppliers
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              </FadeInWhenVisible>
+
+              <FadeInWhenVisible>
+                <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col">
+                  <div className="relative h-48">
+                    <Image
+                      src="/images/supplier.jpg"
+                      alt="Construction professionals"
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <h3 className="absolute bottom-4 left-4 text-xl font-semibold text-white">Browse Professionals</h3>
+                  </div>
+                  <CardContent className="flex-1 p-6">
+                    <p className="text-slate-600 mb-4">
+                      Connect with verified contractors, architects, and quantity surveyors to bring your construction
+                      projects to life.
+                    </p>
+                    <div className="mt-auto">
+                      <Link href="/professionals/showcase">
+                        <Button variant="outline" className="w-full">
+                          Find Professionals
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              </FadeInWhenVisible>
+
+              <FadeInWhenVisible>
+                <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col">
+                  <div className="relative h-48">
+                    <Image
+                      src="/images/colombo.jpg"
+                      alt="Build in Sri Lanka"
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <h3 className="absolute bottom-4 left-4 text-xl font-semibold text-white">Build in Sri Lanka</h3>
+                  </div>
+                  <CardContent className="flex-1 p-6">
+                    <p className="text-slate-600 mb-4">
+                      Discover investment opportunities in Sri Lanka's growing construction industry with our
+                      comprehensive guidance and support.
+                    </p>
+                    <div className="mt-auto">
+                      <Link href="/build-in-sl">
+                        <Button variant="outline" className="w-full">
+                          Learn More
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              </FadeInWhenVisible>
             </div>
+          </div>
+        </section>
+        <section
+  id="about"
+  className="w-full py-12 md:py-24 lg:py-32 bg-cover bg-center relative"
+  style={{ backgroundImage: "url('/images/cover1.jpg')" }} // Replace with your background image path
+>
+<div className="absolute inset-0 bg-white/95"></div>
+          <div className="container px-4 md:px-6 relative z-10">
+            <h2 className="text-3xl font-bold mb-8 text-center">About Us</h2>
+            <SlideIn>
+              <div className="max-w-3xl mx-auto mb-12 text-center">
+                <p className="text-lg">
+                  BuildMarketLK is a pioneering joint venture formed by three industry leaders: the Ceylon Institute of
+                  Builders (CIOB), VFORM Consultants, and Concolabs. Together, we are reshaping Sri Lanka's construction
+                  landscape by creating a transparent, efficient, and technology-driven marketplace for construction
+                  materials and services.
+                </p>
+              </div>
+            </SlideIn>
+
+            <div className="grid md:grid-cols-3 gap-8 mb-16">
+              <FadeInWhenVisible>
+                <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col">
+                  <div className="bg-slate-100 p-6 flex items-center justify-center h-48">
+                    <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-md">
+                      <Image
+                        src="/images/ciob.jpg"
+                        alt="CIOB Logo"
+                        width={80}
+                        height={80}
+                        className="object-contain"
+                      />
+                    </div>
+                  </div>
+                  <CardContent className="flex-1 p-6">
+                    <h3 className="text-xl font-semibold mb-4 text-center">Ceylon Institute of Builders</h3>
+                    <p className="text-slate-600">
+                      Sri Lanka's oldest professional body for builders, brings decades of institutional knowledge,
+                      policy advocacy, and a commitment to elevating industry standards.
+                    </p>
+                  </CardContent>
+                </Card>
+              </FadeInWhenVisible>
+
+              <FadeInWhenVisible>
+                <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col">
+                  <div className="bg-slate-100 p-6 flex items-center justify-center h-48">
+                    <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-md">
+                      <Image
+                        src="/images/vform.jpeg"
+                        alt="VFORM Consultants Logo"
+                        width={80}
+                        height={80}
+                        className="object-contain"
+                      />
+                    </div>
+                  </div>
+                  <CardContent className="flex-1 p-6">
+                    <h3 className="text-xl font-semibold mb-4 text-center">VFORM Consultants</h3>
+                    <p className="text-slate-600">
+                      A quantity surveying firm, contributes deep expertise in cost management and project estimation,
+                      ensuring accuracy and financial efficiency across the platform.
+                    </p>
+                  </CardContent>
+                </Card>
+              </FadeInWhenVisible>
+
+              <FadeInWhenVisible>
+                <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col">
+                  <div className="bg-slate-100 p-6 flex items-center justify-center h-48">
+                    <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-md">
+                      <Image
+                        src="/images/concolabs.svg"
+                        alt="Concolabs Logo"
+                        width={80}
+                        height={80}
+                        className="object-contain"
+                      />
+                    </div>
+                  </div>
+                  <CardContent className="flex-1 p-6">
+                    <h3 className="text-xl font-semibold mb-4 text-center">Concolabs</h3>
+                    <p className="text-slate-600">
+                      A construction technology company, powers the platform with cutting-edge digital tools, enabling
+                      real-time pricing, automated estimations, and seamless supplier integration.
+                    </p>
+                  </CardContent>
+                </Card>
+              </FadeInWhenVisible>
+            </div>
+
+            <SlideIn direction="right">
+              <div className="bg-slate-100 p-8 rounded-2xl shadow-lg" >
+                <h3 className="text-2xl text-center font-semibold mb-4">Our Vision</h3>
+                <p className="text-lg">
+                  Our vision is to empower construction projects worldwide by offering a reliable, detailed pricing
+                  catalog that makes resource allocation simple and efficient. We believe in building a future where
+                  quality construction resources are accessible, transparent, and economically feasible for all.
+                </p>
+              </div>
+            </SlideIn>
           </div>
         </section>
 
@@ -230,11 +415,11 @@ export default function Home() {
         <section className="w-full py-12 md:py-24 lg:py-32 bg-white text-white">
           <div className="container px-4 md:px-6 text-center">
             <FadeInWhenVisible>
-              <h2 className="text-3xl font-bold mb-4 text-black">Are you a supplier?</h2>
+              <h2 className="text-3xl font-bold mb-4 text-black">Are you a supplier or a professional?</h2>
               <p className="text-xl  mb-8 text-slate-900">
-                List your products and prices.
+                Join us and boost your business visibility and reach a wider audience.
               </p>
-              <Link href="/onboarding">
+              <Link href="/register">
                 <Button size="lg"  className=" text-white hover:text-slate-100">
                   Register
                 </Button>

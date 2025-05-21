@@ -20,7 +20,7 @@ export function SiteFooter() {
                 className="flex items-center gap-2 hover:opacity-90"
               >
                 <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Copy%20of%20CONCOLABS-z0CMXvjJH8p1tfKmL0IHBsrm0ZHfxO.svg"
+                  src="/images/concolabs.svg"
                   alt="Concolabs Logo"
                   width={60}
                   height={10}

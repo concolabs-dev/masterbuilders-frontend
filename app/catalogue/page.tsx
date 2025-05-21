@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import Loading from "@/components/loading"
 interface Material {
 
   id: string
@@ -57,13 +58,14 @@ export default function Catalogue() {
   const [searchQuery, setSearchQuery] = useState<string>("")
   const [tempsearchQuery, setTempSearchQuery] = useState<string>("")
   const [showSidebar, setShowSidebar] = useState<boolean>(false)
-
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   // New state for currency conversion:
   const [selectedCurrency, setSelectedCurrency] = useState<string>("LKR")
   const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({})
   const [materialItems, setMaterialItems] = useState<Item[]>([])
 
   useEffect(() => {
+    setIsLoading(true)
     console.log(selectedMaterial?.Name)
     if (selectedMaterial) {
       getItemsByMaterialID(encodeURIComponent(selectedMaterial.id))
@@ -71,6 +73,7 @@ export default function Catalogue() {
         .catch((err) => console.error("Error fetching items by material name:", err))
     }
     console.log(materialItems)
+    setIsLoading(false)
   }, [selectedMaterial])
   // Fetch exchange rates from our API (returns major_currencies)
   useEffect(() => {
@@ -104,6 +107,7 @@ export default function Catalogue() {
     }
   }
   useEffect(() => {
+    setIsLoading(true)
     const fetchCategories = async () => {
       try {
         const data = await getTypes()
@@ -114,6 +118,9 @@ export default function Catalogue() {
         }
       } catch (error) {
         console.error("Error fetching categories:", error)
+      }
+      finally {
+        setIsLoading(false)
       }
     }
 
@@ -148,6 +155,7 @@ export default function Catalogue() {
 
   return (
     <>
+    {isLoading && <Loading/>}
          {/* <Head>
     <title>Catalogue</title>
     <meta name="description" content="This is a catalogue of all the construction material items by various suppliers. Price vatriation by with the timeline and the currency conversion ability is also there. " />
@@ -164,19 +172,7 @@ export default function Catalogue() {
         {/* <label htmlFor="currency" className="font-medium">
           Currency:
         </label> */}
-        <Select onValueChange={(value) => setSelectedCurrency(value)}>
-  <SelectTrigger className="w-[180px]">
-    <SelectValue placeholder="Select Currency" />
-  </SelectTrigger>
-  <SelectContent>
-  {Object.keys(exchangeRates).map((currency) => (
-            <SelectItem key={currency} value={currency}>
-              {currency}
-            </SelectItem>
-          ))}
-
-  </SelectContent>
-</Select>
+ 
         {/* <select
           id="currency"
           value={selectedCurrency}
@@ -290,6 +286,20 @@ export default function Catalogue() {
             >
               Clear
             </Button>
+            <Select onValueChange={(value) => setSelectedCurrency(value)}>
+  <SelectTrigger className="w-[180px] bg-primary text-white font-semibold hover:bg-primary/90 focus:ring-2 focus:ring-primary/50 rounded-lg ">
+    <span className="text-white">
+      <SelectValue placeholder="Select Currency" />
+    </span>
+  </SelectTrigger>
+  <SelectContent>
+    {Object.keys(exchangeRates).map((currency) => (
+      <SelectItem key={currency} value={currency}>
+        {currency}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {materials.length > 0 ? (
@@ -325,7 +335,11 @@ export default function Catalogue() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2 text-center">
                   {(() => {
-                    const latestPriceLKR = selectedMaterial.Prices.find((p) => p[1])?.[1] || 0
+                    const latestPriceLKR =
+                    selectedMaterial.Prices
+                      .slice() // Create a shallow copy to avoid mutating the original array
+                      .sort((a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime()) // Sort by date descending
+                      .find((p) => p[1])?.[1] || 0
                     const conversionRate = getConversionRate()
                     const displayedPrice = latestPriceLKR * conversionRate
                     return (

@@ -83,7 +83,7 @@ export default function ProfessionalsShowcase() {
           <h2 className="text-2xl font-semibold mb-4">{letter}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {pros.map((pro) => (
-              <Link key={pro.id} href={`/professionals/${pro.id}`}>
+              <Link key={pro.id} href={`/professionals/${pro.pid}`}>
                 <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
                   <div className="relative h-48 w-full overflow-hidden">
                     <Image

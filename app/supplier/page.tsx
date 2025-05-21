@@ -9,6 +9,7 @@ import { Search } from "lucide-react"
 import Head from 'next/head';
 import { getSuppliers, Supplier } from "@/app/api"
 import { Suspense } from "react"
+import Loading from "@/components/loading"
 export default function Page() {
   return (
     <Suspense fallback={<div>Loading suppliers...</div>}>
@@ -23,8 +24,9 @@ function SuppliersPage() {
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null)
   const [suppliersByLetter, setSuppliersByLetter] = useState<Record<string, Supplier[]>>({})
   const alphabet = Array.from("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-
+ const [isLoading, setIsLoading] = useState(true)
   useEffect(() => {
+    setIsLoading(true)
     const fetchAndGroupSuppliers = async () => {
       try {
         const suppliersList = await getSuppliers()
@@ -37,6 +39,9 @@ function SuppliersPage() {
         setSuppliersByLetter(grouped)
       } catch (error) {
         console.error("Error fetching suppliers:", error)
+      }
+      finally {
+        setIsLoading(false)
       }
     }
     fetchAndGroupSuppliers()
@@ -65,6 +70,7 @@ function SuppliersPage() {
 
   return (
     <>
+    {isLoading && <Loading/>}
         {/* <Head>
         <title>Suppliers</title>
         <meta name="description" content="List of all the suppliers of the construction materials in Sri Lanka" />
