@@ -79,7 +79,7 @@ function SupplierDashboardPage() {
       if (user && typeof user.sub === 'string') {
         console.log(user.sub)
         if (!user?.sub) return
-        
+
         getSupplierByPPID(user.sub)
         .then((existing: Supplier | undefined) => {
           if (existing) {

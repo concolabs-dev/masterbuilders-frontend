@@ -31,8 +31,11 @@ function AdminSuppliersTab() {
       const paymentRecords = await getPaymentRecords()
       const approved: SupplierWithRecord[] = []
       const notApproved: SupplierWithRecord[] = []
+
       for (const record of paymentRecords) {
-         let supplier: Supplier
+
+        let supplier: Supplier
+
         try {
            supplier = await getSupplierByPPID(record.Supplierpid)
         } catch (error) {
@@ -40,6 +43,7 @@ function AdminSuppliersTab() {
           continue
           
         }
+
         if (record.Approved) {
           approved.push({ supplier, record })
         } else {
