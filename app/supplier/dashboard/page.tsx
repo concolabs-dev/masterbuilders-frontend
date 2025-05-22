@@ -79,12 +79,12 @@ function SupplierDashboardPage() {
       if (user && typeof user.sub === 'string') {
         console.log(user.sub)
         if (!user?.sub) return
-        const professional =  getProfessionalByPID(user.sub)
-        if (await professional) {
-          // Redirect to professional dashboard if a professional exists
-          router.push("/professionals/dashboard")
-          return
-        }
+//         const professional = await getProfessionalByPID(user.sub) // Await the asynchronous function
+// if (professional) {
+//   // Redirect to professional dashboard if a professional exists
+//   router.push("/professionals/dashboard")
+//   return
+// }
         getSupplierByPPID(user.sub)
         .then((existing: Supplier | undefined) => {
           if (existing) setAlreadyRegistered(true)
