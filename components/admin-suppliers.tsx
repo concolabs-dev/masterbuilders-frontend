@@ -33,7 +33,9 @@ function AdminSuppliersTab() {
       const notApproved: SupplierWithRecord[] = []
 
       for (const record of paymentRecords) {
+
         let supplier: Supplier
+
         try {
            supplier = await getSupplierByPPID(record.Supplierpid)
         } catch (error) {
