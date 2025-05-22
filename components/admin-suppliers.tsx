@@ -32,7 +32,14 @@ function AdminSuppliersTab() {
       const approved: SupplierWithRecord[] = []
       const notApproved: SupplierWithRecord[] = []
       for (const record of paymentRecords) {
-        const supplier = await getSupplierByPPID(record.Supplierpid)
+         let supplier: Supplier
+        try {
+           supplier = await getSupplierByPPID(record.Supplierpid)
+        } catch (error) {
+          console.error("Error fetching supplier by PPID:", error)
+          continue
+          
+        }
         if (record.Approved) {
           approved.push({ supplier, record })
         } else {
