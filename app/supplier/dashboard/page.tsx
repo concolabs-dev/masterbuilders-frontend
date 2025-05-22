@@ -79,15 +79,12 @@ function SupplierDashboardPage() {
       if (user && typeof user.sub === 'string') {
         console.log(user.sub)
         if (!user?.sub) return
-        const professional =  getProfessionalByPID(user.sub)
-        if (await professional) {
-          // Redirect to professional dashboard if a professional exists
-          router.push("/professionals/dashboard")
-          return
-        }
+        
         getSupplierByPPID(user.sub)
         .then((existing: Supplier | undefined) => {
-          if (existing) setAlreadyRegistered(true)
+          if (existing) {
+            setAlreadyRegistered(true)
+          return}
         })
         .catch((err) => console.error("Failed checking supplier by PID:", err))
         getSupplierByPID(user.sub)
@@ -102,6 +99,12 @@ function SupplierDashboardPage() {
             setSupplierError(err)
             setSupplierLoading(false)
           })
+        const professional =  getProfessionalByPID(user.sub)
+        if (await professional) {
+          // Redirect to professional dashboard if a professional exists
+          router.push("/professionals/dashboard")
+          return
+        }
       } else {
         setSupplierLoading(false)
       }
