@@ -21,20 +21,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Label } from "@/components/ui/label";
-import { Plus, Pencil, Trash2 } from "lucide-react";
-import { MaterialCard } from "@/components/material-card";
-import { PriceChart } from "@/components/price-chart";
-import AdminSuppliersTab from "@/components/admin-suppliers";
+} from "@/components/ui/dialog"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Label } from "@/components/ui/label"
+import { Plus, Pencil, Trash2 } from "lucide-react"
+import { MaterialCard } from "@/components/material-card"
+import { PriceChart } from "@/components/price-chart"
+import AdminSuppliersTab from "@/components/admin-suppliers"
+import Modal from "@/components/ui/Modal"
 import {
   getMaterialsByCategory,
   getMaterials,
@@ -50,6 +44,7 @@ import {
 } from "../api";
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 import { withRoleGuard } from "../hoc/withRoleGuard";
+import MonthManager from "@/components/MonthManager"
 
 interface SubSubcategory {
   name: string;
@@ -427,21 +422,22 @@ function AdminDashboard() {
 }
 
 function MaterialsUI() {
-  const [materials, setMaterials] = useState<Material[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(
-    null
-  );
-  const [expandedTypes, setExpandedTypes] = useState<string[]>([]);
-  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
-  const [selectedType, setSelectedType] = useState<string | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(
-    null
-  );
-  const [searchQuery, setSearchQuery] = useState("");
-  const [tempsearchQuery, setTempSearchQuery] = useState("");
-  const [showSidebar, setShowSidebar] = useState(false);
+    const [isMonthManagerOpen, setIsMonthManagerOpen] = useState(false)
+
+  
+    const openMonthManager = () => setIsMonthManagerOpen(true)
+    const closeMonthManager = () => setIsMonthManagerOpen(false)
+  const [materials, setMaterials] = useState<Material[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(null)
+  const [expandedTypes, setExpandedTypes] = useState<string[]>([])
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([])
+  const [selectedType, setSelectedType] = useState<string | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState("")
+  const [tempsearchQuery, setTempSearchQuery] = useState("")
+  const [showSidebar, setShowSidebar] = useState(false)
 
   // Admin edit state
   const [editingMaterial, setEditingMaterial] = useState<Material | null>(null);
@@ -783,10 +779,17 @@ function MaterialsUI() {
             >
               Clear
             </Button>
-            <Button variant="outline" onClick={addNewMonthToAllMaterials}>
-              Add New Month to All Materials
-            </Button>
-            {/* New button to open the create dialog */}
+            <div>
+      {/* Month Manager Button */}
+      <Button variant="outline" onClick={openMonthManager}>
+        Month Manager
+      </Button>
+
+      {/* Month Manager Modal */}
+      <Modal isOpen={isMonthManagerOpen} onClose={closeMonthManager}>
+        <MonthManager materials={materials} setMaterials={setMaterials} />
+      </Modal>
+    </div>
             <Button variant="outline" onClick={openCreateDialog}>
               Add Material
             </Button>

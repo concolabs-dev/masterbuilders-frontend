@@ -29,7 +29,7 @@ export function MainNav() {
           width={40}
           height={40}
         />
-        <span className="hidden font-bold sm:inline-block">BuildMastersLk</span>
+        <span className="hidden font-bold sm:inline-block">BuildMarketLk</span>
       </Link>
       <nav className="flex items-center space-x-6 text-sm font-medium">
         <Link href="/" className="transition-colors hover:text-foreground/80 text-foreground">
@@ -56,11 +56,15 @@ export function MainNav() {
         >
           Contact
         </a>
+        <Link href="/catalogue" className="transition-colors hover:text-foreground/80 text-primary">
+          Catalogue
+        </Link>
         <Link href="/supplier" className="transition-colors hover:text-foreground/80 text-primary">
           Suppliers
         </Link>
-        <Link href="/catalogue" className="transition-colors hover:text-foreground/80 text-primary">
-          Catalogue
+     
+        <Link href="/professionals" className="transition-colors hover:text-foreground/80 text-primary">
+          Professionals
         </Link>
       </nav>
     </div>

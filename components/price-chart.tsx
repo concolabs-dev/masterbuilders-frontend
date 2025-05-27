@@ -38,7 +38,7 @@ export function PriceChart({ itemName, prices, currency, onClose }: PriceChartPr
                 stroke="#888888"
                 fontSize={12}
               />
-              <YAxis stroke="#888888" fontSize={12} tickFormatter={(value) => `Rs. ${value}`} />
+              <YAxis stroke="#888888" fontSize={12} tickFormatter={(value) => `${currency} ${value}`} />
               <Tooltip
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {

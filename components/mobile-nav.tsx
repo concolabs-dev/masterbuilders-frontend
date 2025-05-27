@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Bell, Group, Home, List, Menu, User } from "lucide-react"
+import { Bell, Group, Home, List, Menu, User, Users } from "lucide-react"
 
 export function MobileNav() {
   const pathname = usePathname()
@@ -25,6 +25,15 @@ export function MobileNav() {
       >
         <List className="h-6 w-6" />
         <span className="text-xs">Catalogue</span>
+      </Link>
+      <Link
+        href="/professionals"
+        className={`flex flex-col items-center justify-center px-4 py-2 ${
+          pathname === "/professionals" ? "text-primary" : "text-muted-foreground"
+        }`}
+      >
+        <Users className="h-6 w-6" />
+        <span className="text-xs">Professionals</span>
       </Link>
       <Link href="/supplier" className="flex flex-col items-center justify-center px-4 py-2 text-muted-foreground">
         <div className="relative">

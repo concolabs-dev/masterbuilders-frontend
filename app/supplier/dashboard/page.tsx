@@ -22,13 +22,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import CategorySidebar from "@/components/categorySidebar";
-import { Plus, Grid, List } from "lucide-react";
-import { SupplierProfile } from "@/components/supplier-profile";
-import { SupplierItemCard } from "@/components/supplier-item-card";
-import { SupplierItemList } from "@/components/supplier-item-list";
-import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client";
+} from "@/components/ui/dialog"
+import CategorySidebar from "@/components/categorySidebar"
+import { Plus, Grid, List } from "lucide-react"
+import { SupplierProfile } from "@/components/supplier-profile"
+import { SupplierItemCard } from "@/components/supplier-item-card"
+import { SupplierItemList } from "@/components/supplier-item-list"
+import { useRouter } from "next/navigation"
+import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client"
 import {
   getSupplierByPPID,
   getSupplierByEmail,
@@ -39,9 +40,12 @@ import {
   getTypes,
   getMaterialsByCategory,
   getSupplierByPID,
-} from "@/app/api";
-import { Supplier, Item, Material, Category } from "@/app/api";
-import { ImageUpload } from "@/components/image-upload"; // adjust path as needed
+  getProfessionalByPID,
+} from "@/app/api"
+import Loading from "@/components/loading"
+
+import { Supplier, Item, Material, Category } from "@/app/api"
+import { ImageUpload } from "@/components/image-upload" // adjust path as needed
 import {
   Select,
   SelectContent,
@@ -64,45 +68,55 @@ function SupplierDashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   // State for new item dialog selections.
-  const [types, setTypes] = useState<Category[]>([]);
-  const [selectedType, setSelectedType] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(
-    null
-  );
-
-  const [materials, setMaterials] = useState<Material[]>([]);
-  const [selectedMaterial, setSelectedMaterial] = useState("");
-  const [unit, setUnit] = useState("");
+  const [types, setTypes] = useState<Category[]>([])
+  const [selectedType, setSelectedType] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("")
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null)
+  const router = useRouter()
+  const [materials, setMaterials] = useState<Material[]>([])
+  const [selectedMaterial, setSelectedMaterial] = useState("")
+  const [unit, setUnit] = useState("")
   // State for image upload in add item dialog.
   const [addImageUrl, setAddImageUrl] = useState("");
   const [alreadyRegistered, setAlreadyRegistered] = useState(false);
   // Fetch supplier using user's email.
   useEffect(() => {
-    if (user && typeof user.sub === "string") {
-      console.log(user.sub);
-      if (!user?.sub) return;
-      getSupplierByPPID(user.sub)
+    async function fetchData(){
+      if (user && typeof user.sub === 'string') {
+        console.log(user.sub)
+        if (!user?.sub) return
+
+        getSupplierByPPID(user.sub)
         .then((existing: Supplier | undefined) => {
-          if (existing) setAlreadyRegistered(true);
+          if (existing) {
+            setAlreadyRegistered(true)
+          return}
         })
-        .catch((err) => console.error("Failed checking supplier by PID:", err));
-      getSupplierByPID(user.sub)
-        .then((data) => {
-          setSupplier(data);
-          setAlreadyRegistered(false);
-          console.log("efef");
-          setSupplierLoading(false);
-        })
-        .catch((err) => {
-          console.error("Error fetching supplier:", err);
-          setSupplierError(err);
-          setSupplierLoading(false);
-        });
-    } else {
-      setSupplierLoading(false);
+        .catch((err) => console.error("Failed checking supplier by PID:", err))
+        getSupplierByPID(user.sub)
+          .then((data) => {
+            setSupplier(data)
+            setAlreadyRegistered(false)
+            console.log("efef")
+            setSupplierLoading(false)
+          })
+          .catch((err) => {
+            console.error("Error fetching supplier:", err)
+            setSupplierError(err)
+            setSupplierLoading(false)
+          })
+        const professional =  getProfessionalByPID(user.sub)
+        if (await professional) {
+          // Redirect to professional dashboard if a professional exists
+          router.push("/professionals/dashboard")
+          return
+        }
+      } else {
+        setSupplierLoading(false)
+      }
     }
-  }, [user]);
+   fetchData()
+  }, [user])
 
   // Fetch supplier items once the supplier data is loaded.
   useEffect(() => {
@@ -257,7 +271,7 @@ function SupplierDashboardPage() {
   };
 
   if (userLoading || supplierLoading) {
-    return <div>Loading...</div>;
+    return <Loading />
   }
   if (alreadyRegistered) {
     return (
