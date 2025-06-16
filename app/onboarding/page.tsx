@@ -128,8 +128,12 @@ function SupplierOnboarding() {
       cover_pic_url: formData.coverImage,
     }
     try {
-      await createSupplier(supplierPayload)
-      router.push("/onboarding/success")
+           await createSupplier(supplierPayload).then((response) => {
+        // Assuming createSupplier returns the created Supplier object on success
+        if (response) {
+          router.push("/onboarding/success")
+        }
+      })
     } catch (err) {
       console.error("Failed to create supplier", err)
     }
