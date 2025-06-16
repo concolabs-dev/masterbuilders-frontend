@@ -103,10 +103,9 @@ function ProfessionalRegistration() {
     console.log("Professional Payload:", professionalPayload)
   
     try {
-      await createProfessional(professionalPayload)
-      console.log("Professional created successfully")
-
-      router.push("professionals/dashboard/")
+         await createProfessional(professionalPayload).then((response) => {
+        if (response) {   console.log("Professional created successfully")
+      router.push("professionals/dashboard/")}})
 
     } catch (err) {
       console.error("Failed to create professional", err)
