@@ -69,9 +69,10 @@ export default function Catalogue() {
     console.log(selectedMaterial?.Name)
     if (selectedMaterial) {
       getItemsByMaterialID(encodeURIComponent(selectedMaterial.id))
-       .then((data) => {setMaterialItems(data);setIsLoading(false)})
+       .then((data) => {setMaterialItems(data)})
         .catch((err) => console.error("Error fetching items by material name:", err))
     }
+    setIsLoading(false)
     console.log(materialItems)
   
   }, [selectedMaterial])
