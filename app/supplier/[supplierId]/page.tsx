@@ -78,40 +78,40 @@
 //         {viewMode === "grid" ? (
 //           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
 //             {items.map((item) => (
-//               <SupplierItemCard 
-//                 key={item.id} 
-//                 item={item} 
-//                 onEdit={() => console.log(`Edit item ${item.id}`)} 
-//                 onDelete={() => console.log(`Delete item ${item.id}`)} 
+//               <SupplierItemCard
+//                 key={item.id}
+//                 item={item}
+//                 onEdit={() => console.log(`Edit item ${item.id}`)}
+//                 onDelete={() => console.log(`Delete item ${item.id}`)}
 //                 admin={false}
 //               />
 //             ))}
 //           </div>
 //         ) : (
-//           <SupplierItemList 
-//             items={items} 
-//             onEdit={(id) => console.log(`Edit item ${id}`)} 
-//             onDelete={(id) => console.log(`Delete item ${id}`)} 
-//             admin={false} 
+//           <SupplierItemList
+//             items={items}
+//             onEdit={(id) => console.log(`Edit item ${id}`)}
+//             onDelete={(id) => console.log(`Delete item ${id}`)}
+//             admin={false}
 //           />
 //         )}
 //       </div>
 //     </div>
 //   )
 // }
-"use client"
+"use client";
 
-import { useState, useEffect, FormEvent } from "react"
-import { useParams } from "next/navigation"
-import { SupplierProfile } from "@/components/supplier-profile"
-import { SupplierItemCard } from "@/components/supplier-item-card"
-import { SupplierItemList } from "@/components/supplier-item-list"
-import { getSupplierByPID, getItemsBySupplier, getTypes } from "@/app/api"
-import type { Supplier, Item, Category } from "@/app/api"
-import { getExchangeRates } from "@/app/api"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Grid, List, Plus } from "lucide-react"
+import { useState, useEffect, FormEvent } from "react";
+import { useParams } from "next/navigation";
+import { SupplierProfile } from "@/components/supplier-profile";
+import { SupplierItemCard } from "@/components/supplier-item-card";
+import { SupplierItemList } from "@/components/supplier-item-list";
+import { getSupplierByPID, getItemsBySupplier, getTypes } from "@/app/api";
+import type { Supplier, Item, Category } from "@/app/api";
+import { getExchangeRates } from "@/app/api";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Grid, List, Plus } from "lucide-react";
 import {
     Select,
     SelectContent,
@@ -122,7 +122,8 @@ import {
 import CategorySidebar from "@/components/categorySidebar"
 import { Suspense } from "react"
 import Loading from "@/components/loading"
-export default function PublicSupplierPage() {
+import { withRoleGuard } from "@/app/hoc/withRoleGuard";
+function PublicSupplierPage() {
   const { supplierId } = useParams<{ supplierId: string }>()
   const [supplier, setSupplier] = useState<Supplier | null>(null)
   const [items, setItems] = useState<Item[]>([])
@@ -134,67 +135,74 @@ export default function PublicSupplierPage() {
   const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null)
   const [selectedCurrency, setSelectedCurrency] = useState("LKR")
   const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({})
-  const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
   useEffect(() => {
     async function fetchRates() {
       try {
-        const rates = await getExchangeRates()
-        setExchangeRates(rates)
+        const rates = await getExchangeRates();
+        setExchangeRates(rates);
       } catch (err) {
-        console.error("Failed to fetch exchange rates:", err)
+        console.error("Failed to fetch exchange rates:", err);
       }
     }
-    fetchRates()
-  }, [])
+    fetchRates();
+  }, []);
   const conversionRate =
-    selectedCurrency === "LKR" ? 1 : (exchangeRates[selectedCurrency] || 1)
+    selectedCurrency === "LKR" ? 1 : exchangeRates[selectedCurrency] || 1;
   // Fetch supplier info
   useEffect(() => {
     setIsLoading(true)
     if (supplierId) {
-        getSupplierByPID(supplierId)
+      getSupplierByPID(supplierId)
         .then((data) => setSupplier(data))
         .catch((err) => console.error("Error fetching supplier:", err))
         .finally(() => setIsLoading(false))
     }
-  }, [supplierId])
+  }, [supplierId]);
 
   // Fetch items for this supplier
   useEffect(() => {
     if (supplier && supplier.pid) {
       getItemsBySupplier(supplier.pid)
         .then((data) => setItems(data))
-        .catch((err) => console.error("Error fetching supplier items:", err))
+        .catch((err) => console.error("Error fetching supplier items:", err));
     }
-  }, [supplier])
+  }, [supplier]);
 
   // Fetch available types
   useEffect(() => {
     getTypes()
       .then((data) => setTypes(data))
-      .catch((err) => console.error("Error fetching types:", err))
-  }, [])
+      .catch((err) => console.error("Error fetching types:", err));
+  }, []);
 
   // Filter items by search query and type/category/subcategory
-  const filteredItems = items && items.filter((item) => {
-    const matchesSearch =
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredItems =
+    items &&
+    items.filter((item) => {
+      const matchesSearch =
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesType =
-      !selectedType || (item.type?.toLowerCase() === selectedType.toLowerCase())
+      const matchesType =
+        !selectedType ||
+        item.type?.toLowerCase() === selectedType.toLowerCase();
 
-    const matchesCategory =
-      !selectedCategory || (item.category.toLowerCase() === selectedCategory.toLowerCase())
+      const matchesCategory =
+        !selectedCategory ||
+        item.category.toLowerCase() === selectedCategory.toLowerCase();
 
-    const matchesSubcategory =
-      !selectedSubcategory || (item.subcategory.toLowerCase() === selectedSubcategory.toLowerCase())
+      const matchesSubcategory =
+        !selectedSubcategory ||
+        item.subcategory.toLowerCase() === selectedSubcategory.toLowerCase();
 
-    return matchesSearch && matchesType && matchesCategory && matchesSubcategory
-  })
+      return (
+        matchesSearch && matchesType && matchesCategory && matchesSubcategory
+      );
+    });
 
   if (!supplier) {
-    return <div className="container mx-auto py-10">Loading supplier...</div>
+    return <div className="container mx-auto py-10">Loading supplier...</div>;
   }
 
   const profileData = {
@@ -210,11 +218,16 @@ export default function PublicSupplierPage() {
     profileImage: supplier.profile_pic_url,
     coverImage: supplier.cover_pic_url,
     description: supplier.business_description,
-  }
-  const convertedItems = filteredItems &&filteredItems.map((item) => ({
-    ...item,
-    price: typeof item.price === 'number' ? item.price * conversionRate : item.price,
-  }))
+  };
+  const convertedItems =
+    filteredItems &&
+    filteredItems.map((item) => ({
+      ...item,
+      price:
+        typeof item.price === "number"
+          ? item.price * conversionRate
+          : item.price,
+    }));
   return (
     <Suspense fallback={<div>Loading...</div>}>
       {isLoading && <Loading/>}
@@ -304,5 +317,7 @@ export default function PublicSupplierPage() {
       </div>
     </div>
     </Suspense>
-  )
+  );
 }
+
+export default withRoleGuard(PublicSupplierPage, ["supplier"]);
