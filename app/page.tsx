@@ -10,7 +10,7 @@ import { TaglineCarousel } from "@/components/tagline-carousel"
 import { motion } from "framer-motion"
 import { useInView } from "framer-motion"
 import { useRef } from "react"
-
+import { HeroSlider } from "@/components/hero-slider"
 const services = [
   {
     icon: <DollarSign className="h-12 w-12 text-primary" />,
@@ -74,7 +74,8 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
-        <section className="w-full py-3 md:py-24 lg:py-32 bg-slate-900 text-white">
+        <HeroSlider />
+        {/* <section className="w-full py-3 md:py-24 lg:py-32 bg-slate-900 text-white">
           <div className="container px-4 md:px-6">
             <div className="grid gap-8 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
               <motion.div
@@ -132,7 +133,7 @@ export default function Home() {
                   width={600}
                   height={400}
                   className="mx-auto aspect-video overflow-hidden rounded-xl object-cover"
-                /> */}
+                /> 
                                <Image
   src="/images/cover3.jpg"
   alt="Construction professionals reviewing building blueprints while wearing safety gear"
@@ -143,7 +144,7 @@ export default function Home() {
               </motion.div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         <section
   id="about"
@@ -288,7 +289,7 @@ export default function Home() {
               </div>
             </SlideIn>
 
-            <div className="grid md:grid-cols-3 gap-8 mb-16">
+            <div className="grid md:grid-cols-4 gap-8 mb-16">
               <FadeInWhenVisible>
                 <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col">
                   <div className="bg-slate-100 p-6 flex items-center justify-center h-48">
@@ -330,6 +331,27 @@ export default function Home() {
                     <p className="text-slate-600">
                       A quantity surveying firm, contributes deep expertise in cost management and project estimation,
                       ensuring accuracy and financial efficiency across the platform.
+                    </p>
+                  </CardContent>
+                </Card>
+              </FadeInWhenVisible>
+                        <FadeInWhenVisible>
+                <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col">
+                  <div className="bg-slate-100 p-6 flex items-center justify-center h-48">
+                    <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-md">
+                      <Image
+                        src="/images/qserve.jpeg"
+                        alt="qserve Logo"
+                        width={80}
+                        height={80}
+                        className="object-contain"
+                      />
+                    </div>
+                  </div>
+                  <CardContent className="flex-1 p-6">
+                    <h3 className="text-xl font-semibold mb-4 text-center">Qserve</h3>
+                    <p className="text-slate-600">
+                      A chartered quantity surveying and project management consultancy, founded in Sri Lanka in 1994, pioneering professional cost planning, contract administration, value engineering, and dispute-resolutions.
                     </p>
                   </CardContent>
                 </Card>

@@ -24,10 +24,10 @@ export function MainNav() {
     <div className="mr-4 hidden md:flex">
      <Link href="/" className="mr-6 flex items-center space-x-2">
         <Image
-          src="/images/logobm.png"
+          src="/images/logo.jpeg"
           alt="Master Builders Logo"
-          width={40}
-          height={40}
+          width={60}
+          height={60}
         />
         <span className="hidden font-bold sm:inline-block">BuildMarketLk</span>
       </Link>
