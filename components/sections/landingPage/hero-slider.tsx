@@ -220,7 +220,7 @@
 
 import useTypewriter from "@/hooks/useTypewriter"
 import { useEffect, useState } from "react"
-import { Badge } from "./ui/badge"
+import { Badge } from "../../ui/badge"
 import Link from "next/link"
 import { link } from "fs"
 

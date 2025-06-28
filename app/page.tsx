@@ -10,7 +10,7 @@ import { TaglineCarousel } from "@/components/tagline-carousel"
 import { motion } from "framer-motion"
 import { useInView } from "framer-motion"
 import { useRef } from "react"
-import { HeroSlider } from "@/components/hero-slider"
+import { HeroSlider } from "@/components/sections/landingPage/hero-slider"
 const services = [
   {
     icon: <DollarSign className="h-12 w-12 text-primary" />,
@@ -75,76 +75,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         <HeroSlider />
-        {/* <section className="w-full py-3 md:py-24 lg:py-32 bg-slate-900 text-white">
-          <div className="container px-4 md:px-6">
-            <div className="grid gap-8 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
-              <motion.div
-                className="flex flex-col justify-center space-y-6"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <motion.div
-                  className="space-y-4"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2, duration: 0.5 }}
-                >
-                  <TaglineCarousel />
-                  <p className="max-w-[600px] text-slate-300 md:text-xl"> BuildMarketLK: Your all-in-one digital gateway to construction insights, investments, costs, products, and services.</p>
-                 
-                  <p className="max-w-[600px] text-slate-300 md:text-xl ">
-                    We're committed to creating value in construction by making essential resources easily accessible
-                    and affordable for every builder, investor, and homeowner.
-                  </p>
-                </motion.div>
-                <motion.div
-                  className="flex flex-col gap-2 min-[400px]:flex-row"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4, duration: 0.5 }}
-                >
-                  <Link href="/catalogue">
-                    <Button size="lg" className="w-full px-3 min-[50px]:w-auto">
-                      View Catalogue
-                    </Button>
-                  </Link>
-                  <Link href="/supplier/">
-                    <Button size="lg" className="w-full px-3 min-[50px]:w-auto">
-                      Search Suppliers
-                    </Button>
-                  </Link>
-                  <Link href="#about">
-                  <Button size="lg" variant="outline" className="w-full px-3 text-black min-[50px]:w-auto">
-                    Learn More
-                  </Button>
-                  </Link>
-                </motion.div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.6, duration: 0.5 }}
-                className="flex items-center justify-center"
-              >
-                {/* <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-5GQi5Q4D5LCFChBfhyTYAHrKIC2Q5X.png"
-                  alt="Construction professionals reviewing building blueprints while wearing safety gear"
-                  width={600}
-                  height={400}
-                  className="mx-auto aspect-video overflow-hidden rounded-xl object-cover"
-                /> 
-                               <Image
-  src="/images/cover3.jpg"
-  alt="Construction professionals reviewing building blueprints while wearing safety gear"
-  width={500}
-  height={500} // Ensure height matches width for a 1:1 aspect ratio
-  className="mx-auto aspect-square overflow-hidden rounded-xl object-contain opacity-90"
-/>
-              </motion.div>
-            </div>
-          </div>
-        </section> */}
+        
 
         <section
   id="about"
