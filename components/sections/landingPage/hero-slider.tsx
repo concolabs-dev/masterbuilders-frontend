@@ -248,7 +248,7 @@ export function HeroSlider() {
     {
       title:"Verified Experts.",
       actionButtonLabel:"Find Experts",
-      link:"/experts"
+      link:"/professionals/showcase"
     },
     {
       title:"On-Site Insights.",
@@ -263,7 +263,7 @@ export function HeroSlider() {
     {
       title:"Local Projects.",
       actionButtonLabel:"View Projects",
-      link:"/projects"
+      link:"/build-in-sl"
     }
   ]
 

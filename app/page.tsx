@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Building2, Ruler, Hammer, Truck, Users, FileSpreadsheet, DollarSign } from "lucide-react"
+import { Building2, Ruler, Hammer, Truck, Users, FileSpreadsheet, DollarSign, Globe, Zap, Shield } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { ContactSection } from "@/components/contact-section"
@@ -37,6 +37,8 @@ const services = [
 ]
 
 import { ReactNode } from "react";
+import FeaturesSection from "@/components/sections/landingPage/featuresSection"
+import StatsSection from "@/components/sections/landingPage/statsSection"
 
 function FadeInWhenVisible({ children }: { children: ReactNode }) {
   const ref = useRef(null)
@@ -72,12 +74,15 @@ function SlideIn({ children, direction = "left" }: { children: ReactNode, direct
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col overflow-hidden">
       <main className="flex-1">
         <HeroSlider />
         
+        <FeaturesSection />
 
-        <section
+        <StatsSection />
+
+        {/* <section
   id="about"
   className="w-full py-12 md:py-24 lg:py-32 bg-cover bg-center relative"
   style={{ backgroundImage: "url('/images/cover2.jpg')" }} // Replace with your background image path
@@ -200,7 +205,51 @@ export default function Home() {
               </FadeInWhenVisible>
             </div>
           </div>
-        </section>
+        </section> */}
+
+        {/* Why Choose Us Section */}
+      <section className="py-20 px-4 lg:px-32 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Why Choose BuildMarketLk?</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              We're revolutionizing the construction industry in Sri Lanka with transparency, reliability, and
+              innovation.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Shield className="w-8 h-8 text-blue-500" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Verified & Trusted</h3>
+              <p className="text-gray-600">
+                All suppliers and professionals are thoroughly verified to ensure quality and reliability.
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Zap className="w-8 h-8 text-green-500" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Real-time Updates</h3>
+              <p className="text-gray-600">
+                Get instant updates on prices, availability, and market trends to make informed decisions.
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Globe className="w-8 h-8 text-purple-500" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Comprehensive Platform</h3>
+              <p className="text-gray-600">
+                Everything you need for construction projects in one convenient, easy-to-use platform.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
         <section
   id="about"
   className="w-full py-12 md:py-24 lg:py-32 bg-cover bg-center relative"
