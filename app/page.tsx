@@ -1,16 +1,11 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Building2, Ruler, Hammer, Truck, Users, FileSpreadsheet, DollarSign, Globe, Zap, Shield } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
-import { ContactSection } from "@/components/contact-section"
-import { TaglineCarousel } from "@/components/tagline-carousel"
+import { Ruler, Users, FileSpreadsheet, DollarSign, Globe, Zap, Shield } from "lucide-react"
 import { motion } from "framer-motion"
 import { useInView } from "framer-motion"
 import { useRef } from "react"
 import { HeroSlider } from "@/components/sections/landingPage/hero-slider"
+
 const services = [
   {
     icon: <DollarSign className="h-12 w-12 text-primary" />,
@@ -77,7 +72,7 @@ export default function Home() {
           <FadeInWhenVisible>
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Why Choose BuildMarketLk?</h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              <p className="md:text-xl text-gray-600 max-w-3xl mx-auto">
                 We're revolutionizing the construction industry in Sri Lanka with transparency, reliability, and
                 innovation.
               </p>

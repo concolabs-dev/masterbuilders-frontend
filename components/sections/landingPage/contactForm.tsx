@@ -51,7 +51,7 @@ export default function ContactForm() {
             <FadeInWhenVisible>
                 <div className="text-center mb-16">
                     <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Get in Touch</h2>
-                    <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                    <p className="md:text-xl text-gray-600 max-w-2xl mx-auto">
                         Ready to transform your construction business? Contact us today and discover how BuildMarketLk can help
                         you succeed.
                     </p>
@@ -155,7 +155,7 @@ export default function ContactForm() {
                         />
                         <label htmlFor="consent" className="text-sm text-gray-600">
                             I agree to receive communications from BuildMarketLk and understand that I can unsubscribe at any
-                            time. *
+                            time.
                         </label>
                     </div>
 
