@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import FadeInWhenVisible from "@/components/ui/FadeInWhenVisible";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowRight, Loader, Mail, MapPin, Phone } from "lucide-react";
@@ -47,17 +48,19 @@ export default function ContactForm() {
         <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Get in Touch</h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Ready to transform your construction business? Contact us today and discover how BuildMarketLk can help
-                you succeed.
-              </p>
-            </div>
+            <FadeInWhenVisible>
+                <div className="text-center mb-16">
+                    <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Get in Touch</h2>
+                    <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Ready to transform your construction business? Contact us today and discover how BuildMarketLk can help
+                        you succeed.
+                    </p>
+                </div>
+            </FadeInWhenVisible>
 
             <div className="grid lg:grid-cols-2 gap-12">
               {/* Contact Information */}
-              <div>
+              <FadeInWhenVisible>
                 <h3 className="text-2xl font-bold text-gray-900 mb-8">Contact Information</h3>
                 <div className="space-y-6">
                     <div className="flex items-start space-x-4">
@@ -94,10 +97,10 @@ export default function ContactForm() {
                             </div>
                     </a>
                 </div>
-              </div>
+              </FadeInWhenVisible>
 
               {/* Contact Form */}
-              <div>
+              <FadeInWhenVisible>
                 <form className="space-y-4" onSubmit={handleSubmit}>
                     <div>
                         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -167,7 +170,7 @@ export default function ContactForm() {
                     </Button>
                 </form>
                 {responseMessage && <p className="mt-4 text-center text-sm text-gray-600">{responseMessage}</p>}
-              </div>
+              </FadeInWhenVisible>
             </div>
           </div>
         </div>

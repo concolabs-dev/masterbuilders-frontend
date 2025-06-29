@@ -42,6 +42,7 @@ import StatsSection from "@/components/sections/landingPage/statsSection"
 import FadeInWhenVisible from "@/components/ui/FadeInWhenVisible"
 import CtaSection from "@/components/sections/landingPage/ctaSection"
 import ContactForm from "@/components/sections/landingPage/contactForm"
+import AboutUsSection from "@/components/sections/landingPage/aboutUsSection"
 
 
 function SlideIn({ children, direction = "left" }: { children: ReactNode, direction?: "left" | "right" }) {
@@ -69,131 +70,6 @@ export default function Home() {
         <FeaturesSection />
 
         <StatsSection />
-
-        {/* <section
-  id="about"
-  className="w-full py-12 md:py-24 lg:py-32 bg-cover bg-center relative"
-  style={{ backgroundImage: "url('/images/cover2.jpg')" }} // Replace with your background image path
->
-<div className="absolute inset-0 bg-white/100"></div>
-          <div className="container px-4 md:px-6 relative z-10">
-            <FadeInWhenVisible>
-              <h2 className="text-3xl font-bold mb-8 text-center">Explore Our Platform</h2>
-            </FadeInWhenVisible>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <FadeInWhenVisible>
-                <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col">
-                  <div className="relative h-48">
-                    <Image
-                      src="/images/catalogue.jpg"
-                      alt="Construction suppliers"
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <h3 className="absolute bottom-4 left-4 text-xl font-semibold text-white">Catalogue</h3>
-                  </div>
-                  <CardContent className="flex-1 p-6">
-                    <p className="text-slate-600 mb-4">
-                    Find the best prices for construction materials and services.
-                    </p>
-                    <div className="mt-auto">
-                      <Link href="/catalogue">
-                        <Button variant="outline" className="w-full">
-                          Explore Catalogue
-                        </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
-              </FadeInWhenVisible>
-              <FadeInWhenVisible>
-                <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col">
-                  <div className="relative h-48">
-                    <Image
-                      src="/images/professional.jpg"
-                      alt="Construction suppliers"
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <h3 className="absolute bottom-4 left-4 text-xl font-semibold text-white">Browse Suppliers</h3>
-                  </div>
-                  <CardContent className="flex-1 p-6">
-                    <p className="text-slate-600 mb-4">
-                      Find trusted suppliers for all your construction needs, from building materials to equipment
-                      rentals and specialized services.
-                    </p>
-                    <div className="mt-auto">
-                      <Link href="/supplier">
-                        <Button variant="outline" className="w-full">
-                          Explore Suppliers
-                        </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
-              </FadeInWhenVisible>
-
-              <FadeInWhenVisible>
-                <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col">
-                  <div className="relative h-48">
-                    <Image
-                      src="/images/supplier.jpg"
-                      alt="Construction professionals"
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <h3 className="absolute bottom-4 left-4 text-xl font-semibold text-white">Browse Professionals</h3>
-                  </div>
-                  <CardContent className="flex-1 p-6">
-                    <p className="text-slate-600 mb-4">
-                      Connect with verified contractors, architects, and quantity surveyors to bring your construction
-                      projects to life.
-                    </p>
-                    <div className="mt-auto">
-                      <Link href="/professionals/showcase">
-                        <Button variant="outline" className="w-full">
-                          Find Professionals
-                        </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
-              </FadeInWhenVisible>
-
-              <FadeInWhenVisible>
-                <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col">
-                  <div className="relative h-48">
-                    <Image
-                      src="/images/colombo.jpg"
-                      alt="Build in Sri Lanka"
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <h3 className="absolute bottom-4 left-4 text-xl font-semibold text-white">Build in Sri Lanka</h3>
-                  </div>
-                  <CardContent className="flex-1 p-6">
-                    <p className="text-slate-600 mb-4">
-                      Discover investment opportunities in Sri Lanka's growing construction industry with our
-                      comprehensive guidance and support.
-                    </p>
-                    <div className="mt-auto">
-                      <Link href="/build-in-sl">
-                        <Button variant="outline" className="w-full">
-                          Learn More
-                        </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
-              </FadeInWhenVisible>
-            </div>
-          </div>
-        </section> */}
 
         {/* Why Choose Us Section */}
       <section className="py-20 px-4 lg:px-32 bg-white">
@@ -242,7 +118,7 @@ export default function Home() {
         </div>
       </section>
 
-        <section
+        {/* <section
   id="about"
   className="w-full py-12 md:py-24 lg:py-32 bg-cover bg-center relative"
   style={{ backgroundImage: "url('/images/cover1.jpg')" }} // Replace with your background image path
@@ -385,12 +261,13 @@ export default function Home() {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
 
-        <FadeInWhenVisible>
-          {/* <ContactSection /> */}
-          <ContactForm />
-        </FadeInWhenVisible>
+        {/* About Us */}
+        <AboutUsSection />
+
+        {/* <ContactSection /> */}
+        <ContactForm />
 
         {/* <section className="w-full py-12 md:py-24 lg:py-32 bg-slate-900 text-white">
           <div className="container px-4 md:px-6 text-center">
