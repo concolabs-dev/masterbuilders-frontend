@@ -223,6 +223,7 @@ import { useEffect, useState } from "react"
 import { Badge } from "../../ui/badge"
 import Link from "next/link"
 import { link } from "fs"
+import FadeInWhenVisible from "@/components/ui/FadeInWhenVisible"
 
 export function HeroSlider() {
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -271,27 +272,29 @@ export function HeroSlider() {
 
   return(
     <section className="relative h-[90vh] overflow-hidden flex flex-col justify-center w-full">
-      <div className="px-4 lg:px-32 flex flex-col items-center lg:items-start">
-        <Badge className="mb-2 hidden sm:inline-block">Sri Lanka's Premier Construction Platform</Badge>
-        <span className="block animate-slide-in-up text-lg md:text-3xl lg:text-4xl font-bold leading-tight ">Your Construction Starts with</span>
-        <span className="block bg-gradient-to-r from-orange-400 via-red-400 to-orange-400 bg-clip-text text-transparent text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
-          {displayText}
-          <span
-            className={`inline-block md:inline w-1 ${showCursor ? "opacity-100" : "opacity-0"} transition-opacity duration-100`}
-          >
-            |
+      <FadeInWhenVisible>
+        <div className="px-4 lg:px-32 flex flex-col items-center lg:items-start">
+          <Badge className="mb-2 hidden sm:inline-block">#1 Online Construction Platform in 🇱🇰</Badge>
+          <span className="block animate-slide-in-up text-lg md:text-3xl lg:text-4xl font-bold leading-tight ">Your Construction Starts with</span>
+          <span className="block bg-gradient-to-r from-orange-400 via-red-400 to-orange-400 bg-clip-text text-transparent text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+            {displayText}
+            <span
+              className={`inline-block md:inline w-1 ${showCursor ? "opacity-100" : "opacity-0"} transition-opacity duration-100`}
+            >
+              |
+            </span>
           </span>
-        </span>
-        {/* CTA buttons */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <Link href={heroTitles[currentSlide].link} className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
-            {heroTitles[currentSlide].actionButtonLabel}
-          </Link>
-          <Link href="/about" className="bg-white text-slate-800 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold transition-colors border-2 border-gray-100">
-            Learn More
-          </Link>
+          {/* CTA buttons */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Link href={heroTitles[currentSlide].link} className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+              {heroTitles[currentSlide].actionButtonLabel}
+            </Link>
+            <Link href="/about" className="bg-white text-slate-800 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold transition-colors border-2 border-gray-100">
+              Learn More
+            </Link>
+          </div>
         </div>
-      </div>
+      </FadeInWhenVisible>
       {/* Scroll btn */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2">
         <div className="flex flex-col items-center text-white/80 animate-bounce">
