@@ -16,9 +16,9 @@ export function withRoleGuard<P extends JSX.IntrinsicAttributes>(
     useEffect(() => {
       if (!isLoading && user) {
         const roles: string[] = Array.isArray(
-          user["https://dev-risinu-test.com/roles"]
+          user["https://build-market.com/api/v2/roles"]
         )
-          ? user["https://dev-risinu-test.com/roles"]
+          ? user["https://build-market.com/api/v2/roles"]
           : [];
         const hasAccess =
           allowedRoles.length === 0 ||

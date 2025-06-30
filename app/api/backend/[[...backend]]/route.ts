@@ -7,7 +7,14 @@ async function forwardRequest(request: Request, params: { backend?: string[] }):
 	const originalUrl = new URL(request.url);
 	const backendPath = params.backend ? params.backend.join("/") : "";
 	const url = `${BACKEND_API_URL}/${backendPath}${originalUrl.search}`;
-	const {accessToken} = await getAccessToken();
+	let accessToken: string | undefined;
+	
+	try {
+		const tokenResult = await getAccessToken();
+		accessToken = tokenResult?.accessToken;
+	} catch (error) {
+		console.error("Error getting access token:", error);
+	}
   
 	const headers = new Headers(request.headers);
 	headers.delete("host");
