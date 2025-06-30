@@ -224,13 +224,14 @@ import { Badge } from "../../ui/badge"
 import Link from "next/link"
 import { link } from "fs"
 import FadeInWhenVisible from "@/components/ui/FadeInWhenVisible"
+import { cn } from "@/lib/utils"
 
 export function HeroSlider() {
   const [currentSlide, setCurrentSlide] = useState(0)
 
   useEffect(() => {
       const timer = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % 3)
+        setCurrentSlide((prev) => (prev + 1) % 6)
       }, 4000)
       return () => clearInterval(timer)
     }, [])
@@ -272,11 +273,35 @@ export function HeroSlider() {
 
   return(
     <section className="relative h-[90vh] overflow-hidden flex flex-col justify-center w-full">
+      {/* Dot and grid BG */}
+      <div className="absolute w-full h-full -z-50">
+        <div className="relative flex h-[50rem] w-full items-center justify-center bg-white dark:bg-black">
+                <div
+                  className={cn(
+                    "absolute inset-0",
+                    "[background-size:40px_40px]",
+                    "[background-image:linear-gradient(to_right,#fff1e6_1px,transparent_1px),linear-gradient(to_bottom,#fff1e6_1px,transparent_1px)]",
+                    "dark:[background-image:linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]",
+                  )}
+                />
+              {/* <div
+                className={cn(
+                  "absolute inset-0",
+                  "[background-size:20px_20px]",
+                  "[background-image:radial-gradient(#fac293_1px,transparent_1px)]",
+                  "dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]",
+                )}
+              /> */}
+              {/* Radial gradient for the container to give a faded look */}
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,black_10%,transparent)]"></div>
+            </div>
+      </div>
+      
       <FadeInWhenVisible>
-        <div className="px-4 lg:px-32 flex flex-col items-center lg:items-start">
+        <div className="px-4 lg:px-32 flex flex-col items-center">
           <Badge className="mb-2 hidden sm:inline-block">#1 Online Construction Platform in 🇱🇰</Badge>
           <span className="block animate-slide-in-up text-lg md:text-3xl lg:text-4xl font-bold leading-tight ">Your Construction Starts with</span>
-          <span className="block bg-gradient-to-r from-orange-400 via-red-400 to-orange-400 bg-clip-text text-transparent text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+          <span className="block bg-gradient-to-r from-orange-400 via-red-400 to-orange-400 bg-clip-text text-transparent text-4xl md:text-6xl lg:text-7xl font-bold leading-tight py-2 mb-4">
             {displayText}
             <span
               className={`inline-block md:inline w-1 ${showCursor ? "opacity-100" : "opacity-0"} transition-opacity duration-100`}
