@@ -314,7 +314,7 @@ export function HeroSlider() {
             <Link href={heroTitles[currentSlide].link} className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
               {heroTitles[currentSlide].actionButtonLabel}
             </Link>
-            <Link href="/about" className="bg-white text-slate-800 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold transition-colors border-2 border-gray-100">
+            <Link href="/#services" className="bg-white text-slate-800 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold transition-colors border-2 border-gray-100">
               Learn More
             </Link>
           </div>

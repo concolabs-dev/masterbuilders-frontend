@@ -4,7 +4,7 @@ import Image from "next/image"
 
 export default function AboutUsSection() {
     return (
-        <section className="py-20 bg-gray-50">
+        <section id="about" className="py-20 bg-gray-50">
         <div className="container mx-auto px-8">
           <FadeInWhenVisible>
             <div className="text-center mb-16">
