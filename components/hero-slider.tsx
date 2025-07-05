@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
+import Image from "next/image"
 
 const slides = [
   {
@@ -61,7 +62,7 @@ export function HeroSlider() {
 
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length)
-    }, 5000)
+    }, 3000)
 
     return () => clearInterval(interval)
   }, [isAutoPlaying])
@@ -94,13 +95,17 @@ export function HeroSlider() {
           className={`absolute inset-0 bg-gradient-to-br ${slides[currentSlide].background}`}
         >
           {/* Background Image */}
-          <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-            style={{
-              backgroundImage: `url(${slides[currentSlide].backgroundImage})`,
-              backgroundPosition: "right center",
-            }}
-          />
+          <div className="absolute inset-0 opacity-20">
+            <Image
+              src={slides[currentSlide].backgroundImage}
+              alt={slides[currentSlide].title}
+              fill
+              className="object-cover object-right"
+              priority={currentSlide === 0} // Prioritize first slide
+              quality={75} // Reduce quality for faster loading
+              sizes="100vw"
+            />
+          </div>
 
           {/* Additional Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
