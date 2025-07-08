@@ -192,7 +192,7 @@ export const getMaterialsByCategory = async (category: string, subcategory?: str
   return response.data
 }
 
-export const createMaterial = async (material: Omit<Material, "Number">) => {
+export const createMaterial = async (material: Material) => {
   const response = await backend_api_axios.post<Material>("/materials", material)
   return response.data
 }
