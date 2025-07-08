@@ -108,12 +108,13 @@ function AdminDashboard(
     },
   })
 
-  const updateCategoryMutation = useMutation({
-    mutationFn: ({ id, category }: { id: string; category: Partial<Category> }) => updateType(id, category),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] })
-    },
-  })
+const updateCategoryMutation = useMutation({
+  mutationFn: ({ id, category }: { id: string; category: any }) => updateType(id, category as any),
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ["categories"] })
+  },
+})
+
 
   const deleteCategoryMutation = useMutation({
     mutationFn: deleteType,
@@ -122,9 +123,9 @@ function AdminDashboard(
     },
   })
 
-  const handleCreateMaterial = (newMaterial: Omit<Material, "Number">) => {
-    createMaterialMutation.mutate(newMaterial)
-  }
+const handleCreateMaterial = (newMaterial: Material) => {
+  createMaterialMutation.mutate(newMaterial)
+}
 
   const handleUpdateMaterial = (id: string, updatedMaterial: Partial<Material>) => {
     updateMaterialMutation.mutate({ id, material: updatedMaterial })
@@ -138,9 +139,9 @@ function AdminDashboard(
     createCategoryMutation.mutate(newCategory)
   }
 
-  const handleUpdateCategory = (id: string, updatedCategory: Partial<Category>) => {
-    updateCategoryMutation.mutate({ id, category: updatedCategory })
-  }
+const handleUpdateCategory = (id: string, updatedCategory: any) => {
+  updateCategoryMutation.mutate({ id, category: updatedCategory })
+}
 
   const handleDeleteCategory = (id: string) => {
     deleteCategoryMutation.mutate(id)
@@ -490,11 +491,18 @@ function MaterialsUI() {
       newMonth.setMonth(newMonth.getMonth())
       newMonth.setDate(1)
       const newMonthString = newMonth.toISOString().split("T")[0] + " 00:00:00"
-
+    const generateUUID = () => {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0;
+        const v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
       await createMaterial({
         Name: createName,
         Unit: createUnit,
         Type: createType,
+        Number: generateUUID(),
         Category: {
           Category: createCat,
           Subcategory: createSubcat || null,
@@ -530,7 +538,22 @@ function MaterialsUI() {
     setEditSubcategory(value)
     setEditSubSubcategory("")
   }
-
+const handleDeleteMaterial = async (materialId: string) => {
+  if (window.confirm("Are you sure you want to delete this material?")) {
+    try {
+      await deleteMaterial(materialId)
+      
+      // Refetch materials to update the list
+      if (selectedCategory) {
+        const data = await getMaterialsByCategory(selectedCategory, selectedSubcategory || undefined)
+        setMaterials(data)
+      }
+    } catch (error) {
+      console.error("Error deleting material:", error)
+      alert("Failed to delete material. Please try again.")
+    }
+  }
+}
   const handleEditSave = async () => {
     if (!editingMaterial) return
     try {
@@ -711,33 +734,41 @@ function MaterialsUI() {
             </Button>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {materials.length > 0 ? (
-              materials.map((material) => (
-                <div key={material.Number} className="relative">
-                  <MaterialCard
-                    name={material.Name}
-                    unit={material.Unit}
-                    location="National"
-                    rating={4}
-                    price={material.Prices.find((p) => p[1])?.[1] || 0}
-                    currency_t="LKR"
-                    onClick={() => setSelectedMaterial(material)}
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="absolute top-2 right-2"
-                    onClick={() => openEditDialog(material)}
-                  >
-                    Edit
-                  </Button>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-500">No materials found</p>
-            )}
-          </div>
+         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+  {materials.length > 0 ? (
+    materials.map((material) => (
+      <div key={material.Number} className="relative">
+        <MaterialCard
+          name={material.Name}
+          unit={material.Unit}
+          location="National"
+          rating={4}
+          price={material.Prices.find((p) => p[1])?.[1] || 0}
+          currency_t="LKR"
+          onClick={() => setSelectedMaterial(material)}
+        />
+        <div className="absolute top-2 right-2 flex gap-1">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => openEditDialog(material)}
+          >
+            Edit
+          </Button>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => handleDeleteMaterial(material.id)}
+          >
+            Delete
+          </Button>
+        </div>
+      </div>
+    ))
+  ) : (
+    <p className="text-gray-500">No materials found</p>
+  )}
+</div>
         </div>
       </div>
 
@@ -865,7 +896,7 @@ function MaterialsUI() {
                   ))}
               </select>
             </div>
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium">Sub-Subcategory</label>
               <select
                 className="w-full border p-2 mt-1"
@@ -881,7 +912,7 @@ function MaterialsUI() {
                     </option>
                   ))}
               </select>
-            </div>
+            </div> */}
             <div className="max-h-64 overflow-y-auto">
               <label className="block text-sm font-medium">Prices</label>
               {editPrices.map((price, index) => (
@@ -972,55 +1003,82 @@ function MaterialsUI() {
                 </select>
               )}
             </div>
-            <div>
-              <label className="block text-sm font-medium">Subcategory</label>
-              {createCat ? (
-                <select
-                  className="w-full border p-2 mt-1"
-                  value={createSubcat}
-                  onChange={(e) => setCreateSubcat(e.target.value)}
-                >
-                  <option value="">-- Select Subcategory --</option>
-                  {categories
-                    .find((t) => t.name === createType)
-                    ?.categories.find((c) => c.name === createCat)
-                    ?.subcategories.map((sub) => (
-                      <option key={sub.name} value={sub.name}>
-                        {sub.name}
-                      </option>
-                    ))}
-                </select>
-              ) : (
-                <select className="w-full border p-2 mt-1" disabled>
-                  <option>-- Select Category First --</option>
-                </select>
-              )}
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Sub-Subcategory</label>
-              {createSubcat ? (
-                <select
-                  className="w-full border p-2 mt-1"
-                  value={createSubSubcat}
-                  onChange={(e) => setCreateSubSubcat(e.target.value)}
-                >
-                  <option value="">-- Select Sub-Subcategory --</option>
-                  {categories
-                    .find((t) => t.name === createType)
-                    ?.categories.find((c) => c.name === createCat)
-                    ?.subcategories.find((s) => s.name === createSubcat)
-                    ?.sub_subcategories.map((subsub) => (
-                      <option key={subsub} value={subsub}>
-                        {subsub}
-                      </option>
-                    ))}
-                </select>
-              ) : (
-                <select className="w-full border p-2 mt-1" disabled>
-                  <option>-- Select Subcategory First --</option>
-                </select>
-              )}
-            </div>
+         <div>
+  <label className="block text-sm font-medium">Subcategory</label>
+  {createCat ? (
+    <select
+      className="w-full border p-2 mt-1"
+      value={createSubcat}
+      onChange={(e) => setCreateSubcat(e.target.value)}
+    >
+      <option value="">-- Select Subcategory --</option>
+      {(() => {
+        const foundType = categories.find((t) => t.name === createType);
+        const foundCategory = foundType?.categories.find((c) => c.name === createCat);
+        
+        // Debug log
+        console.log("Found Type:", foundType);
+        console.log("Found Category:", foundCategory);
+        console.log("Subcategories:", foundCategory?.subcategories);
+        
+        return foundCategory?.subcategories?.map((sub) => (
+          <option key={sub.name} value={sub.name}>
+            {sub.name}
+          </option>
+        )) || [];
+      })()}
+    </select>
+  ) : (
+    <select className="w-full border p-2 mt-1" disabled>
+      <option>-- Select Category First --</option>
+    </select>
+  )}
+</div>
+       <div>
+  <label className="block text-sm font-medium">Sub-Subcategory</label>
+  {createSubcat ? (
+    <select
+      className="w-full border p-2 mt-1"
+      value={createSubSubcat}
+      onChange={(e) => setCreateSubSubcat(e.target.value)}
+    >
+      <option value="">-- Select Sub-Subcategory --</option>
+      {(() => {
+        try {
+          const foundType = categories.find((t) => t.name === createType);
+          const foundCategory = foundType?.categories.find((c) => c.name === createCat);
+          const foundSubcategory = foundCategory?.subcategories?.find((s) => s.name === createSubcat);
+          
+          // Quick fix: Check if sub_subcategories exists and is an array
+          const subSubcategories = (foundSubcategory as any)?.sub_subcategories;
+          
+          if (Array.isArray(subSubcategories)) {
+            return subSubcategories.map((subsub: any, index: number) => {
+              // Handle both string and object cases
+              const value = typeof subsub === 'string' ? subsub : subsub?.name || subsub;
+              const displayName = typeof subsub === 'string' ? subsub : subsub?.name || subsub;
+              
+              return (
+                <option key={index} value={value}>
+                  {displayName}
+                </option>
+              );
+            });
+          }
+          
+          return <option disabled>No sub-subcategories available</option>;
+        } catch (error) {
+          console.error('Error rendering sub-subcategories:', error);
+          return <option disabled>Error loading sub-subcategories</option>;
+        }
+      })()}
+    </select>
+  ) : (
+    <select className="w-full border p-2 mt-1" disabled>
+      <option>-- Select Subcategory First --</option>
+    </select>
+  )}
+</div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={closeCreateDialog}>
