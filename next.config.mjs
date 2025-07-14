@@ -1,15 +1,24 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: [
-      "hebbkx1anhila5yf.public.blob.vercel-storage.com",
-      "masterbuilders.s3.ap-southeast-1.amazonaws.com",
-      "example.com",
-      "www.techbuilders.com",
-      "buildmarketbucket.s3.ap-southeast-1.amazonaws.com"
-    ],
-   
+    domains: ['buildmarketlk.com', 'www.buildmarketlk.com'],
+    unoptimized: false,
   },
-};
-
-export default nextConfig;
+  // Ensure static files are copied
+  trailingSlash: false,
+  // Add headers for static assets
+  async headers() {
+    return [
+      {
+        source: '/frames/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+    ]
+  },
+}
+export default nextConfig
