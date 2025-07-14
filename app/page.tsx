@@ -1,16 +1,11 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Building2, Ruler, Hammer, Truck, Users, FileSpreadsheet, DollarSign } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
-import { ContactSection } from "@/components/contact-section"
-import { TaglineCarousel } from "@/components/tagline-carousel"
+import { Ruler, Users, FileSpreadsheet, DollarSign, Globe, Zap, Shield } from "lucide-react"
 import { motion } from "framer-motion"
 import { useInView } from "framer-motion"
 import { useRef } from "react"
-import { HeroSlider } from "@/components/hero-slider"
+import { HeroSlider } from "@/components/sections/landingPage/hero-slider"
+
 const services = [
   {
     icon: <DollarSign className="h-12 w-12 text-primary" />,
@@ -37,22 +32,13 @@ const services = [
 ]
 
 import { ReactNode } from "react";
+import FeaturesSection from "@/components/sections/landingPage/featuresSection"
+import StatsSection from "@/components/sections/landingPage/statsSection"
+import FadeInWhenVisible from "@/components/ui/FadeInWhenVisible"
+import CtaSection from "@/components/sections/landingPage/ctaSection"
+import ContactForm from "@/components/sections/landingPage/contactForm"
+import AboutUsSection from "@/components/sections/landingPage/aboutUsSection"
 
-function FadeInWhenVisible({ children }: { children: ReactNode }) {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 50 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-      transition={{ duration: 0.5 }}
-    >
-      {children}
-    </motion.div>
-  )
-}
 
 function SlideIn({ children, direction = "left" }: { children: ReactNode, direction?: "left" | "right" }) {
   const ref = useRef(null)
@@ -75,202 +61,59 @@ export default function Home() {
     <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         <HeroSlider />
-        {/* <section className="w-full py-3 md:py-24 lg:py-32 bg-slate-900 text-white">
-          <div className="container px-4 md:px-6">
-            <div className="grid gap-8 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
-              <motion.div
-                className="flex flex-col justify-center space-y-6"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <motion.div
-                  className="space-y-4"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2, duration: 0.5 }}
-                >
-                  <TaglineCarousel />
-                  <p className="max-w-[600px] text-slate-300 md:text-xl"> BuildMarketLK: Your all-in-one digital gateway to construction insights, investments, costs, products, and services.</p>
-                 
-                  <p className="max-w-[600px] text-slate-300 md:text-xl ">
-                    We're committed to creating value in construction by making essential resources easily accessible
-                    and affordable for every builder, investor, and homeowner.
-                  </p>
-                </motion.div>
-                <motion.div
-                  className="flex flex-col gap-2 min-[400px]:flex-row"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4, duration: 0.5 }}
-                >
-                  <Link href="/catalogue">
-                    <Button size="lg" className="w-full px-3 min-[50px]:w-auto">
-                      View Catalogue
-                    </Button>
-                  </Link>
-                  <Link href="/supplier/">
-                    <Button size="lg" className="w-full px-3 min-[50px]:w-auto">
-                      Search Suppliers
-                    </Button>
-                  </Link>
-                  <Link href="#about">
-                  <Button size="lg" variant="outline" className="w-full px-3 text-black min-[50px]:w-auto">
-                    Learn More
-                  </Button>
-                  </Link>
-                </motion.div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.6, duration: 0.5 }}
-                className="flex items-center justify-center"
-              >
-                {/* <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-5GQi5Q4D5LCFChBfhyTYAHrKIC2Q5X.png"
-                  alt="Construction professionals reviewing building blueprints while wearing safety gear"
-                  width={600}
-                  height={400}
-                  className="mx-auto aspect-video overflow-hidden rounded-xl object-cover"
-                /> 
-                               <Image
-  src="/images/cover3.jpg"
-  alt="Construction professionals reviewing building blueprints while wearing safety gear"
-  width={500}
-  height={500} // Ensure height matches width for a 1:1 aspect ratio
-  className="mx-auto aspect-square overflow-hidden rounded-xl object-contain opacity-90"
-/>
-              </motion.div>
+        
+        <FeaturesSection />
+
+        <StatsSection />
+
+        {/* Why Choose Us Section */}
+      <section className="py-20 px-4 lg:px-32 bg-white">
+        <div className="container mx-auto px-4">
+          <FadeInWhenVisible>
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Why Choose BuildMarketLk?</h2>
+              <p className="md:text-xl text-gray-600 max-w-3xl mx-auto">
+                We're revolutionizing the construction industry in Sri Lanka with transparency, reliability, and
+                innovation.
+              </p>
             </div>
-          </div>
-        </section> */}
+          </FadeInWhenVisible>
 
-        <section
-  id="about"
-  className="w-full py-12 md:py-24 lg:py-32 bg-cover bg-center relative"
-  style={{ backgroundImage: "url('/images/cover2.jpg')" }} // Replace with your background image path
->
-<div className="absolute inset-0 bg-white/100"></div>
-          <div className="container px-4 md:px-6 relative z-10">
-            <FadeInWhenVisible>
-              <h2 className="text-3xl font-bold mb-8 text-center">Explore Our Platform</h2>
-            </FadeInWhenVisible>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <FadeInWhenVisible>
-                <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col">
-                  <div className="relative h-48">
-                    <Image
-                      src="/images/catalogue.jpg"
-                      alt="Construction suppliers"
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <h3 className="absolute bottom-4 left-4 text-xl font-semibold text-white">Catalogue</h3>
-                  </div>
-                  <CardContent className="flex-1 p-6">
-                    <p className="text-slate-600 mb-4">
-                    Find the best prices for construction materials and services.
-                    </p>
-                    <div className="mt-auto">
-                      <Link href="/catalogue">
-                        <Button variant="outline" className="w-full">
-                          Explore Catalogue
-                        </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
-              </FadeInWhenVisible>
-              <FadeInWhenVisible>
-                <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col">
-                  <div className="relative h-48">
-                    <Image
-                      src="/images/professional.jpg"
-                      alt="Construction suppliers"
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <h3 className="absolute bottom-4 left-4 text-xl font-semibold text-white">Browse Suppliers</h3>
-                  </div>
-                  <CardContent className="flex-1 p-6">
-                    <p className="text-slate-600 mb-4">
-                      Find trusted suppliers for all your construction needs, from building materials to equipment
-                      rentals and specialized services.
-                    </p>
-                    <div className="mt-auto">
-                      <Link href="/supplier">
-                        <Button variant="outline" className="w-full">
-                          Explore Suppliers
-                        </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
-              </FadeInWhenVisible>
-
-              <FadeInWhenVisible>
-                <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col">
-                  <div className="relative h-48">
-                    <Image
-                      src="/images/supplier.jpg"
-                      alt="Construction professionals"
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <h3 className="absolute bottom-4 left-4 text-xl font-semibold text-white">Browse Professionals</h3>
-                  </div>
-                  <CardContent className="flex-1 p-6">
-                    <p className="text-slate-600 mb-4">
-                      Connect with verified contractors, architects, and quantity surveyors to bring your construction
-                      projects to life.
-                    </p>
-                    <div className="mt-auto">
-                      <Link href="/professionals/showcase">
-                        <Button variant="outline" className="w-full">
-                          Find Professionals
-                        </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
-              </FadeInWhenVisible>
-
-              <FadeInWhenVisible>
-                <Card className="overflow-hidden border-none shadow-lg h-full flex flex-col">
-                  <div className="relative h-48">
-                    <Image
-                      src="/images/colombo.jpg"
-                      alt="Build in Sri Lanka"
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <h3 className="absolute bottom-4 left-4 text-xl font-semibold text-white">Build in Sri Lanka</h3>
-                  </div>
-                  <CardContent className="flex-1 p-6">
-                    <p className="text-slate-600 mb-4">
-                      Discover investment opportunities in Sri Lanka's growing construction industry with our
-                      comprehensive guidance and support.
-                    </p>
-                    <div className="mt-auto">
-                      <Link href="/build-in-sl">
-                        <Button variant="outline" className="w-full">
-                          Learn More
-                        </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
-              </FadeInWhenVisible>
+          <FadeInWhenVisible>
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Shield className="w-8 h-8 text-blue-500" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Verified & Trusted</h3>
+                <p className="text-gray-600">
+                  All suppliers and professionals are thoroughly verified to ensure quality and reliability.
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Zap className="w-8 h-8 text-green-500" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Real-time Updates</h3>
+                <p className="text-gray-600">
+                  Get instant updates on prices, availability, and market trends to make informed decisions.
+                </p>
+              </div>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Globe className="w-8 h-8 text-purple-500" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Comprehensive Platform</h3>
+                <p className="text-gray-600">
+                  Everything you need for construction projects in one convenient, easy-to-use platform.
+                </p>
+              </div>
             </div>
-          </div>
-        </section>
-        <section
+          </FadeInWhenVisible>
+        </div>
+      </section>
+
+        {/* <section
   id="about"
   className="w-full py-12 md:py-24 lg:py-32 bg-cover bg-center relative"
   style={{ backgroundImage: "url('/images/cover1.jpg')" }} // Replace with your background image path
@@ -413,13 +256,15 @@ export default function Home() {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
 
-        <FadeInWhenVisible>
-          <ContactSection />
-        </FadeInWhenVisible>
+        {/* About Us */}
+        <AboutUsSection />
 
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-slate-900 text-white">
+        {/* <ContactSection /> */}
+        <ContactForm />
+
+        {/* <section className="w-full py-12 md:py-24 lg:py-32 bg-slate-900 text-white">
           <div className="container px-4 md:px-6 text-center">
             <FadeInWhenVisible>
               <h2 className="text-3xl font-bold mb-4">Ready to explore our catalogue?</h2>
@@ -448,7 +293,10 @@ export default function Home() {
               </Link>
             </FadeInWhenVisible>
           </div>
-        </section>
+        </section> */}
+
+        {/* new CTA section */}
+        <CtaSection />
       </main>
     </div>
   )
