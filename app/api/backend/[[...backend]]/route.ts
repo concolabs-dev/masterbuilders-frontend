@@ -17,11 +17,9 @@ async function forwardRequest(request: Request, params: { backend?: string[] }):
         
         if (contentType?.includes("application/json")) {
             // For JSON requests, preserve the original body
-			let clone = request.clone();
-            body = await clone.text();
+            body = await request.text();
         } else {
-            let clone = request.clone();
-            body = await clone.text();
+            body = await request.text();
         }
     }
 
@@ -57,4 +55,3 @@ export async function DELETE(request: Request, { params }: { params: { backend?:
 export async function OPTIONS(request: Request, { params }: { params: { backend?: string[] } }): Promise<Response> {
 	return forwardRequest(request, params);
 }
-export const runtime = "nodejs"; // <== Force Node.js Runtime
