@@ -1,334 +1,385 @@
-"use client"
-// "use client"
+'use client';
+import { Modal, ModalBody, ModalContent, ModalFooter } from '@/components/ui/animated-modal';
+import { Button } from '@/components/ui/button';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { Bell, BookOpen, CheckCircle, DollarSign, GitCompare, Handshake, HardHat, LineChart, Link, Map, Package, ParkingMeter, Phone, Pin, ShieldCheck, Tag, Truck } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
-// import { useState, useEffect } from "react"
-// import { Button } from "@/components/ui/button"
-// import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react"
-// import Link from "next/link"
-// import { motion, AnimatePresence } from "framer-motion"
+const ListOfServices = [
+  { 
+    label: "Prices",
+    link: "/catalogue",
+    title: "Track Prices Like a Pro",
+    body:"Stay ahead with real-time price updates across suppliers and currencies.",
+    list:
+      <div className="py-8 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center mx-auto">
+        <div className="flex  items-center justify-center">
+          <DollarSign className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Multi-currency View
+          </span>
+        </div>
+        <div className="flex items-center justify-center">
+          <LineChart className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Monthly Trends
+          </span>
+        </div>
+        <div className="flex items-center justify-center">
+          <Tag className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Lowest Rates
+          </span>
+        </div>
+        <div className="flex items-center justify-center">
+          <GitCompare className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Price Comparison
+          </span>
+        </div>
+      </div>,
+    cta: "View Catalogue"
+  },
 
-// const slides = [
-//   {
-//     id: 1,
-//     title: "Thinking of Building?",
-//     subtitle: "Know the Real Costs First.",
-//     description:
-//       "Check today's material and labor prices. Real-time pricing. Verified suppliers. Trusted professionals.",
-//     cta: "Start Exploring Now",
-//     ctaLink: "/catalogue",
-//     background: "from-slate-900 via-slate-800 to-slate-900",
-//     backgroundImage: "/images/catalogue2.jpg",
-//   },
-//   {
-//     id: 2,
-//     title: "Your Trusted Gateway to",
-//     subtitle: "Building in Sri Lanka",
-//     description:
-//       "Connect with verified professionals and access real-time market rates to make informed investment decisions. Benefit from transparent pricing, local expertise, and end-to-end project support. Build smarter with data-driven insights and trusted partnerships.",
-//     cta: "Start Exploring Now",
-//     ctaLink: "/build-in-sl",
-//     background: "from-blue-900 via-blue-800 to-slate-900",
-//     backgroundImage: "/images/colombo.jpg",
-//   },
-//   {
-//     id: 3,
-//     title: "Reach Global Clients.",
-//     subtitle: "Get Recognized.",
-//     description: "Showcase your portfolio, get CIOB-verified, and attract international construction projects.",
-//     cta: "Join the Network",
-//     ctaLink: "/register",
-//     background: "from-purple-900 via-purple-800 to-slate-900",
-//     backgroundImage: "/images/supplier.jpg",
-//   },
-//   {
-//     id: 4,
-//     title: "Put Your Products",
-//     subtitle: "in the Spotlight.",
-//     description:
-//       "Showcase your product range, highlight quality, and get featured as a top supplier in Sri Lanka's digital marketplace.",
-//     cta: "List Your Products Today",
-//     ctaLink: "/register",
-//     background: "from-orange-900 via-orange-800 to-slate-900",
-//     backgroundImage: "/images/professional.jpg",
-//   },
-// ]
-
-// export function HeroSlider() {
-//   const [currentSlide, setCurrentSlide] = useState(0)
-//   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
-
-//   useEffect(() => {
-//     if (!isAutoPlaying) return
-
-//     const interval = setInterval(() => {
-//       setCurrentSlide((prev) => (prev + 1) % slides.length)
-//     }, 5000)
-
-//     return () => clearInterval(interval)
-//   }, [isAutoPlaying])
-
-//   const nextSlide = () => {
-//     setCurrentSlide((prev) => (prev + 1) % slides.length)
-//   }
-
-//   const prevSlide = () => {
-//     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)
-//   }
-
-//   const goToSlide = (index: number) => {
-//     setCurrentSlide(index)
-//   }
-
-//   return (
-//     <div
-//       className="relative w-full h-[95vh] overflow-hidden"
-//       onMouseEnter={() => setIsAutoPlaying(false)}
-//       onMouseLeave={() => setIsAutoPlaying(true)}
-//     >
-//       <AnimatePresence mode="wait">
-//         <motion.div
-//           key={currentSlide}
-//           initial={{ opacity: 0 }}
-//           animate={{ opacity: 1 }}
-//           exit={{ opacity: 0 }}
-//           transition={{ duration: 0.5 }}
-//           className={`absolute inset-0 bg-gradient-to-br ${slides[currentSlide].background}`}
-//         >
-//           {/* Background Image */}
-//           <div
-//             className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
-//             style={{
-//               backgroundImage: `url(${slides[currentSlide].backgroundImage})`,
-//               backgroundPosition: "right center",
-//             }}
-//           />
-
-//           {/* Additional Gradient Overlay */}
-//           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
-
-//           {/* Diagonal Design Element */}
-//           <div className="absolute inset-0">
-//             <div className="absolute top-0 right-0 w-1/2 h-full">
-//               <div className="relative w-full h-full overflow-hidden">
-//                 <div className="absolute inset-0 bg-white/5 transform skew-x-12 origin-top-right scale-110" />
-//                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent transform skew-x-12 origin-top-right scale-110" />
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* Content */}
-//           <div className="relative z-10 container mx-auto px-4 h-full flex items-center">
-//             <div className="max-w-3xl">
-//               <motion.div
-//                 initial={{ opacity: 0, y: 30 }}
-//                 animate={{ opacity: 1, y: 0 }}
-//                 transition={{ delay: 0.2, duration: 0.6 }}
-//               >
-//                 <h1 className="text-5xl md:text-7xl font-bold text-white mb-4 leading-tight">
-//                   {slides[currentSlide].title}
-//                 </h1>
-//                 <h2 className="text-4xl md:text-6xl font-bold text-white mb-8 leading-tight">
-//                   {slides[currentSlide].subtitle}
-//                 </h2>
-//               </motion.div>
-
-//               <motion.p
-//                 initial={{ opacity: 0, y: 30 }}
-//                 animate={{ opacity: 1, y: 0 }}
-//                 transition={{ delay: 0.4, duration: 0.6 }}
-//                 className="text-xl md:text-2xl text-slate-300 mb-12 max-w-2xl leading-relaxed"
-//               >
-//                 {slides[currentSlide].description}
-//               </motion.p>
-
-//               <motion.div
-//                 initial={{ opacity: 0, y: 30 }}
-//                 animate={{ opacity: 1, y: 0 }}
-//                 transition={{ delay: 0.6, duration: 0.6 }}
-//                 className="flex flex-col sm:flex-row gap-4"
-//               >
-//                 <Link href={slides[currentSlide].ctaLink}>
-//                   <Button size="lg" className=" hover:bg-red-700 text-white px-8 py-4 text-lg font-semibold">
-//                     {slides[currentSlide].cta}
-//                   </Button>
-//                 </Link>
-//                 <Link href="#about">
-//                   <Button
-//                     size="lg"
-//                     variant="outline"
-//                     className="border-white text-text-slate-800 hover:bg-white hover:text-slate-900 px-8 py-4 text-lg font-semibold"
-//                   >
-//                     Learn More
-//                   </Button>
-//                 </Link>
-//               </motion.div>
-//             </div>
-//           </div>
-
-//           {/* Scroll Down Indicator */}
-//           <motion.div
-//             initial={{ opacity: 0 }}
-//             animate={{ opacity: 1 }}
-//             transition={{ delay: 1, duration: 0.6 }}
-//             className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center"
-//           >
-//             <div className="flex flex-col items-center text-white/70">
-//               <span className="text-sm mb-2 tracking-wider uppercase">Scroll Down</span>
-//               <ChevronDown className="w-6 h-6 animate-bounce" />
-//             </div>
-//           </motion.div>
-//         </motion.div>
-//       </AnimatePresence>
-
-//       {/* Navigation Arrows */}
-//       <button
-//         onClick={prevSlide}
-//         className="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full p-3 transition-all duration-200"
-//       >
-//         <ChevronLeft className="w-6 h-6 text-white" />
-//       </button>
-
-//       <button
-//         onClick={nextSlide}
-//         className="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full p-3 transition-all duration-200"
-//       >
-//         <ChevronRight className="w-6 h-6 text-white" />
-//       </button>
-
-//       {/* Slide Indicators */}
-//       <div className="absolute bottom-8 right-8 z-20 flex space-x-3">
-//         {slides.map((_, index) => (
-//           <button
-//             key={index}
-//             onClick={() => goToSlide(index)}
-//             className={`w-3 h-3 rounded-full transition-all duration-200 ${
-//               index === currentSlide ? "bg-white scale-125" : "bg-white/40 hover:bg-white/60"
-//             }`}
-//           />
-//         ))}
-//       </div>
-
-//       {/* Slide Counter */}
-//       {/* <div className="absolute top-8 right-8 z-20 text-white/70 text-sm">
-//         <span className="font-semibold">{String(currentSlide + 1).padStart(2, "0")}</span>
-//         <span className="mx-2">/</span>
-//         <span>{String(slides.length).padStart(2, "0")}</span>
-//       </div> */}
-//     </div>
-//   )
-// }
-
-import useTypewriter from "@/hooks/useTypewriter"
-import { useEffect, useState } from "react"
-import { Badge } from "../../ui/badge"
-import Link from "next/link"
-import { link } from "fs"
-import FadeInWhenVisible from "@/components/ui/FadeInWhenVisible"
-import { cn } from "@/lib/utils"
+  {
+    label: "Projects",
+    link: "/build-in-sl",
+    title: "Find Interesting Projects",
+    body:"Discover current construction projects by leading builders and institutes.",
+    list:
+      <div className="py-8 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center mx-auto">
+        <div className="flex  items-center justify-center">
+          <ShieldCheck className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+             Verified Builders
+          </span>
+        </div>
+        <div className="flex items-center justify-center">
+          <Handshake className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Trusted Partners
+          </span>
+        </div>
+        <div className="flex items-center justify-center">
+          <ParkingMeter className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Valuable Insights
+          </span>
+        </div>
+      </div>,
+    cta: "See Projects"
+  },
+  {
+    label: "Products",
+    link: "/catalogue",
+    title: "Explore Catalogue to Find Best Deals",
+    body:"Access an extensive catalog of building materials at competitive prices.",
+    list:
+      <div className="py-8 px-4 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center mx-auto">
+        <div className="flex  items-center justify-center">
+          <Package className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            New Arrivals
+          </span>
+        </div>
+        <div className="flex items-center justify-center">
+          <DollarSign className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Lowest Prices
+          </span>
+        </div>
+        <div className="flex items-center justify-center">
+          <BookOpen className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+             Supplier Catalogs
+          </span>
+        </div>
+        <div className="flex items-center justify-center">
+          <CheckCircle className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Verified Listings
+          </span>
+        </div>
+      </div>,
+    cta: "View Catalogue"
+  },
+  { 
+    label: "People",
+    link: "/supplier",
+    title: "Network with Suppliers & More",
+    body:"Connect with everyone in the construction industry - from suppliers to all other stakeholders in one platform.",
+    list:
+      <div className="py-8 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center mx-auto">
+        <div className="flex  items-center justify-center">
+          <Truck className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Suppliers & Vendors
+          </span>
+        </div>
+        <div className="flex items-center justify-center">
+          <HardHat className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Proffessionals
+          </span>
+        </div>
+        <div className="flex items-center justify-center">
+          <Phone className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Direct Contact
+          </span>
+        </div>
+        <div className="flex items-center justify-center">
+          <Link className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Easy Connections
+          </span>
+        </div>
+      </div>,
+    cta: "Connect Now"
+   },
+  { 
+    label: "Professionals",
+    link: "/professionals/showcase",
+    title: "Find the Right Professionals",
+    body:"Search and choose from a wide range of construction professionals suitable for your specific project needs.",
+    list:
+      <div className="py-8 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center mx-auto">
+        <div className="flex  items-center justify-center">
+          <HardHat className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Verified Professionals
+          </span>
+        </div>
+        <div className="flex items-center justify-center">
+          <ShieldCheck className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Quality Assurance
+          </span>
+        </div>
+        <div className="flex items-center justify-center">
+          <Phone className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Direct Contact
+          </span>
+        </div>
+      </div>,
+    cta: "Find Professionals"  
+   },
+  { 
+    label: "Places",
+    link: "/#",
+    title: "Stay Informed, Stay Ahead",
+    body:"Stay updated with the latest construction industry news, events, and relevant information in your area.",
+    list:
+      <div className="py-8 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center mx-auto">
+        <div className="flex  items-center justify-center">
+          <Pin className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Regional Updates
+          </span>
+        </div>
+        <div className="flex items-center justify-center">
+          <Bell className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Project Alerts
+          </span>
+        </div>
+        <div className="flex items-center justify-center">
+          <Map className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+          <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+            Area Highlights
+          </span>
+        </div>
+      </div>,
+    cta: "Discover Places"
+   },
+]
 
 export function HeroSlider() {
-  const [currentSlide, setCurrentSlide] = useState(0)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
+  const [loadingProgress, setLoadingProgress] = useState(0)
+  const [selectedService, setSelectedService] = useState<typeof ListOfServices[0] | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  })
+
+  // Transform scroll progress to image index
+  const imageIndex = useTransform(scrollYProgress, [0, 1], [0, 100])
+
+  // Total number of frames
+  const TOTAL_FRAMES = 100
+
+  // Preload all images
+  useEffect(() => {
+    const preloadImages = async () => {
+      const imagePromises = []
+      let loadedCount = 0
+      
+      for (let i = 0; i < TOTAL_FRAMES; i++) {
+        const url = generateImageUrl(i)
+        const promise = new Promise<void>((resolve, reject) => {
+          const img = new Image()
+          img.src = url
+          img.onload = () => {
+            loadedCount++
+            // Simply calculate percentage based on loaded count
+            setLoadingProgress(Math.round((loadedCount / TOTAL_FRAMES) * 100))
+            resolve()
+          }
+          img.onerror = reject
+        })
+        imagePromises.push(promise)
+      }
+      
+      try {
+        await Promise.all(imagePromises)
+        setLoadingProgress(100) // Ensure we reach 100% at the end
+        setIsLoading(false)
+      } catch (error) {
+        console.error("Error preloading images:", error)
+        // Continue even if some images failed to load
+        setLoadingProgress(100)
+        setIsLoading(false)
+      }
+    }
+    
+    preloadImages()
+  }, [])
 
   useEffect(() => {
-      const timer = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % 6)
-      }, 4000)
-      return () => clearInterval(timer)
-    }, [])
+    const unsubscribe = imageIndex.onChange((latest) => {
+      setCurrentImageIndex(Math.floor(latest))
+    })
+    return unsubscribe
+  }, [imageIndex])
 
-  const heroTitles = [
-    {
-      title:"Smarter Prices.",
-      actionButtonLabel:"Explore Catalogue",
-      link:"/catalogue"
-    },
-    {
-      title:"Reliable Suppliers.",
-      actionButtonLabel:"Find Suppliers",
-      link:"/suppliers"
-    },
-    {
-      title:"Verified Experts.",
-      actionButtonLabel:"Find Experts",
-      link:"/professionals/showcase"
-    },
-    {
-      title:"On-Site Insights.",
-      actionButtonLabel:"Get Insights",
-      link:"/insights"
-    },
-    {
-      title:"Powerful Tools.",
-      actionButtonLabel:"Explore Tools",
-      link:"/tools"
-    },
-    {
-      title:"Local Projects.",
-      actionButtonLabel:"View Projects",
-      link:"/build-in-sl"
-    }
-  ]
+  // Generate placeholder images for the sequence
+  const generateImageUrl = (index: number) => {
+    return `/frames/frame_${index.toString().padStart(4, '0')}.png`
+  }
 
-  const { displayText, showCursor } = useTypewriter(heroTitles[currentSlide].title, 60)
+  const handleServiceClick = (service: typeof ListOfServices[0]) => {
+    setSelectedService(service)
+    setIsModalOpen(true)
+  }
 
-  return(
-    <section className="relative h-[90vh] overflow-hidden flex flex-col justify-center w-full">
-      {/* Dot and grid BG */}
-      <div className="absolute w-full h-full -z-50">
-        <div className="relative flex h-[50rem] w-full items-center justify-center bg-white dark:bg-black">
-                <div
-                  className={cn(
-                    "absolute inset-0",
-                    "[background-size:40px_40px]",
-                    "[background-image:linear-gradient(to_right,#fff1e6_1px,transparent_1px),linear-gradient(to_bottom,#fff1e6_1px,transparent_1px)]",
-                    "dark:[background-image:linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]",
-                  )}
-                />
-              {/* <div
-                className={cn(
-                  "absolute inset-0",
-                  "[background-size:20px_20px]",
-                  "[background-image:radial-gradient(#fac293_1px,transparent_1px)]",
-                  "dark:[background-image:radial-gradient(#404040_1px,transparent_1px)]",
-                )}
-              /> */}
-              {/* Radial gradient for the container to give a faded look */}
-              <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,black_10%,transparent)]"></div>
+  return (
+    <section ref={containerRef} className="relative min-h-[300vh] z-[100] bg-gray-50">
+        {/* loading screen */}
+        {isLoading && (
+            <div className="fixed inset-0 bg-black text-gray-50 flex flex-col items-center justify-center z-50">
+            {/* Prevent scrolling while loading */}
+            <style>{`body { overflow: hidden !important; }`}</style>
+              <div className='relative w-full h-full'>
+                <h2 className='absolute bottom-2 right-2 text-9xl font-bold'>{loadingProgress}</h2>
+              </div>
             </div>
-      </div>
-      
-      <FadeInWhenVisible>
-        <div className="px-4 lg:px-32 flex flex-col items-center">
-          <Badge className="mb-2 hidden sm:inline-block">#1 Online Construction Platform in 🇱🇰</Badge>
-          <span className="block animate-slide-in-up text-lg md:text-3xl lg:text-4xl font-bold leading-tight ">Your Construction Starts with</span>
-          <span className="block bg-gradient-to-r from-orange-400 via-red-400 to-orange-400 bg-clip-text text-transparent text-4xl md:text-6xl lg:text-7xl font-bold leading-tight py-2 mb-4">
-            {displayText}
-            <span
-              className={`inline-block md:inline w-1 ${showCursor ? "opacity-100" : "opacity-0"} transition-opacity duration-100`}
+        )}
+
+        <div className="sticky top-0 h-screen flex items-center justify-center">
+          <div className="relative w-full h-screen">
+            <motion.div
+              className="overflow-hidden w-full h-full rounded-b-3xl"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
             >
-              |
-            </span>
-          </span>
-          {/* CTA buttons */}
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link href={heroTitles[currentSlide].link} className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
-              {heroTitles[currentSlide].actionButtonLabel}
-            </Link>
-            <Link href="/#services" className="bg-white text-slate-800 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold transition-colors border-2 border-gray-100">
-              Learn More
-            </Link>
+              <img
+                src={generateImageUrl(currentImageIndex) || "/placeholder.svg"}
+                alt={`Animation frame ${currentImageIndex + 1}`}
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+
+            {/* Progress Indicator */}
+            {/* <div className="absolute -bottom-8 left-0 right-0">
+              <div className="flex justify-center">
+                <div className="bg-white/80 backdrop-blur-sm rounded-full px-4 py-2">
+                  <span className="text-sm text-gray-600">Frame {currentImageIndex + 1} of {TOTAL_FRAMES}</span>
+                </div>
+              </div>
+            </div> */}
+
+            {/* model */}
+            <Modal open={isModalOpen} onOpenChange={setIsModalOpen}>
+              <ModalBody>
+                <ModalContent>
+                  <div className=''>
+                    <div className='text-center'>
+                      <h2 className="text-2xl font-bold mb-2">{selectedService?.title}</h2>
+                      <p>{selectedService?.body}</p>
+                    </div>
+                    <div>
+                      {selectedService?.list}
+                    </div>
+                    <Button
+                      className='w-full'
+                      onClick={() => window.location.href = selectedService?.link || "#"}
+                      >
+                      {selectedService?.cta}
+                    </Button>
+                  </div>
+                  </ModalContent>
+              </ModalBody>
+            </Modal>
+
+            {/* text Content */}
+            <div className="absolute top-16 left-1/2 transform -translate-x-1/2 text-center">
+              <div className='text-white'>
+                <h1 className="text-4xl md:text-6xl font-extrabold">BuildMarketLK</h1>
+                <p className="text-gray-50 md:tracking-widest uppercase text-xs md:text-sm">Your Trusted Gateway to Building in Sri Lanka</p>
+                {/* <p className='text-xs uppercase font-light mt-2'>our services</p> */}
+                {/* horizontal moving services */}
+                <div className="relative md:max-w-2xl mx-auto text-xs md:text-base">
+                  {/* Container with mask for fade effects */}
+                  <div
+                    className="overflow-hidden"
+                    style={{
+                      maskImage: "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+                      WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+                    }}
+                  >
+                    
+                    {/* Scrolling services */}
+                    <div className="flex animate-scroll-left ">
+                      {/* First set of services */}
+                      <div className="flex items-center md:space-x-8 md:min-w-max">
+                        {ListOfServices.map((service, index) => (
+                            <button
+                              key={index}
+                              className='hover:bg-gray-900/25 px-4 py-1 rounded-full'
+                              onClick={() => handleServiceClick(service)}
+                            >
+                              {service.label}
+                            </button>
+                        ))}
+                      </div>
+
+                      {/* Duplicate set for seamless loop */}
+                      <div className="flex items-center md:space-x-8 md:min-w-max md:ml-10">
+                        {ListOfServices.map((service, index) => (
+                            <button
+                              key={index}
+                              className='hover:bg-gray-900/25 px-4 py-1 rounded-full'
+                              onClick={() => handleServiceClick(service)}
+                            >
+                              {service.label}
+                            </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
+
         </div>
-      </FadeInWhenVisible>
-      {/* Scroll btn */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2">
-        <div className="flex flex-col items-center text-white/80 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full mb-2 relative">
-            <div className="w-1 h-3 bg-white/60 rounded-full absolute top-2 left-1/2 transform -translate-x-1/2 animate-pulse"></div>
-          </div>
-          <span className="text-sm font-medium">Scroll to explore</span>
-        </div>
-      </div>
-    </section>
+      </section>
   )
 }

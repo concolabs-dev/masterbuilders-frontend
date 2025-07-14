@@ -58,7 +58,7 @@ function SlideIn({ children, direction = "left" }: { children: ReactNode, direct
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col overflow-hidden">
+    <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         <HeroSlider />
         
