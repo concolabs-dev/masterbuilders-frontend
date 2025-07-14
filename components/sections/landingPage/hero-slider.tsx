@@ -201,7 +201,10 @@ export function HeroSlider() {
   const [loadingProgress, setLoadingProgress] = useState(0)
   const [selectedService, setSelectedService] = useState<typeof ListOfServices[0] | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [webpSupported, setWebpSupported] = useState<boolean | null>(null)
+  const [imageSrc, setImageSrc] = useState<string>('')
   const containerRef = useRef<HTMLDivElement>(null)
+  
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"],
@@ -212,43 +215,104 @@ export function HeroSlider() {
 
   // Total number of frames
   const TOTAL_FRAMES = 100
+// Replace the WebP detection useEffect with this improved version:
+useEffect(() => {
+  const checkWebPSupport = () => {
+    // Method 1: Try to load a small WebP image
+    const webpTestImage = 'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA';
+    
+    const img = new Image();
+    img.onload = () => {
+      // If the image loads successfully, WebP is supported
+      setWebpSupported(true);
+      console.log('WebP supported: true (image load test)');
+    };
+    img.onerror = () => {
+      // If the image fails to load, WebP is not supported
+      setWebpSupported(false);
+      console.log('WebP supported: false (image load test)');
+    };
+    img.src = webpTestImage;
+  };
+  
+  checkWebPSupport();
+}, []);
 
-  // Preload all images
+  // Generate image URL with WebP support
+  const generateImageUrl = (index: number) => {
+    const frameNumber = index.toString().padStart(4, '0');
+    
+    // Use WebP if supported, otherwise fallback to PNG
+    if (webpSupported) {
+      return `/frames-webp/frame_${frameNumber}.webp`;
+    }
+    
+    return `/frames/frame_${frameNumber}.png`;
+  }
+
+  // Update image source when index changes
   useEffect(() => {
+    if (webpSupported !== null) {
+      setImageSrc(generateImageUrl(currentImageIndex));
+    }
+  }, [currentImageIndex, webpSupported]);
+
+  // Preload all images with WebP support
+  useEffect(() => {
+    if (webpSupported === null) return; // Wait for WebP detection
+    
     const preloadImages = async () => {
       const imagePromises = []
       let loadedCount = 0
+      let errorCount = 0
       
       for (let i = 0; i < TOTAL_FRAMES; i++) {
         const url = generateImageUrl(i)
-        const promise = new Promise<void>((resolve, reject) => {
-          const img = new Image()
+        const promise = new Promise<void>((resolve) => {
+          const img = new window.Image()
           img.src = url
           img.onload = () => {
             loadedCount++
-            // Simply calculate percentage based on loaded count
             setLoadingProgress(Math.round((loadedCount / TOTAL_FRAMES) * 100))
             resolve()
           }
-          img.onerror = reject
+          img.onerror = () => {
+            errorCount++
+            console.warn(`Failed to load frame ${i}:`, url)
+            // Try fallback to PNG if WebP fails
+            if (webpSupported && url.includes('.webp')) {
+              const fallbackUrl = `/frames/frame_${i.toString().padStart(4, '0')}.png`;
+              const fallbackImg = new window.Image();
+              fallbackImg.src = fallbackUrl;
+              fallbackImg.onload = () => {
+                loadedCount++;
+                setLoadingProgress(Math.round((loadedCount / TOTAL_FRAMES) * 100));
+                resolve();
+              };
+              fallbackImg.onerror = () => resolve();
+            } else {
+              resolve()
+            }
+          }
         })
         imagePromises.push(promise)
       }
       
       try {
         await Promise.all(imagePromises)
-        setLoadingProgress(100) // Ensure we reach 100% at the end
+        console.log(`Loading complete: ${loadedCount}/${TOTAL_FRAMES} loaded, ${errorCount} errors`)
+        console.log(`Using ${webpSupported ? 'WebP' : 'PNG'} format`)
+        setLoadingProgress(100)
         setIsLoading(false)
       } catch (error) {
         console.error("Error preloading images:", error)
-        // Continue even if some images failed to load
         setLoadingProgress(100)
         setIsLoading(false)
       }
     }
     
     preloadImages()
-  }, [])
+  }, [webpSupported])
 
   useEffect(() => {
     const unsubscribe = imageIndex.onChange((latest) => {
@@ -257,129 +321,137 @@ export function HeroSlider() {
     return unsubscribe
   }, [imageIndex])
 
-  // Generate placeholder images for the sequence
-  const generateImageUrl = (index: number) => {
-    return `/frames/frame_${index.toString().padStart(4, '0')}.png`
-  }
-
   const handleServiceClick = (service: typeof ListOfServices[0]) => {
     setSelectedService(service)
     setIsModalOpen(true)
   }
 
+  // Handle image load error with fallback
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const img = e.currentTarget;
+    
+    // If WebP failed, try PNG fallback
+    if (webpSupported && img.src.includes('.webp')) {
+      const pngUrl = `/frames/frame_${currentImageIndex.toString().padStart(4, '0')}.png`;
+      img.src = pngUrl;
+      console.log(`WebP failed, falling back to PNG: ${pngUrl}`);
+    } else {
+      // Final fallback to placeholder
+      img.src = "/placeholder.svg";
+      console.log('All image formats failed, using placeholder');
+    }
+  }
+
   return (
     <section ref={containerRef} className="relative min-h-[300vh] z-[100] bg-gray-50">
-        {/* loading screen */}
-        {isLoading && (
-            <div className="fixed inset-0 bg-black text-gray-50 flex flex-col items-center justify-center z-50">
-            {/* Prevent scrolling while loading */}
-            <style>{`body { overflow: hidden !important; }`}</style>
-              <div className='relative w-full h-full'>
-                <h2 className='absolute bottom-2 right-2 text-9xl font-bold'>{loadingProgress}</h2>
-              </div>
-            </div>
-        )}
+      {/* loading screen */}
+      {isLoading && (
+        <div className="fixed inset-0 bg-black text-gray-50 flex flex-col items-center justify-center z-50">
+          <style>{`body { overflow: hidden !important; }`}</style>
+          <div className='relative w-full h-full'>
+            <h2 className='absolute bottom-2 right-2 text-9xl font-bold'>{loadingProgress}</h2>
+            <p className='absolute bottom-20 right-2 text-sm opacity-70'>
+              Loading {webpSupported ? 'WebP' : 'PNG'} frames...
+            </p>
+          </div>
+        </div>
+      )}
 
-        <div className="sticky top-0 h-screen flex items-center justify-center">
-          <div className="relative w-full h-screen">
-            <motion.div
-              className="overflow-hidden w-full h-full rounded-b-3xl"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              <img
-                src={generateImageUrl(currentImageIndex) || "/placeholder.svg"}
-                alt={`Animation frame ${currentImageIndex + 1}`}
-                className="w-full h-full object-cover"
-              />
-            </motion.div>
+      <div className="sticky top-0 h-screen flex items-center justify-center">
+        <div className="relative w-full h-screen">
+          <motion.div
+            className="overflow-hidden w-full h-full rounded-b-3xl"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <img
+              src={imageSrc || "/placeholder.svg"}
+              alt={`Animation frame ${currentImageIndex + 1}`}
+              className="w-full h-full object-cover"
+              onError={handleImageError}
+              style={{
+                // Ensure smooth transitions between frames
+                transition: 'opacity 0.1s ease-in-out'
+              }}
+            />
+          </motion.div>
 
-            {/* Progress Indicator */}
-            {/* <div className="absolute -bottom-8 left-0 right-0">
-              <div className="flex justify-center">
-                <div className="bg-white/80 backdrop-blur-sm rounded-full px-4 py-2">
-                  <span className="text-sm text-gray-600">Frame {currentImageIndex + 1} of {TOTAL_FRAMES}</span>
-                </div>
-              </div>
-            </div> */}
-
-            {/* model */}
-            <Modal open={isModalOpen} onOpenChange={setIsModalOpen}>
-              <ModalBody>
-                <ModalContent>
-                  <div className=''>
-                    <div className='text-center'>
-                      <h2 className="text-2xl font-bold mb-2">{selectedService?.title}</h2>
-                      <p>{selectedService?.body}</p>
-                    </div>
-                    <div>
-                      {selectedService?.list}
-                    </div>
-                    <Button
-                      className='w-full'
-                      onClick={() => window.location.href = selectedService?.link || "#"}
-                      >
-                      {selectedService?.cta}
-                    </Button>
+          {/* model */}
+          <Modal open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <ModalBody>
+              <ModalContent>
+                <div className=''>
+                  <div className='text-center'>
+                    <h2 className="text-2xl font-bold mb-2">{selectedService?.title}</h2>
+                    <p>{selectedService?.body}</p>
                   </div>
-                  </ModalContent>
-              </ModalBody>
-            </Modal>
+                  <div>
+                    {selectedService?.list}
+                  </div>
+                  <Button
+                    className='w-full'
+                    onClick={() => window.location.href = selectedService?.link || "#"}
+                    >
+                    {selectedService?.cta}
+                  </Button>
+                </div>
+                </ModalContent>
+            </ModalBody>
+          </Modal>
 
-            {/* text Content */}
-            <div className="absolute top-16 left-1/2 transform -translate-x-1/2 text-center">
-              <div className='text-white'>
-                <h1 className="text-4xl md:text-6xl font-extrabold">BuildMarketLK</h1>
-                <p className="text-gray-50 md:tracking-widest uppercase text-xs md:text-sm">Your Trusted Gateway to Building in Sri Lanka</p>
-                {/* <p className='text-xs uppercase font-light mt-2'>our services</p> */}
-                {/* horizontal moving services */}
-                <div className="relative md:max-w-2xl mx-auto text-xs md:text-base">
-                  {/* Container with mask for fade effects */}
-                  <div
-                    className="overflow-hidden"
-                    style={{
-                      maskImage: "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
-                      WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
-                    }}
-                  >
-                    
-                    {/* Scrolling services */}
-                    <div className="flex animate-scroll-left ">
-                      {/* First set of services */}
-                      <div className="flex items-center md:space-x-8 md:min-w-max">
-                        {ListOfServices.map((service, index) => (
-                            <button
-                              key={index}
-                              className='hover:bg-gray-900/25 px-4 py-1 rounded-full'
-                              onClick={() => handleServiceClick(service)}
-                            >
-                              {service.label}
-                            </button>
-                        ))}
-                      </div>
+          {/* text Content */}
+          <div className="absolute top-16 left-1/2 transform -translate-x-1/2 text-center">
+            <div className='text-white'>
+              <h1 className="text-4xl md:text-6xl font-extrabold">BuildMarketLK</h1>
+              <p className="text-gray-50 md:tracking-widest uppercase text-xs md:text-sm">Your Trusted Gateway to Building in Sri Lanka</p>
+              
+              {/* horizontal moving services */}
+              <div className="relative md:max-w-2xl mx-auto text-xs md:text-base">
+                {/* Container with mask for fade effects */}
+                <div
+                  className="overflow-hidden"
+                  style={{
+                    maskImage: "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+                    WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+                  }}
+                >
+                  
+                  {/* Scrolling services */}
+                  <div className="flex animate-scroll-left ">
+                    {/* First set of services */}
+                    <div className="flex items-center md:space-x-8 md:min-w-max">
+                      {ListOfServices.map((service, index) => (
+                          <button
+                            key={index}
+                            className='hover:bg-gray-900/25 px-4 py-1 rounded-full'
+                            onClick={() => handleServiceClick(service)}
+                          >
+                            {service.label}
+                          </button>
+                      ))}
+                    </div>
 
-                      {/* Duplicate set for seamless loop */}
-                      <div className="flex items-center md:space-x-8 md:min-w-max md:ml-10">
-                        {ListOfServices.map((service, index) => (
-                            <button
-                              key={index}
-                              className='hover:bg-gray-900/25 px-4 py-1 rounded-full'
-                              onClick={() => handleServiceClick(service)}
-                            >
-                              {service.label}
-                            </button>
-                        ))}
-                      </div>
+                    {/* Duplicate set for seamless loop */}
+                    <div className="flex items-center md:space-x-8 md:min-w-max md:ml-10">
+                      {ListOfServices.map((service, index) => (
+                          <button
+                            key={index}
+                            className='hover:bg-gray-900/25 px-4 py-1 rounded-full'
+                            onClick={() => handleServiceClick(service)}
+                          >
+                            {service.label}
+                          </button>
+                      ))}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
 
         </div>
-      </section>
+      </div>
+    </section>
   )
 }
