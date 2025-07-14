@@ -35,7 +35,7 @@ function ProfessionalRegistration() {
       .catch((err) => console.error("Failed checking professional by PID:", err))
       getProfessionalByPID(user.sub)
         .then((existing: Professional | undefined) => {
-        if (existing) router.push("/professionals/register/success")
+        if (existing) router.push("/professionals/dashboard")
         })
         .catch((err) => console.error("Failed checking professional by PID:", err))
     }, [user?.sub, router])
@@ -105,7 +105,7 @@ function ProfessionalRegistration() {
     try {
          await createProfessional(professionalPayload).then((response) => {
         if (response) {   console.log("Professional created successfully")
-      router.push("professionals/dashboard/")}})
+      router.push("professionals/register/success")}})
 
     } catch (err) {
       console.error("Failed to create professional", err)
