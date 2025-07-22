@@ -403,6 +403,7 @@ useEffect(() => {
           {/* text Content */}
           <div className="absolute top-16 left-1/2 transform -translate-x-1/2 text-center">
             <div className='text-white'>
+              <p>current frame: {currentImageIndex}</p>
               <h1 className="text-4xl md:text-6xl font-extrabold">BuildMarketLK</h1>
               <p className="text-gray-50 md:tracking-widest uppercase text-xs md:text-sm">Your Trusted Gateway to Building in Sri Lanka</p>
               
