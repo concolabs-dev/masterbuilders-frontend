@@ -1,6 +1,7 @@
 'use client';
 import { Modal, ModalBody, ModalContent, ModalFooter } from '@/components/ui/animated-modal';
 import { Button } from '@/components/ui/button';
+import GlassCard from '@/components/ui/GlassCard';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Bell, BookOpen, CheckCircle, DollarSign, GitCompare, Handshake, HardHat, LineChart, Link, Map, Package, ParkingMeter, Phone, Pin, ShieldCheck, Tag, Truck } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -342,6 +343,14 @@ useEffect(() => {
     }
   }
 
+  // opacity to fade out text after 25 frames
+  let opacity = 1;
+  if (currentImageIndex >= 10 && currentImageIndex <= 25) {
+    opacity = 1 - (currentImageIndex - 10) / (25 - 10); // linear fade
+  } else if (currentImageIndex > 25) {
+    opacity = 0;
+  }
+
   return (
     <section ref={containerRef} className="relative min-h-[300vh] z-[100] bg-gray-50">
       {/* loading screen */}
@@ -401,9 +410,12 @@ useEffect(() => {
           </Modal>
 
           {/* text Content */}
-          <div className="absolute top-16 left-1/2 transform -translate-x-1/2 text-center">
+          <div className={`absolute top-16 left-1/2 transform -translate-x-1/2 text-center
+            ${currentImageIndex > 25 ? 'invisible' : 'visible'}
+            `}
+            style={{ opacity }}
+            >
             <div className='text-white'>
-              <p>current frame: {currentImageIndex}</p>
               <h1 className="text-4xl md:text-6xl font-extrabold">BuildMarketLK</h1>
               <p className="text-gray-50 md:tracking-widest uppercase text-xs md:text-sm">Your Trusted Gateway to Building in Sri Lanka</p>
               
@@ -451,6 +463,114 @@ useEffect(() => {
             </div>
           </div>
 
+          {/* Glass Cards for 3 main sections */}
+          <div className={`absolute top-0 left-0 w-full h-screen lg:p-20 md:p-8 p-2 transition-opacity duration-200 ease-in-out
+            ${currentImageIndex > 25 ? 'opacity-100' : 'opacity-0'}
+            
+            `}
+            >
+              <div className='flex flex-col md:flex-row items-center justify-center h-full gap-4 p-4'>
+                <GlassCard>
+                  <h3 className="text-lg font-bold">Are you a Buyer?</h3>
+                  <p className='py-2'>Stay ahead with real-time price updates across suppliers and currencies.</p>
+                  <div className="py-2 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center mx-auto">
+                    <div className="flex  items-center justify-center">
+                      <DollarSign className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+                        Multi-currency View
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-center">
+                      <LineChart className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+                        Monthly Trends
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-center">
+                      <Tag className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+                        Lowest Rates
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-center">
+                      <GitCompare className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+                        Price Comparison
+                      </span>
+                    </div>
+                  </div>
+                  <Button className="mt-4 w-full" onClick={() => window.location.href = "/catalogue"}>
+                    View Prices
+                  </Button>
+                </GlassCard>
+                <GlassCard>
+                  <h3 className="text-lg font-bold">Looking for a professional?</h3>
+                  <p className='py-2'>Stay ahead with real-time price updates across suppliers and currencies.</p>
+                  <div className="py-2 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center mx-auto">
+                    <div className="flex  items-center justify-center">
+                      <DollarSign className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+                        Multi-currency View
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-center">
+                      <LineChart className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+                        Monthly Trends
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-center">
+                      <Tag className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+                        Lowest Rates
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-center">
+                      <GitCompare className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+                        Price Comparison
+                      </span>
+                    </div>
+                  </div>
+                  <Button className="mt-4 w-full" onClick={() => window.location.href = "/catalogue"}>
+                    Professionals
+                  </Button>
+                </GlassCard>
+                <GlassCard>
+                  <h3 className="text-lg font-bold">Are you a Buyer?</h3>
+                  <p className='py-2'>Stay ahead with real-time price updates across suppliers and currencies.</p>
+                  <div className="py-2 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center mx-auto">
+                    <div className="flex  items-center justify-center">
+                      <DollarSign className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+                        Multi-currency View
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-center">
+                      <LineChart className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+                        Monthly Trends
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-center">
+                      <Tag className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+                        Lowest Rates
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-center">
+                      <GitCompare className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
+                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
+                        Price Comparison
+                      </span>
+                    </div>
+                  </div>
+                  <Button className="mt-4 w-full" onClick={() => window.location.href = "/catalogue"}>
+                    View Prices
+                  </Button>
+                </GlassCard>
+              </div>
+          </div>
         </div>
       </div>
     </section>
