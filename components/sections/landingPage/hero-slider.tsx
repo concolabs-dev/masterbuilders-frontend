@@ -196,6 +196,87 @@ const ListOfServices = [
    },
 ]
 
+const ListOfLandingPageCards = [
+  {
+    title: "Looking to Buy or Build a House?",
+    body: "Get matched with builders, suppliers & live prices.",
+    points: [
+      "Track real-time material prices",
+      "Find trusted builders across Sri Lanka",
+      "Discover great deals effortlessly",
+    ],
+    cta: "Explore Catalogue",
+    link: "/catalogue",
+  },
+  {
+    title: "Are You a Supplier?",
+    body: "Sell smarter with visibility & insights.",
+    points: [
+      "List your product catalogue",
+      "Compare prices across the market",
+      "Connect with real-time demand",
+    ],
+    cta: "Showcase Products",
+    link: "/supplier",
+  },
+  {
+    title: "Are You a Builder?",
+    body: "Tap into Sri Lanka's growing construction network.",
+    points: [
+      "Display past & current work",
+      "Connect with suppliers & investors",
+      "Get discovered by clients",
+    ],
+    cta: "Get Started",
+    link: "/register",
+  },
+  {
+    title: "Construction Professional?",
+    body: "Find the right opportunities and visibility.",
+    points: [
+      "Appear in our expert directory",
+      "Access new projects & trends",
+      "Connect with key stakeholders",
+    ],
+    cta: "Join the Network",
+    link: "/professionals/showcase",
+  },
+  {
+    title: "Investor Interested in Sri Lanka?",
+    body: "Explore the booming construction opportunities.",
+    points: [
+      "Access high-potential projects",
+      "Compare builders, pricing & data",
+      "Make smarter investment decisions",
+    ],
+    cta: "Explore Projects",
+    link: "//build-in-sl",
+  },
+  {
+    title: "Are You a Service Provider?",
+    body: "Connect with builders and grow your business.",
+    points: [
+      "Promote services like legal, rentals, finance",
+      "Reach a wide construction audience",
+      "Get discovered by project owners",
+    ],
+    cta: "List Your Services",
+    link: "/register",
+  },
+  {
+    title: "Are You a Subcontractor?",
+    body: "Find projects and get hired for your skills.",
+    points: [
+      "Access ready-to-start construction projects",
+      "Connect with contractors & builders",
+      "Showcase your expertise & past work",
+    ],
+    cta: "Find Work",
+    link: "/register",
+  },
+];
+
+
 export function HeroSlider() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
@@ -469,108 +550,66 @@ useEffect(() => {
             
             `}
             >
-              <div className='flex flex-col md:flex-row items-center justify-center h-full gap-4 p-4'>
-                <GlassCard>
-                  <h3 className="text-lg font-bold">Are you a Buyer?</h3>
-                  <p className='py-2'>Stay ahead with real-time price updates across suppliers and currencies.</p>
-                  <div className="py-2 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center mx-auto">
-                    <div className="flex  items-center justify-center">
-                      <DollarSign className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
-                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-                        Multi-currency View
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-center">
-                      <LineChart className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
-                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-                        Monthly Trends
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-center">
-                      <Tag className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
-                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-                        Lowest Rates
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-center">
-                      <GitCompare className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
-                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-                        Price Comparison
-                      </span>
-                    </div>
-                  </div>
-                  <Button className="mt-4 w-full" onClick={() => window.location.href = "/catalogue"}>
-                    View Prices
-                  </Button>
-                </GlassCard>
-                <GlassCard>
-                  <h3 className="text-lg font-bold">Looking for a professional?</h3>
-                  <p className='py-2'>Stay ahead with real-time price updates across suppliers and currencies.</p>
-                  <div className="py-2 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center mx-auto">
-                    <div className="flex  items-center justify-center">
-                      <DollarSign className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
-                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-                        Multi-currency View
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-center">
-                      <LineChart className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
-                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-                        Monthly Trends
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-center">
-                      <Tag className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
-                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-                        Lowest Rates
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-center">
-                      <GitCompare className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
-                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-                        Price Comparison
-                      </span>
-                    </div>
-                  </div>
-                  <Button className="mt-4 w-full" onClick={() => window.location.href = "/catalogue"}>
-                    Professionals
-                  </Button>
-                </GlassCard>
-                <GlassCard>
-                  <h3 className="text-lg font-bold">Are you a Buyer?</h3>
-                  <p className='py-2'>Stay ahead with real-time price updates across suppliers and currencies.</p>
-                  <div className="py-2 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center mx-auto">
-                    <div className="flex  items-center justify-center">
-                      <DollarSign className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
-                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-                        Multi-currency View
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-center">
-                      <LineChart className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
-                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-                        Monthly Trends
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-center">
-                      <Tag className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
-                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-                        Lowest Rates
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-center">
-                      <GitCompare className="mr-1 text-neutral-700 dark:text-neutral-300 h-4 w-4" />
-                      <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-                        Price Comparison
-                      </span>
-                    </div>
-                  </div>
-                  <Button className="mt-4 w-full" onClick={() => window.location.href = "/catalogue"}>
-                    View Prices
-                  </Button>
-                </GlassCard>
+              <div className='h-full items-center justify-center flex flex-col'>
+                {/* Animated card grid with fade effect */}
+                {
+                  // Calculate which set of 3 cards to show based on currentImageIndex
+                  (() => {
+                    const cardsPerPage = 3;
+                    const NoOfFramesACardIsShown = 15; // 15 frames per card
+                    const page = Math.abs(Math.floor((currentImageIndex - 25) / NoOfFramesACardIsShown)); // -25 to start from the start. Math.abs() prevents error from negative indexes
+                    const start = page * cardsPerPage;
+                    const visibleCards = ListOfLandingPageCards.slice(start, start + cardsPerPage);
+
+                    return (
+                      <motion.div
+                        // unique key per card set
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className={`grid gap-4 p-4 ${
+                          visibleCards.length === 1
+                            ? 'grid-cols-1 place-items-center'
+                          : visibleCards.length === 2
+                            ? 'grid-cols-1 md:grid-cols-2 place-items-center'
+                            : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                        }`}
+                      >
+                        {visibleCards.map((card, index) => (
+                          <GlassCard key={start + index}>
+                            <div className='flex flex-col justify-between text-xs md:text-sm'>
+                              <h3 className="text-sm md:text-lg font-bold">{card.title}</h3>
+                              <p className='py-2'>{card.body}</p>
+                              <ul className="list-disc pl-5">
+                                {card.points.map((point, i) => (
+                                  <li key={i}>{point}</li>
+                                ))}
+                              </ul>
+                              <Button className="mt-4 w-full" onClick={() => window.location.href = card.link}>
+                                {card.cta}
+                              </Button>
+                            </div>
+                          </GlassCard>
+                        ))}
+                      </motion.div>
+                    );
+                  })()
+                }
               </div>
           </div>
+
+          {/* scroll down icon */}
+          <div className={`absolute left-1/2 transform -translate-x-1/2 text-white animate-bounce
+            ${currentImageIndex > 1 ? 'bottom-8' : 'bottom-16'}
+            `}>
+            <div className='w-10 h-10 rounded-full border-2 border-white flex items-center justify-center bg-white/20'>
+              <svg className='w-6 h-6' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
