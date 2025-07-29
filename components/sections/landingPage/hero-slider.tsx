@@ -453,7 +453,7 @@ useEffect(() => {
             className="overflow-hidden w-full h-full rounded-b-3xl"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 0.4, delay: 0.2 }} // Reduced from 0.8, 0.4
           >
             <img
               src={imageSrc || "/placeholder.svg"}
@@ -546,8 +546,7 @@ useEffect(() => {
 
           {/* Glass Cards for 3 main sections */}
           <div className={`absolute top-0 left-0 w-full h-screen lg:p-20 md:p-8 p-2 transition-opacity duration-200 ease-in-out
-            ${currentImageIndex > 25 ? 'opacity-100' : 'opacity-0'}
-            
+            ${currentImageIndex > 25 ? 'visible' : 'invisible'}
             `}
             >
               <div className='h-full items-center justify-center flex flex-col'>
@@ -567,7 +566,7 @@ useEffect(() => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.5 }}
+                        transition={{ duration: 0.25 }} // Reduced from 0.5
                         className={`grid gap-4 p-4 ${
                           visibleCards.length === 1
                             ? 'grid-cols-1 place-items-center'
@@ -592,18 +591,18 @@ useEffect(() => {
                               rotateX: 0
                             }}
                             transition={{
-                              duration: 0.3, // Reduced from 0.6
-                              delay: index * 0.08, // Reduced from 0.15
+                              duration: 0.15, // Reduced from 0.6
+                              delay: index * 0.04, // Reduced from 0.15
                               ease: [0.25, 0.46, 0.45, 0.94], // Custom easing
                             }}
                             whileHover={{
                               scale: 1.02,
                               y: -5,
-                              transition: { duration: 0.15 } // Reduced from 0.2
+                              transition: { duration: 0.1 } // Reduced from 0.2
                             }}
                             whileTap={{
                               scale: 0.98,
-                              transition: { duration: 0.05 } // Reduced from 0.1
+                              transition: { duration: 0.02 } // Reduced from 0.1
                             }}
                             style={{
                               transformStyle: 'preserve-3d',
@@ -614,13 +613,13 @@ useEffect(() => {
                                 className='flex flex-col justify-between text-xs md:text-base'
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                transition={{ delay: 0.15 + index * 0.05, duration: 0.25 }} // Reduced delays and duration
+                                transition={{ delay: 0.08 + index * 0.03, duration: 0.12 }} // Reduced delays and duration
                               >
                                 <motion.h3 
                                   className="text-sm md:text-lg font-bold"
                                   initial={{ opacity: 0, x: -20 }}
                                   animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: 0.2 + index * 0.05, duration: 0.2 }} // Reduced delays and duration
+                                  transition={{ delay: 0.1 + index * 0.03, duration: 0.1 }} // Reduced delays and duration
                                 >
                                   {card.title}
                                 </motion.h3>
@@ -628,7 +627,7 @@ useEffect(() => {
                                   className='py-2'
                                   initial={{ opacity: 0, x: -20 }}
                                   animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: 0.25 + index * 0.05, duration: 0.2 }} // Reduced delays and duration
+                                  transition={{ delay: 0.12 + index * 0.03, duration: 0.1 }} // Reduced delays and duration
                                 >
                                   {card.body}
                                 </motion.p>
@@ -636,7 +635,7 @@ useEffect(() => {
                                   className="list-disc pl-5"
                                   initial={{ opacity: 0 }}
                                   animate={{ opacity: 1 }}
-                                  transition={{ delay: 0.3 + index * 0.05, duration: 0.2 }} // Reduced delays and duration
+                                  transition={{ delay: 0.15 + index * 0.03, duration: 0.1 }} // Reduced delays and duration
                                 >
                                   {card.points.map((point, i) => (
                                     <motion.li 
@@ -644,8 +643,8 @@ useEffect(() => {
                                       initial={{ opacity: 0, x: -10 }}
                                       animate={{ opacity: 1, x: 0 }}
                                       transition={{ 
-                                        delay: 0.35 + index * 0.05 + i * 0.02, // Reduced delays
-                                        duration: 0.15 // Reduced duration
+                                        delay: 0.17 + index * 0.03 + i * 0.01, // Reduced delays
+                                        duration: 0.08 // Reduced duration
                                       }}
                                     >
                                       {point}
@@ -655,7 +654,7 @@ useEffect(() => {
                                 <motion.div
                                   initial={{ opacity: 0, y: 20 }}
                                   animate={{ opacity: 1, y: 0 }}
-                                  transition={{ delay: 0.4 + index * 0.05, duration: 0.2 }} // Reduced delays and duration
+                                  transition={{ delay: 0.2 + index * 0.03, duration: 0.1 }} // Reduced delays and duration
                                 >
                                   <Button 
                                     className="mt-4 w-full" 
