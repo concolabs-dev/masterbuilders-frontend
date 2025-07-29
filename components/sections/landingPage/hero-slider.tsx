@@ -219,17 +219,17 @@ const ListOfLandingPageCards = [
     cta: "Showcase Products",
     link: "/supplier",
   },
-  {
-    title: "Are You a Builder?",
-    body: "Tap into Sri Lanka's growing construction network.",
-    points: [
-      "Display past & current work",
-      "Connect with suppliers & investors",
-      "Get discovered by clients",
-    ],
-    cta: "Get Started",
-    link: "/register",
-  },
+  // {
+  //   title: "Are You a Builder?",
+  //   body: "Tap into Sri Lanka's growing construction network.",
+  //   points: [
+  //     "Display past & current work",
+  //     "Connect with suppliers & investors",
+  //     "Get discovered by clients",
+  //   ],
+  //   cta: "Get Started",
+  //   link: "/register",
+  // },
   {
     title: "Construction Professional?",
     body: "Find the right opportunities and visibility.",
@@ -250,7 +250,7 @@ const ListOfLandingPageCards = [
       "Make smarter investment decisions",
     ],
     cta: "Explore Projects",
-    link: "//build-in-sl",
+    link: "/projects",
   },
   {
     title: "Are You a Service Provider?",
@@ -556,14 +556,14 @@ useEffect(() => {
                   // Calculate which set of 3 cards to show based on currentImageIndex
                   (() => {
                     const cardsPerPage = 3;
-                    const NoOfFramesACardIsShown = 15; // 15 frames per card
+                    const NoOfFramesACardIsShown = 25; // ..frames per card
                     const page = Math.abs(Math.floor((currentImageIndex - 25) / NoOfFramesACardIsShown)); // -25 to start from the start. Math.abs() prevents error from negative indexes
                     const start = page * cardsPerPage;
                     const visibleCards = ListOfLandingPageCards.slice(start, start + cardsPerPage);
 
                     return (
                       <motion.div
-                        // unique key per card set
+                        key={page} // unique key per card set for proper re-animation
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -577,20 +577,96 @@ useEffect(() => {
                         }`}
                       >
                         {visibleCards.map((card, index) => (
-                          <GlassCard key={start + index}>
-                            <div className='flex flex-col justify-between text-xs md:text-sm'>
-                              <h3 className="text-sm md:text-lg font-bold">{card.title}</h3>
-                              <p className='py-2'>{card.body}</p>
-                              <ul className="list-disc pl-5">
-                                {card.points.map((point, i) => (
-                                  <li key={i}>{point}</li>
-                                ))}
-                              </ul>
-                              <Button className="mt-4 w-full" onClick={() => window.location.href = card.link}>
-                                {card.cta}
-                              </Button>
-                            </div>
-                          </GlassCard>
+                          <motion.div
+                            key={start + index}
+                            initial={{ 
+                              opacity: 0, 
+                              y: 50,
+                              scale: 0.9,
+                              rotateX: 15
+                            }}
+                            animate={{ 
+                              opacity: 1, 
+                              y: 0,
+                              scale: 1,
+                              rotateX: 0
+                            }}
+                            transition={{
+                              duration: 0.3, // Reduced from 0.6
+                              delay: index * 0.08, // Reduced from 0.15
+                              ease: [0.25, 0.46, 0.45, 0.94], // Custom easing
+                            }}
+                            whileHover={{
+                              scale: 1.02,
+                              y: -5,
+                              transition: { duration: 0.15 } // Reduced from 0.2
+                            }}
+                            whileTap={{
+                              scale: 0.98,
+                              transition: { duration: 0.05 } // Reduced from 0.1
+                            }}
+                            style={{
+                              transformStyle: 'preserve-3d',
+                            }}
+                          >
+                            <GlassCard>
+                              <motion.div 
+                                className='flex flex-col justify-between text-xs md:text-base'
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.15 + index * 0.05, duration: 0.25 }} // Reduced delays and duration
+                              >
+                                <motion.h3 
+                                  className="text-sm md:text-lg font-bold"
+                                  initial={{ opacity: 0, x: -20 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: 0.2 + index * 0.05, duration: 0.2 }} // Reduced delays and duration
+                                >
+                                  {card.title}
+                                </motion.h3>
+                                <motion.p 
+                                  className='py-2'
+                                  initial={{ opacity: 0, x: -20 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: 0.25 + index * 0.05, duration: 0.2 }} // Reduced delays and duration
+                                >
+                                  {card.body}
+                                </motion.p>
+                                <motion.ul 
+                                  className="list-disc pl-5"
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  transition={{ delay: 0.3 + index * 0.05, duration: 0.2 }} // Reduced delays and duration
+                                >
+                                  {card.points.map((point, i) => (
+                                    <motion.li 
+                                      key={i}
+                                      initial={{ opacity: 0, x: -10 }}
+                                      animate={{ opacity: 1, x: 0 }}
+                                      transition={{ 
+                                        delay: 0.35 + index * 0.05 + i * 0.02, // Reduced delays
+                                        duration: 0.15 // Reduced duration
+                                      }}
+                                    >
+                                      {point}
+                                    </motion.li>
+                                  ))}
+                                </motion.ul>
+                                <motion.div
+                                  initial={{ opacity: 0, y: 20 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: 0.4 + index * 0.05, duration: 0.2 }} // Reduced delays and duration
+                                >
+                                  <Button 
+                                    className="mt-4 w-full" 
+                                    onClick={() => window.location.href = card.link}
+                                  >
+                                    {card.cta}
+                                  </Button>
+                                </motion.div>
+                              </motion.div>
+                            </GlassCard>
+                          </motion.div>
                         ))}
                       </motion.div>
                     );
