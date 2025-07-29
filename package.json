@@ -34,6 +34,7 @@
     "jose": "^5.9.6",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.475.0",
+    "motion": "^12.23.5",
     "next": "14.2.16",
     "nodemailer": "^6.10.0",
     "radix-ui": "^1.1.3",

@@ -64,7 +64,7 @@ const features = [
 
 export default function FeaturesSection() {
     return (
-        <section className="py-20 px-4 lg:px-32 bg-gray-50">
+        <section id="services" className="py-20 px-4 lg:px-32 bg-gray-50">
         <div className="container mx-auto px-4">
           <FadeInWhenVisible>
             <div className="text-center mb-16">

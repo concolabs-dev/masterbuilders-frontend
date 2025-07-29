@@ -48,7 +48,53 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { BillingOverview } from "@/components/billing-overview"
+import { InvoiceTable } from "@/components/invoice-table"
+import { PaymentMethods } from "@/components/payment-methods"
+import { PaymentDialog } from "@/components/payment-dialog"
+const mockInvoices = [
+  {
+    id: "INV-001",
+    date: "2024-01-15",
+    amount: 2500,
+    status: "paid" as const,
+    description: "Monthly subscription fee",
+    dueDate: "2024-01-30",
+  },
+  {
+    id: "INV-002",
+    date: "2024-02-15",
+    amount: 2500,
+    status: "paid" as const,
+    description: "Monthly subscription fee",
+    dueDate: "2024-02-28",
+  },
+  {
+    id: "INV-003",
+    date: "2024-03-15",
+    amount: 2500,
+    status: "overdue" as const,
+    description: "Monthly subscription fee",
+    dueDate: "2024-03-30",
+  },
+]
 
+const mockPaymentMethods = [
+  {
+    id: "pm_1",
+    type: "credit_card" as const,
+    last4: "4242",
+    brand: "Visa",
+    isDefault: true,
+    expiryDate: "12/25",
+  },
+  {
+    id: "pm_2",
+    type: "bank_account" as const,
+    last4: "1234",
+    isDefault: false,
+  },
+]
 function SupplierDashboardPage() {
   const { user, error: userError, isLoading: userLoading } = useUser()
   const [supplier, setSupplier] = useState<Supplier | null>(null)
@@ -73,6 +119,18 @@ function SupplierDashboardPage() {
   // State for image upload in add item dialog.
   const [addImageUrl, setAddImageUrl] = useState("")
   const [alreadyRegistered, setAlreadyRegistered] = useState(false)
+  const [invoices, setInvoices] = useState(mockInvoices)
+  const [paymentMethods, setPaymentMethods] = useState(mockPaymentMethods)
+  const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false)
+    const handleDownloadInvoice = (invoiceId: string) => {
+    console.log("Downloading invoice:", invoiceId)
+    // In a real app, this would trigger a download
+  }
+
+  const handlePayment = (paymentData: any) => {
+    console.log("Payment processed:", paymentData)
+    // In a real app, this would process the payment
+  }
   // Fetch supplier using user's email.
   useEffect(() => {
     async function fetchData(){
@@ -284,6 +342,7 @@ function SupplierDashboardPage() {
             <TabsTrigger value="catalogue">Catalogue</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
+             <TabsTrigger value="billing">Billing</TabsTrigger>
           </TabsList>
           <div className="flex items-center gap-2">
             <Button
@@ -519,6 +578,26 @@ function SupplierDashboardPage() {
             </CardContent>
           </Card>
         </TabsContent>
+                <TabsContent value="billing" className="space-y-6">
+          <BillingOverview
+            currentBalance={2500}
+            nextPaymentDue="March 30, 2024"
+            nextPaymentAmount={2500}
+            accountStatus="overdue"
+            onPayNow={() => setIsPaymentDialogOpen(true)}
+          />
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <InvoiceTable invoices={invoices} onDownload={handleDownloadInvoice} />
+
+            <PaymentMethods
+              paymentMethods={paymentMethods}
+              onAddPaymentMethod={() => console.log("Add payment method")}
+              onDeletePaymentMethod={(id) => console.log("Delete payment method:", id)}
+              onSetDefault={(id) => console.log("Set default payment method:", id)}
+            />
+          </div>
+        </TabsContent>
       </Tabs>
 
       {/* Edit Item Dialog */}
@@ -597,6 +676,13 @@ function SupplierDashboardPage() {
           )}
         </DialogContent>
       </Dialog>
+         {/* Payment Dialog */}
+      <PaymentDialog
+        open={isPaymentDialogOpen}
+        onOpenChange={setIsPaymentDialogOpen}
+        amount={2500}
+        onPayment={handlePayment}
+      />
     </div>
   )
 }

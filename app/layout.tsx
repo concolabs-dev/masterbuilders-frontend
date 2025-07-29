@@ -29,16 +29,16 @@ export default function RootLayout({
 
   <meta property="og:title" content="Build Market LK - Affordable Construction Materials & Supplies in Sri Lanka" />
   <meta property="og:description" content="Master Space Builders Pvt Ltd is revolutionizing the construction industry by bridging the gap between suppliers and builders. Explore our extensive catalogue of construction, electrical, and other materials at competitive prices. Discover cheap material prices, construction prices, and high-quality Sri Lankan material supplies with our innovative platform." />
-  <meta property="og:image" content="/images/logobm.png" />
+  <meta property="og:image" content="/images/logo.jpeg" />
   <meta property="og:url" content="https://www.buildmasters.lk" />
   
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Build Market LK - Affordable Construction Materials & Supplies in Sri Lanka" />
   <meta name="twitter:description" content="Master Space Builders Pvt Ltd is revolutionizing the construction industry by bridging the gap between suppliers and builders. Explore our extensive catalogue of construction, electrical, and other materials at competitive prices. Discover cheap material prices, construction prices, and high-quality Sri Lankan material supplies with our innovative platform." />
-  <meta name="twitter:image" content="/images/logobm.png" />
+  <meta name="twitter:image" content="/images/logo.jpeg" />
   
-  <link rel="icon" href="/images/logobm.png" />
+  <link rel="icon" href="/images/logo.jpeg" />
 </head>
 
       <body className={inter.className}>

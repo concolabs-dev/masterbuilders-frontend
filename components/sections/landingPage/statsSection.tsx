@@ -1,5 +1,12 @@
-import FadeInWhenVisible from "@/components/ui/FadeInWhenVisible";
 import { useEffect, useState } from "react";
+
+// Change stats here..
+const stats = {
+  suppliersCount: 10000,
+  productsCount: 50000,
+  professionalsCount: 5000,
+  projectsCount: 1000,
+}
 
 // Custom hook for counting animation
 const useCountUp = (end: number, duration = 1000, start = 0) => {
@@ -62,10 +69,10 @@ const useIntersectionObserver = (callback: () => void, options = {}) => {
 }
 
 export default function StatsSection() {
-    const suppliersCount = useCountUp(10000, 1200, 0)
-    const productsCount = useCountUp(50000, 1400, 0)
-    const professionalsCount = useCountUp(5000, 1000, 0)
-    const projectsCount = useCountUp(1000, 800, 0)
+    const suppliersCount = useCountUp(stats.suppliersCount, 1200, 0)
+    const productsCount = useCountUp(stats.productsCount, 1400, 0)
+    const professionalsCount = useCountUp(stats.professionalsCount, 1000, 0)
+    const projectsCount = useCountUp(stats.projectsCount, 800, 0)
 
     const statsRef = useIntersectionObserver(() => {
       suppliersCount.setIsVisible(true)

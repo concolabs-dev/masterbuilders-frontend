@@ -10,13 +10,14 @@ export default function CtaSection() {
             Explore the best prices for construction materials — or join as a supplier or professional to grow your business.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-lg px-8 py-4">
+            <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-lg px-8 py-4" onClick={() => window.location.href = "/catalogue"}>
               View Catalogue
             </Button>
             <Button
               size="lg"
               variant="outline"
               className="text-white border-white hover:bg-white hover:text-gray-900 text-lg px-8 py-4 bg-transparent"
+              onClick={() => window.location.href = "/register"}
             >
               Register Now
               <ArrowRight className="ml-2 w-5 h-5" />

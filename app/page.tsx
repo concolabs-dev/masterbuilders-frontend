@@ -58,7 +58,7 @@ function SlideIn({ children, direction = "left" }: { children: ReactNode, direct
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col overflow-hidden">
+    <div className="flex min-h-screen flex-col">
       <main className="flex-1">
         <HeroSlider />
         
@@ -124,10 +124,7 @@ export default function Home() {
             <SlideIn>
               <div className="max-w-3xl mx-auto mb-12 text-center">
                 <p className="text-lg">
-                  BuildMarketLK is a pioneering joint venture formed by three industry leaders: the Ceylon Institute of
-                  Builders (CIOB), VFORM Consultants, and Concolabs. Together, we are reshaping Sri Lanka's construction
-                  landscape by creating a transparent, efficient, and technology-driven marketplace for construction
-                  materials and services.
+                  BuildMarketLK is a pioneering joint venture formed by four industry leaders: the Ceylon Institute of Builders (CIOB), QSERVE, VFORM Consultants, and Concolabs. Together, we are reshaping Sri Lanka's construction landscape by technology-driven virtual and informative single window construction market access platform for all construction industry stakeholders and all other users.
                 </p>
               </div>
             </SlideIn>
@@ -172,8 +169,7 @@ export default function Home() {
                   <CardContent className="flex-1 p-6">
                     <h3 className="text-xl font-semibold mb-4 text-center">VFORM Consultants</h3>
                     <p className="text-slate-600">
-                      A quantity surveying firm, contributes deep expertise in cost management and project estimation,
-                      ensuring accuracy and financial efficiency across the platform.
+                      A long standing reputed Quantity Surveying firm, contributes its expertise in cost and contracts management in providing contemporary cost data, cost information analysis, cost estimation, contract formulation advisory, contractual document reviews and Research and Development inputs together with commercial mediation services ensuring reliable and synergetic professional inputs across the platform with the other partners
                     </p>
                   </CardContent>
                 </Card>
