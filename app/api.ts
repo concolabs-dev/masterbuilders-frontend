@@ -373,3 +373,57 @@ export const updateProject = async (id: string, project: Partial<Project>): Prom
 export const deleteProject = async (id: string): Promise<void> => {
   await backend_api_axios.delete(`/projects/${id}`)
 }
+export const getProjectsWithFilters = async (filters: {
+  pid?: string;
+  year?: string;
+  company_type?: string;
+}): Promise<Project[]> => {
+  const params = new URLSearchParams();
+  
+  if (filters.pid) params.append("pid", filters.pid);
+  if (filters.year) params.append("year", filters.year);
+  if (filters.company_type) params.append("company_type", filters.company_type);
+  
+  const response = await backend_api_axios.get<Project[]>("/projects/filter", { params });
+  return response.data;
+}
+
+// Search projects by name or description
+export const searchProjects = async (searchQuery: string, filters?: {
+  pid?: string;
+  year?: string;
+  type?: string;
+}): Promise<{
+  query: string;
+  count: number;
+  results: Project[];
+}> => {
+  const params = new URLSearchParams({ q: searchQuery });
+  
+  if (filters?.pid) params.append("pid", filters.pid);
+  if (filters?.year) params.append("year", filters.year);
+  if (filters?.type) params.append("type", filters.type);
+  
+  const response = await backend_api_axios.get("/projects/search", { params });
+  return response.data;
+}
+
+// Get projects with professional information included
+export interface ProjectWithProfessional extends Project {
+  professional?: Professional;
+}
+
+export const getProjectsWithProfessionalInfo = async (filters?: {
+  pid?: string;
+  year?: string;
+  company_type?: string;
+}): Promise<ProjectWithProfessional[]> => {
+  const params = new URLSearchParams();
+  
+  if (filters?.pid) params.append("pid", filters.pid);
+  if (filters?.year) params.append("year", filters.year);
+  if (filters?.company_type) params.append("company_type", filters.company_type);
+  
+  const response = await backend_api_axios.get<ProjectWithProfessional[]>("/projects/with-professional", { params });
+  return response.data;
+}

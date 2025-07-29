@@ -433,7 +433,7 @@ useEffect(() => {
   }
 
   return (
-    <section ref={containerRef} className="relative min-h-[300vh] z-[100] bg-gray-50">
+    <section ref={containerRef} className="relative min-h-[300vh] z-[50] bg-gray-50">
       {/* loading screen */}
       {isLoading && (
         <div className="fixed inset-0 bg-black text-gray-50 flex flex-col items-center justify-center z-50">
