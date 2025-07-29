@@ -572,7 +572,7 @@ useEffect(() => {
                             ? 'grid-cols-1 place-items-center'
                           : visibleCards.length === 2
                             ? 'grid-cols-1 md:grid-cols-2 place-items-center'
-                            : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                            : 'grid-cols-1 md:grid-cols-3'
                         }`}
                       >
                         {visibleCards.map((card, index) => (
@@ -676,7 +676,7 @@ useEffect(() => {
 
           {/* scroll down icon */}
           <div className={`absolute left-1/2 transform -translate-x-1/2 text-white animate-bounce
-            ${currentImageIndex > 1 ? 'bottom-8' : 'bottom-16'}
+            ${currentImageIndex > 1 ? 'bottom-2 md:bottom-8' : 'bottom-16'}
             `}>
             <div className='w-10 h-10 rounded-full border-2 border-white flex items-center justify-center bg-white/20'>
               <svg className='w-6 h-6' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
