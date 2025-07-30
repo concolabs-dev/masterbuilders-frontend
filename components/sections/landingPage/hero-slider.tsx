@@ -440,9 +440,9 @@ useEffect(() => {
           <style>{`body { overflow: hidden !important; }`}</style>
           <div className='relative w-full h-full'>
             <h2 className='absolute bottom-2 right-2 text-9xl font-bold'>{loadingProgress}</h2>
-            <p className='absolute bottom-20 right-2 text-sm opacity-70'>
+            {/* <p className='absolute bottom-20 right-2 text-sm opacity-70'>
               Loading {webpSupported ? 'WebP' : 'PNG'} frames...
-            </p>
+            </p> */}
           </div>
         </div>
       )}
@@ -491,17 +491,20 @@ useEffect(() => {
           </Modal>
 
           {/* text Content */}
+
           <div className={`absolute top-16 left-1/2 transform -translate-x-1/2 text-center
             ${currentImageIndex > 25 ? 'invisible' : 'visible'}
             `}
             style={{ opacity }}
             >
-            <div className='text-white'>
+
+            <div className='text-white w-full overflow-hidden'>
+
               <h1 className="text-4xl md:text-6xl font-extrabold">BuildMarketLK</h1>
               <p className="text-gray-50 md:tracking-widest uppercase text-xs md:text-sm">Your Trusted Gateway to Building in Sri Lanka</p>
               
               {/* horizontal moving services */}
-              <div className="relative md:max-w-2xl mx-auto text-xs md:text-base">
+              <div className="relative md:max-w-2xl mx-auto text-xs md:text-base w-[95%]">
                 {/* Container with mask for fade effects */}
                 <div
                   className="overflow-hidden"
@@ -512,7 +515,7 @@ useEffect(() => {
                 >
                   
                   {/* Scrolling services */}
-                  <div className="flex animate-scroll-left ">
+                  <div className="flex animate-scroll-left">
                     {/* First set of services */}
                     <div className="flex items-center  md:space-x-8 md:min-w-max">
                       {ListOfServices.map((service, index) => (

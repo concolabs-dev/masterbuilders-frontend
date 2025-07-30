@@ -33,8 +33,7 @@ export default function AboutUsSection() {
                 </CardHeader>
                 <CardContent>
                 <CardDescription className="text-gray-600 text-sm leading-relaxed">
-                    Sri Lanka's oldest professional body for builders, brings decades of institutional knowledge,
-                    policy advocacy, and a commitment to elevating industry standards.
+                    The leading professional body representing construction management in Sri Lanka, CIOB SL upholds industry excellence through membership accreditation, continuing professional development, and policy advocacy. Acting as a catalyst for elevating construction standards, the institute promotes ethical conduct, managerial competence, and knowledge exchange, driving the local industry in line with international best practices.
                 </CardDescription>
                 </CardContent>
             </Card>
@@ -76,7 +75,7 @@ export default function AboutUsSection() {
                 </CardHeader>
                 <CardContent>
                 <CardDescription className="text-gray-600 text-sm leading-relaxed">
-                    A chartered quantity surveying and project management consultancy, founded in Sri Lanka in 1994, pioneering professional cost planning, contract administration, value engineering, and dispute-resolutions.
+                    A well-established and respected Quantity Surveying consultancy, offering specialized services in cost management, contract administration, procurement advisory, dispute resolution, and construction economics. With a strong foundation in industry best practices, QServe contributes analytical cost data, tender documentation support, and professional consultancy, ensuring dependable and collaborative inputs across multidisciplinary project environments.
                 </CardDescription>
                 </CardContent>
             </Card>
@@ -97,8 +96,7 @@ export default function AboutUsSection() {
                 </CardHeader>
                 <CardContent>
                 <CardDescription className="text-gray-600 text-sm leading-relaxed">
-                    A construction technology company, powers the platform with cutting-edge digital tools, enabling
-                    real-time pricing, automated estimations, and seamless supplier integration.
+                    An emerging force in construction technology, Concolabs Inc. delivers specialized digital solutions focused on automation, artificial intelligence, and integrated platforms for the built environment. Through innovative applications in BIM integration, SaaS product development, and data-driven decision systems, the company provides agile and intelligent tools that empower industry professionals and streamline construction project delivery.
                 </CardDescription>
                 </CardContent>
             </Card>
