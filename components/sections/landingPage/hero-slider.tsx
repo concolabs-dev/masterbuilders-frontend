@@ -1,6 +1,7 @@
 'use client';
 import { Modal, ModalBody, ModalContent, ModalFooter } from '@/components/ui/animated-modal';
 import { Button } from '@/components/ui/button';
+import GlassCard from '@/components/ui/GlassCard';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Bell, BookOpen, CheckCircle, DollarSign, GitCompare, Handshake, HardHat, LineChart, Link, Map, Package, ParkingMeter, Phone, Pin, ShieldCheck, Tag, Truck } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -195,6 +196,87 @@ const ListOfServices = [
    },
 ]
 
+const ListOfLandingPageCards = [
+  {
+    title: "Looking to Buy or Build a House?",
+    body: "Get matched with builders, suppliers & live prices.",
+    points: [
+      "Track real-time material prices",
+      "Find trusted builders across Sri Lanka",
+      "Discover great deals effortlessly",
+    ],
+    cta: "Explore Catalogue",
+    link: "/catalogue",
+  },
+  {
+    title: "Are You a Supplier?",
+    body: "Sell smarter with visibility & insights.",
+    points: [
+      "List your product catalogue",
+      "Compare prices across the market",
+      "Connect with real-time demand",
+    ],
+    cta: "Showcase Products",
+    link: "/supplier",
+  },
+  // {
+  //   title: "Are You a Builder?",
+  //   body: "Tap into Sri Lanka's growing construction network.",
+  //   points: [
+  //     "Display past & current work",
+  //     "Connect with suppliers & investors",
+  //     "Get discovered by clients",
+  //   ],
+  //   cta: "Get Started",
+  //   link: "/register",
+  // },
+  {
+    title: "Construction Professional?",
+    body: "Find the right opportunities and visibility.",
+    points: [
+      "Appear in our expert directory",
+      "Access new projects & trends",
+      "Connect with key stakeholders",
+    ],
+    cta: "Join the Network",
+    link: "/professionals/showcase",
+  },
+  {
+    title: "Investor Interested in Sri Lanka?",
+    body: "Explore the booming construction opportunities.",
+    points: [
+      "Access high-potential projects",
+      "Compare builders, pricing & data",
+      "Make smarter investment decisions",
+    ],
+    cta: "Explore Projects",
+    link: "/projects",
+  },
+  {
+    title: "Are You a Service Provider?",
+    body: "Connect with builders and grow your business.",
+    points: [
+      "Promote services like legal, rentals, finance",
+      "Reach a wide construction audience",
+      "Get discovered by project owners",
+    ],
+    cta: "List Your Services",
+    link: "/register",
+  },
+  {
+    title: "Are You a Subcontractor?",
+    body: "Find projects and get hired for your skills.",
+    points: [
+      "Access ready-to-start construction projects",
+      "Connect with contractors & builders",
+      "Showcase your expertise & past work",
+    ],
+    cta: "Find Work",
+    link: "/register",
+  },
+];
+
+
 export function HeroSlider() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
@@ -342,8 +424,16 @@ useEffect(() => {
     }
   }
 
+  // opacity to fade out text after 25 frames
+  let opacity = 1;
+  if (currentImageIndex >= 10 && currentImageIndex <= 25) {
+    opacity = 1 - (currentImageIndex - 10) / (25 - 10); // linear fade
+  } else if (currentImageIndex > 25) {
+    opacity = 0;
+  }
+
   return (
-    <section ref={containerRef} className="relative min-h-[300vh] z-[100] bg-gray-50">
+    <section ref={containerRef} className="relative min-h-[300vh] z-[50] bg-gray-50">
       {/* loading screen */}
       {isLoading && (
         <div className="fixed inset-0 bg-black text-gray-50 flex flex-col items-center justify-center z-50">
@@ -363,7 +453,7 @@ useEffect(() => {
             className="overflow-hidden w-full h-full rounded-b-3xl"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 0.4, delay: 0.2 }} // Reduced from 0.8, 0.4
           >
             <img
               src={imageSrc || "/placeholder.svg"}
@@ -401,8 +491,15 @@ useEffect(() => {
           </Modal>
 
           {/* text Content */}
-          <div className="absolute top-16 left-1/2 transform -translate-x-1/2 text-center w-[98%] overflow-hidden">
+
+          <div className={`absolute top-16 left-1/2 transform -translate-x-1/2 text-center
+            ${currentImageIndex > 25 ? 'invisible' : 'visible'}
+            `}
+            style={{ opacity }}
+            >
+
             <div className='text-white w-full overflow-hidden'>
+
               <h1 className="text-4xl md:text-6xl font-extrabold">BuildMarketLK</h1>
               <p className="text-gray-50 md:tracking-widest uppercase text-xs md:text-sm">Your Trusted Gateway to Building in Sri Lanka</p>
               
@@ -420,7 +517,7 @@ useEffect(() => {
                   {/* Scrolling services */}
                   <div className="flex animate-scroll-left">
                     {/* First set of services */}
-                    <div className="flex items-center md:space-x-8 md:min-w-max">
+                    <div className="flex items-center  md:space-x-8 md:min-w-max">
                       {ListOfServices.map((service, index) => (
                           <button
                             key={index}
@@ -447,6 +544,147 @@ useEffect(() => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Glass Cards for 3 main sections */}
+          <div className={`absolute top-0 left-0 w-full h-screen lg:p-20 md:p-8 p-2 transition-opacity duration-200 ease-in-out
+            ${currentImageIndex > 25 ? 'visible' : 'invisible'}
+            `}
+            >
+              <div className='h-full items-center justify-center flex text-lg flex-col'>
+                {/* Animated card grid with fade effect */}
+                {
+                  // Calculate which set of 3 cards to show based on currentImageIndex
+                  (() => {
+                    const cardsPerPage = 3;
+                    const NoOfFramesACardIsShown = 25; // ..frames per card
+                    const page = Math.abs(Math.floor((currentImageIndex - 25) / NoOfFramesACardIsShown)); // -25 to start from the start. Math.abs() prevents error from negative indexes
+                    const start = page * cardsPerPage;
+                    const visibleCards = ListOfLandingPageCards.slice(start, start + cardsPerPage);
+
+                    return (
+                      <motion.div
+                        key={page} // unique key per card set for proper re-animation
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.25 }} // Reduced from 0.5
+                        className={`grid gap-4 p-4 ${
+                          visibleCards.length === 1
+                            ? 'grid-cols-1 place-items-center'
+                          : visibleCards.length === 2
+                            ? 'grid-cols-1 md:grid-cols-2 place-items-center'
+                            : 'grid-cols-1 md:grid-cols-3'
+                        }`}
+                      >
+                        {visibleCards.map((card, index) => (
+                          <motion.div
+                            key={start + index}
+                            initial={{ 
+                              opacity: 0, 
+                              y: 50,
+                              scale: 0.9,
+                              rotateX: 15
+                            }}
+                            animate={{ 
+                              opacity: 1, 
+                              y: 0,
+                              scale: 1,
+                              rotateX: 0
+                            }}
+                            transition={{
+                              duration: 0.15, // Reduced from 0.6
+                              delay: index * 0.04, // Reduced from 0.15
+                              ease: [0.25, 0.46, 0.45, 0.94], // Custom easing
+                            }}
+                            whileHover={{
+                              scale: 1.02,
+                              y: -5,
+                              transition: { duration: 0.1 } // Reduced from 0.2
+                            }}
+                            whileTap={{
+                              scale: 0.98,
+                              transition: { duration: 0.02 } // Reduced from 0.1
+                            }}
+                            style={{
+                              transformStyle: 'preserve-3d',
+                            }}
+                          >
+                            <GlassCard>
+                              <motion.div 
+                                className='flex flex-col justify-between text-sm md:text-base'
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.08 + index * 0.03, duration: 0.12 }} // Reduced delays and duration
+                              >
+                                <motion.h3 
+                                  className="text-sm md:text-lg font-bold"
+                                  initial={{ opacity: 0, x: -20 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: 0.1 + index * 0.03, duration: 0.1 }} // Reduced delays and duration
+                                >
+                                  {card.title}
+                                </motion.h3>
+                                <motion.p 
+                                  className='py-2'
+                                  initial={{ opacity: 0, x: -20 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: 0.12 + index * 0.03, duration: 0.1 }} // Reduced delays and duration
+                                >
+                                  {card.body}
+                                </motion.p>
+                                <motion.ul 
+                                  className="list-disc pl-5"
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  transition={{ delay: 0.15 + index * 0.03, duration: 0.1 }} // Reduced delays and duration
+                                >
+                                  {card.points.map((point, i) => (
+                                    <motion.li 
+                                      key={i}
+                                      initial={{ opacity: 0, x: -10 }}
+                                      animate={{ opacity: 1, x: 0 }}
+                                      transition={{ 
+                                        delay: 0.17 + index * 0.03 + i * 0.01, // Reduced delays
+                                        duration: 0.08 // Reduced duration
+                                      }}
+                                    >
+                                      {point}
+                                    </motion.li>
+                                  ))}
+                                </motion.ul>
+                                <motion.div
+                                  initial={{ opacity: 0, y: 20 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: 0.2 + index * 0.03, duration: 0.1 }} // Reduced delays and duration
+                                >
+                                  <Button 
+                                    className="mt-4 w-full" 
+                                    onClick={() => window.location.href = card.link}
+                                  >
+                                    {card.cta}
+                                  </Button>
+                                </motion.div>
+                              </motion.div>
+                            </GlassCard>
+                          </motion.div>
+                        ))}
+                      </motion.div>
+                    );
+                  })()
+                }
+              </div>
+          </div>
+
+          {/* scroll down icon */}
+          <div className={`absolute left-1/2 transform -translate-x-1/2 text-white animate-bounce
+            ${currentImageIndex > 1 ? 'bottom-2 md:bottom-8' : 'bottom-16'}
+            `}>
+            <div className='w-10 h-10 rounded-full border-2 border-white flex items-center justify-center bg-white/20'>
+              <svg className='w-6 h-6' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
             </div>
           </div>
 

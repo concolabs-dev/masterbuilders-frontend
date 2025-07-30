@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useEffect, useState } from "react"
@@ -10,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { ChevronDown, ChevronRight, Menu } from "lucide-react"
 import { Item, getItemsByMaterialID } from "@/app/api"
-import { SupplierItemList } from "@/components/supplier-item-list"
+import { SupplierItemCard } from "@/components/supplier-item-card"
 import { Head } from "next/document"
 import {
   Select,
@@ -20,8 +19,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import Loading from "@/components/loading"
-interface Material {
+import Link from "next/link"
 
+interface Material {
   id: string
   Number: string
   Name: string
@@ -76,6 +76,7 @@ export default function Catalogue() {
     console.log(materialItems)
   
   }, [selectedMaterial])
+  
   // Fetch exchange rates from our API (returns major_currencies)
   useEffect(() => {
     async function fetchExchangeRates() {
@@ -98,6 +99,7 @@ export default function Catalogue() {
       setSearchQuery(tempsearchQuery)
     }
   }
+  
   const callAPI = async () => {
     try {
       const res = await fetch("/api/test")
@@ -107,6 +109,7 @@ export default function Catalogue() {
       console.log(error)
     }
   }
+  
   useEffect(() => {
     setIsLoading(true)
     const fetchCategories = async () => {
@@ -157,10 +160,6 @@ export default function Catalogue() {
   return (
     <>
     {isLoading && <Loading/>}
-         {/* <Head>
-    <title>Catalogue</title>
-    <meta name="description" content="This is a catalogue of all the construction material items by various suppliers. Price vatriation by with the timeline and the currency conversion ability is also there. " />
-  </Head> */}
     <div className="container mx-auto px-4 py-8">
       <Button className="md:hidden bg-slate-900 mb-4" onClick={() => setShowSidebar(!showSidebar)}>
         <Menu className="h-6 w-6" />
@@ -168,25 +167,8 @@ export default function Catalogue() {
       </Button>
 
       {/* Currency selection dropdown */}
-
       <div className="mb-4 flex items-center gap-2">
-        {/* <label htmlFor="currency" className="font-medium">
-          Currency:
-        </label> */}
- 
-        {/* <select
-          id="currency"
-          value={selectedCurrency}
-          onChange={(e) => setSelectedCurrency(e.target.value)}
-          className="p-2 border rounded"
-        >
-          <option value="LKR">LKR</option>
-          {Object.keys(exchangeRates).map((currency) => (
-            <option key={currency} value={currency}>
-              {currency}
-            </option>
-          ))}
-        </select> */}
+        {/* Currency selection code remains the same */}
       </div>
 
       <div className="grid gap-6 md:grid-cols-[400px_1fr]">
@@ -288,19 +270,19 @@ export default function Catalogue() {
               Clear
             </Button>
             <Select onValueChange={(value) => setSelectedCurrency(value)}>
-  <SelectTrigger className="w-[180px] bg-primary text-white font-semibold hover:bg-primary/90 focus:ring-2 focus:ring-primary/50 rounded-lg ">
-    <span className="text-white">
-      <SelectValue placeholder="Select Currency" />
-    </span>
-  </SelectTrigger>
-  <SelectContent>
-    {Object.keys(exchangeRates).map((currency) => (
-      <SelectItem key={currency} value={currency}>
-        {currency}
-      </SelectItem>
-    ))}
-  </SelectContent>
-</Select>
+              <SelectTrigger className="w-[180px] bg-primary text-white font-semibold hover:bg-primary/90 focus:ring-2 focus:ring-primary/50 rounded-lg ">
+                <span className="text-white">
+                  <SelectValue placeholder="Select Currency" />
+                </span>
+              </SelectTrigger>
+              <SelectContent>
+                {Object.keys(exchangeRates).map((currency) => (
+                  <SelectItem key={currency} value={currency}>
+                    {currency}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {materials.length > 0 ? (
@@ -315,7 +297,6 @@ export default function Catalogue() {
                     unit={material.Unit}
                     location="National"
                     rating={4}
-                    // price={`${selectedCurrency} ${displayedPrice.toFixed(2)}`}
                     price={displayedPrice}
                     currency_t={selectedCurrency || ""}
                     onClick={() => setSelectedMaterial(material)}
@@ -329,7 +310,7 @@ export default function Catalogue() {
         </div>
       </div>
       <Dialog open={!!selectedMaterial} onOpenChange={() => setSelectedMaterial(null)}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           {selectedMaterial && (
             <div className="p-4 space-y-4 bg-white rounded-lg">
               <h2 className="text-2xl font-bold text-center mb-4">{selectedMaterial.Name}</h2>
@@ -389,34 +370,59 @@ export default function Catalogue() {
                 currency={selectedCurrency}
                 onClose={() => setSelectedMaterial(null)}
               />
-                        {selectedMaterial && materialItems&& (
-            <div className="mt-4">
-            <h2 className="text-lg font-semibold">Items</h2>
-            <div className="h-64 overflow-auto">
-            <SupplierItemList
-  items={materialItems.map((item) => {
-    const conversionRate = selectedCurrency === "LKR"
-      ? 1
-      : (exchangeRates[selectedCurrency] || 1)
-    const convertedPrice = item.price * conversionRate
+              
+                      {selectedMaterial && materialItems && materialItems.length > 0 && (
+                  <div>
+                    <h2 className="text-lg font-semibold mb-4">Available Items from Suppliers</h2>
+                    <div className="grid gap-3 sm:grid-cols-3 md:grid-cols-3 xl:grid-cols-3">
+                      {materialItems.map((item) => {
+                        const conversionRate = selectedCurrency === "LKR"
+                          ? 1
+                          : (exchangeRates[selectedCurrency] || 1)
+                        const convertedPrice = item.price * conversionRate
 
-    return {
-      ...item,
-      price: convertedPrice,     // overwrite price with converted
-    }
-  })}
-  onEdit={() => {}}
-  onDelete={() => {}}
-  admin={false}
-  displayCurrency={selectedCurrency}
-/>
-            </div>
-          </div>
-          )}
+                        return (
+                          <div key={item.id} className="relative">
+                            <Link 
+                              href={`/supplier/${item.supplierPid}`}
+                              className="block"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setSelectedMaterial(null) // Close the modal when navigating to supplier
+                              }}
+                            >
+                              <SupplierItemCard
+                                item={{
+                                  ...item,
+                                  price: convertedPrice,
+                                }}
+                                onEdit={() => {}}
+                                onDelete={() => {}}
+                                admin={false}
+                                displayCurrency={selectedCurrency}
+                              />
+                            </Link>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
+                
+              
+              {selectedMaterial && materialItems && materialItems.length === 0 && (
+                <div className="mt-6">
+                  <h2 className="text-lg font-semibold mb-4">Available Items from Suppliers</h2>
+                  <div className="text-center py-8 text-muted-foreground">
+                    <p>No items available from suppliers for this material.</p>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </DialogContent>
       </Dialog>
-    </div></>
+    </div>
+    </>
   )
 }

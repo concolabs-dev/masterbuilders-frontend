@@ -42,13 +42,7 @@ export function MainNav() {
         >
           About Us
         </a>
-        <a
-          href="#services"
-          onClick={(e) => scrollToSection(e, "services")}
-          className="transition-colors hover:text-foreground/80 text-muted-foreground"
-        >
-          Services
-        </a>
+  
         <a
           href="#contact"
           onClick={(e) => scrollToSection(e, "contact")}
@@ -65,6 +59,9 @@ export function MainNav() {
      
         <Link href="/professionals" className="transition-colors hover:text-foreground/80 text-primary">
           Professionals
+        </Link>
+         <Link href="/projects" className="transition-colors hover:text-foreground/80 text-primary">
+          Projects
         </Link>
       </nav>
     </div>

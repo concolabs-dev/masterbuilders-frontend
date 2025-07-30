@@ -85,19 +85,19 @@ export function SiteHeader() {
             />
           </div>
           {user ? (
-            <div className="relative">
+            <div className="relative z-[100]">
               <Menu>
-                <Menu.Button as={Button} className="hidden md:flex items-center space-x-2">
+                <Menu.Button as={Button} className="hidden z-[100] md:flex items-center space-x-2">
                   <span>Dashboard</span>
-                  <ChevronDown className="h-4 w-4" />
+                  <ChevronDown className="h-4 z-[100] w-4" />
                 </Menu.Button>
-                <Menu.Items className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg">
+                <Menu.Items className="absolute right-0  z-[100] mt-2 w-48 bg-white border rounded-md shadow-lg">
                   <Menu.Item>
                     {({ active }) => (
                       <button
                         className={`${
                           active ? "bg-gray-100" : ""
-                        } w-full text-left px-4 py-2 text-sm text-gray-700`}
+                        } w-full text-left px-4 py-2 z-[100] text-sm text-gray-700`}
                         onClick={handleDashboardClick}
                       >
                         Dashboard
@@ -109,7 +109,7 @@ export function SiteHeader() {
                       <button
                         className={`${
                           active ? "bg-gray-100" : ""
-                        } w-full text-left px-4 py-2 text-sm text-gray-700`}
+                        } w-full text-left px-4 z-[100] py-2 text-sm text-gray-700`}
                         onClick={handleLogout}
                       >
                         Logout
