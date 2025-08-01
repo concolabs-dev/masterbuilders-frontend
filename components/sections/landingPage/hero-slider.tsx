@@ -206,6 +206,7 @@ const ListOfLandingPageCards = [
       "Discover great deals effortlessly",
     ],
     cta: "Explore Catalogue",
+    image: "/images/house.jpg",
     link: "/catalogue",
   },
   {
@@ -217,6 +218,7 @@ const ListOfLandingPageCards = [
       "Connect with real-time demand",
     ],
     cta: "Showcase Products",
+    image: "/images/supplier.jpg",
     link: "/supplier",
   },
   // {
@@ -228,6 +230,7 @@ const ListOfLandingPageCards = [
   //     "Get discovered by clients",
   //   ],
   //   cta: "Get Started",
+  // image: "/images/supplier.jpg",
   //   link: "/register",
   // },
   {
@@ -239,6 +242,7 @@ const ListOfLandingPageCards = [
       "Connect with key stakeholders",
     ],
     cta: "Join the Network",
+    image: "/images/professional.jpg",
     link: "/professionals/showcase",
   },
   {
@@ -250,28 +254,31 @@ const ListOfLandingPageCards = [
       "Make smarter investment decisions",
     ],
     cta: "Explore Projects",
+    image: "/images/projects.jpg",
     link: "/projects",
   },
   {
     title: "Are You a Service Provider?",
     body: "Connect with builders and grow your business.",
     points: [
-      "Promote services like legal, rentals, finance",
-      "Reach a wide construction audience",
+      "Promote legal, financial & other services",
+      "Reach a wider audience",
       "Get discovered by project owners",
     ],
     cta: "List Your Services",
+    image: "/images/service.jpg",
     link: "/register",
   },
   {
     title: "Are You a Subcontractor?",
     body: "Find projects and get hired for your skills.",
     points: [
-      "Access ready-to-start construction projects",
+      "Access construction projects",
       "Connect with contractors & builders",
-      "Showcase your expertise & past work",
+      "Showcase your expertise",
     ],
     cta: "Find Work",
+    image: "/images/subcontractor.jpg",
     link: "/register",
   },
 ];
@@ -426,14 +433,14 @@ useEffect(() => {
 
   // opacity to fade out text after 25 frames
   let opacity = 1;
-  if (currentImageIndex >= 10 && currentImageIndex <= 25) {
-    opacity = 1 - (currentImageIndex - 10) / (25 - 10); // linear fade
-  } else if (currentImageIndex > 25) {
+  if (currentImageIndex >= 10 && currentImageIndex <= 20) {
+    opacity = 1 - (currentImageIndex - 10) / (20 - 10); // linear fade
+  } else if (currentImageIndex > 20) {
     opacity = 0;
   }
 
   return (
-    <section ref={containerRef} className="relative min-h-[300vh] z-[50] bg-gray-50">
+    <section ref={containerRef} className="relative min-h-[400vh] z-[50] bg-gray-50">
       {/* loading screen */}
       {isLoading && (
         <div className="fixed inset-0 bg-black text-gray-50 flex flex-col items-center justify-center z-50">
@@ -492,8 +499,8 @@ useEffect(() => {
 
           {/* text Content */}
 
-          <div className={`absolute top-16 left-1/2 transform -translate-x-1/2 text-center
-            ${currentImageIndex > 25 ? 'invisible' : 'visible'}
+          <div className={`absolute top-16 left-1/2 transform -translate-x-1/2 text-center w-[98%] overflow-hidden
+            ${currentImageIndex > 20 ? 'invisible' : 'visible'}
             `}
             style={{ opacity }}
             >
@@ -549,17 +556,17 @@ useEffect(() => {
 
           {/* Glass Cards for 3 main sections */}
           <div className={`absolute top-0 left-0 w-full h-screen lg:p-20 md:p-8 p-2 transition-opacity duration-200 ease-in-out
-            ${currentImageIndex > 25 ? 'visible' : 'invisible'}
+            ${currentImageIndex > 20 ? 'visible' : 'invisible'}
             `}
             >
-              <div className='h-full items-center justify-center flex text-lg flex-col'>
+              <div className='h-full items-center justify-center flex text-lg flex-col w-full'>
                 {/* Animated card grid with fade effect */}
                 {
                   // Calculate which set of 3 cards to show based on currentImageIndex
                   (() => {
-                    const cardsPerPage = 3;
-                    const NoOfFramesACardIsShown = 25; // ..frames per card
-                    const page = Math.abs(Math.floor((currentImageIndex - 25) / NoOfFramesACardIsShown)); // -25 to start from the start. Math.abs() prevents error from negative indexes
+                    const cardsPerPage = 2;
+                    const NoOfFramesACardIsShown = 20; // ..frames per card
+                    const page = Math.abs(Math.floor((currentImageIndex - 20) / NoOfFramesACardIsShown)); // -20 to start from the start. Math.abs() prevents error from negative indexes
                     const start = page * cardsPerPage;
                     const visibleCards = ListOfLandingPageCards.slice(start, start + cardsPerPage);
 
@@ -570,7 +577,7 @@ useEffect(() => {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.25 }} // Reduced from 0.5
-                        className={`grid gap-4 p-4 ${
+                        className={`grid gap-4 p-4 w-full ${
                           visibleCards.length === 1
                             ? 'grid-cols-1 place-items-center'
                           : visibleCards.length === 2
@@ -580,6 +587,7 @@ useEffect(() => {
                       >
                         {visibleCards.map((card, index) => (
                           <motion.div
+                            className='w-full h-full'
                             key={start + index}
                             initial={{ 
                               opacity: 0, 
@@ -611,23 +619,23 @@ useEffect(() => {
                               transformStyle: 'preserve-3d',
                             }}
                           >
-                            <GlassCard>
+                            <GlassCard className='w-full h-full' bgImage={card.image}>
                               <motion.div 
                                 className='flex flex-col justify-between text-sm md:text-base'
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.08 + index * 0.03, duration: 0.12 }} // Reduced delays and duration
                               >
-                                <motion.h3 
-                                  className="text-sm md:text-lg font-bold"
+                                <motion.h2
+                                  className="text-sm md:text-xl font-bold"
                                   initial={{ opacity: 0, x: -20 }}
                                   animate={{ opacity: 1, x: 0 }}
                                   transition={{ delay: 0.1 + index * 0.03, duration: 0.1 }} // Reduced delays and duration
                                 >
                                   {card.title}
-                                </motion.h3>
+                                </motion.h2>
                                 <motion.p 
-                                  className='py-2'
+                                  className='py-2 font-medium'
                                   initial={{ opacity: 0, x: -20 }}
                                   animate={{ opacity: 1, x: 0 }}
                                   transition={{ delay: 0.12 + index * 0.03, duration: 0.1 }} // Reduced delays and duration
@@ -635,7 +643,7 @@ useEffect(() => {
                                   {card.body}
                                 </motion.p>
                                 <motion.ul 
-                                  className="list-disc pl-5"
+                                  className="list-disc pl-5 font-medium"
                                   initial={{ opacity: 0 }}
                                   animate={{ opacity: 1 }}
                                   transition={{ delay: 0.15 + index * 0.03, duration: 0.1 }} // Reduced delays and duration
