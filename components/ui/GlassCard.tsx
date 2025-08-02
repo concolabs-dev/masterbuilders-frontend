@@ -26,7 +26,8 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = "", style, 
           className="object-cover object-left pointer-events-none"
           style={{
             mask: 'linear-gradient(to right, black 0%, black 40%, transparent 80%)',
-            WebkitMask: 'linear-gradient(to right, black 0%, black 40%, transparent 80%)'
+            WebkitMask: 'linear-gradient(to right, black 0%, black 40%, transparent 80%)',
+            opacity: 1, // Adjust opacity as needed
           }}
           priority={false}
         />

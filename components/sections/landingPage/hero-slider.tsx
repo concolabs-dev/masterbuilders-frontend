@@ -205,9 +205,19 @@ const ListOfLandingPageCards = [
       "Find trusted builders across Sri Lanka",
       "Discover great deals effortlessly",
     ],
-    cta: "Explore Catalogue",
-    image: "/images/house.jpg",
-    link: "/catalogue",
+    image: "/images/house3.webp",
+    ctas: [
+      {
+        text: "Explore Prices",
+        link: "/catalogue",
+        variant: "outline"
+      },
+      {
+        text: "Find Professionals",
+        link: "/professionals/showcase",
+        variant: "outline"
+      }
+    ]
   },
   {
     title: "Are You a Supplier?",
@@ -217,22 +227,20 @@ const ListOfLandingPageCards = [
       "Compare prices across the market",
       "Connect with real-time demand",
     ],
-    cta: "Showcase Products",
-    image: "/images/supplier.jpg",
-    link: "/supplier",
+    image: "/images/supplier3.webp",
+    ctas: [
+      {
+        text: "Join as Supplier",
+        link: "/register",
+        variant: "outline"
+      },
+        {
+        text: "Explore Suppliers",
+        link: "/supplier",
+        variant: "outline"
+      }
+    ]
   },
-  // {
-  //   title: "Are You a Builder?",
-  //   body: "Tap into Sri Lanka's growing construction network.",
-  //   points: [
-  //     "Display past & current work",
-  //     "Connect with suppliers & investors",
-  //     "Get discovered by clients",
-  //   ],
-  //   cta: "Get Started",
-  // image: "/images/supplier.jpg",
-  //   link: "/register",
-  // },
   {
     title: "Construction Professional?",
     body: "Find the right opportunities and visibility.",
@@ -241,9 +249,19 @@ const ListOfLandingPageCards = [
       "Access new projects & trends",
       "Connect with key stakeholders",
     ],
-    cta: "Join the Network",
-    image: "/images/professional.jpg",
-    link: "/professionals/showcase",
+    image: "/images/professional3.webp",
+    ctas: [
+      {
+        text: "Join the Network",
+        link: "/register",
+        variant: "outline"
+      },
+      {
+        text: "View Directory",
+        link: "/professionals/showcase",
+        variant: "outline"
+      }
+    ]
   },
   {
     title: "Investor Interested in Sri Lanka?",
@@ -253,9 +271,19 @@ const ListOfLandingPageCards = [
       "Compare builders, pricing & data",
       "Make smarter investment decisions",
     ],
-    cta: "Explore Projects",
-    image: "/images/projects.jpg",
-    link: "/projects",
+    image: "/images/projects3.webp",
+    ctas: [
+      {
+        text: "Explore Projects",
+        link: "/projects",
+        variant: "outline"
+      },
+      {
+        text: "View Market Data",
+        link: "/catalogue",
+        variant: "outline"
+      }
+    ]
   },
   {
     title: "Are You a Service Provider?",
@@ -265,9 +293,14 @@ const ListOfLandingPageCards = [
       "Reach a wider audience",
       "Get discovered by project owners",
     ],
-    cta: "List Your Services",
-    image: "/images/service.jpg",
-    link: "/register",
+    image: "/images/service3.webp",
+    ctas: [
+      {
+        text: "List Your Services",
+        link: "/register",
+        variant: "outline"
+      }
+    ]
   },
   {
     title: "Are You a Subcontractor?",
@@ -277,12 +310,50 @@ const ListOfLandingPageCards = [
       "Connect with contractors & builders",
       "Showcase your expertise",
     ],
-    cta: "Find Work",
-    image: "/images/subcontractor.jpg",
-    link: "/register",
+    image: "/images/subcontractor3.webp",
+    ctas: [
+      {
+        text: "Find Work",
+        link: "/projects",
+        variant: "outline"
+      },
+      {
+        text: "Join Network",
+        link: "/register",
+        variant: "outline"
+      }
+    ]
   },
 ];
 
+const CTAButton = ({ 
+  variant, 
+  children, 
+  onClick, 
+  className = "" 
+}: { 
+  variant: "primary" | "secondary" | "outline";
+  children: React.ReactNode;
+  onClick: () => void;
+  className?: string;
+}) => {
+  const baseClasses = "px-2 py-2  mt-3 rounded-lg font-semibold transition-all duration-200 text-sm";
+  
+  const variantClasses = {
+    primary: "bg-orange-600 hover:bg-orange-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95",
+    secondary: "bg-white/20 hover:bg-white/30 text-white border border-white/30 hover:border-white/50 backdrop-blur-sm",
+    outline: "bg-transparent hover:bg-white/10 text-black border-2 border-black/60 hover:border-black/80 hover:shadow-lg"
+  };
+
+  return (
+    <button
+      className={`${baseClasses} ${variantClasses[variant]} ${className}`}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+};
 
 export function HeroSlider() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -626,53 +697,64 @@ useEffect(() => {
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.08 + index * 0.03, duration: 0.12 }} // Reduced delays and duration
                               >
-                                <motion.h2
-                                  className="text-sm md:text-xl font-bold"
-                                  initial={{ opacity: 0, x: -20 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: 0.1 + index * 0.03, duration: 0.1 }} // Reduced delays and duration
-                                >
-                                  {card.title}
-                                </motion.h2>
-                                <motion.p 
-                                  className='py-2 font-medium'
-                                  initial={{ opacity: 0, x: -20 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: 0.12 + index * 0.03, duration: 0.1 }} // Reduced delays and duration
-                                >
-                                  {card.body}
-                                </motion.p>
-                                <motion.ul 
-                                  className="list-disc pl-5 font-medium"
-                                  initial={{ opacity: 0 }}
-                                  animate={{ opacity: 1 }}
-                                  transition={{ delay: 0.15 + index * 0.03, duration: 0.1 }} // Reduced delays and duration
-                                >
-                                  {card.points.map((point, i) => (
-                                    <motion.li 
-                                      key={i}
-                                      initial={{ opacity: 0, x: -10 }}
-                                      animate={{ opacity: 1, x: 0 }}
-                                      transition={{ 
-                                        delay: 0.17 + index * 0.03 + i * 0.01, // Reduced delays
-                                        duration: 0.08 // Reduced duration
-                                      }}
-                                    >
-                                      {point}
-                                    </motion.li>
-                                  ))}
-                                </motion.ul>
+                              <motion.h2
+  className="text-lg md:text-xl font-bold text-center"
+  initial={{ opacity: 0, x: -20 }}
+  animate={{ opacity: 1, x: 0 }}
+  transition={{ delay: 0.1 + index * 0.03, duration: 0.1 }}
+>
+  {card.title}
+</motion.h2>
+<motion.p 
+  className='py-2 font-medium text-center'
+  initial={{ opacity: 0, x: -20 }}
+  animate={{ opacity: 1, x: 0 }}
+  transition={{ delay: 0.12 + index * 0.03, duration: 0.1 }}
+>
+  {card.body}
+</motion.p>
+<motion.div 
+  className="flex justify-center"
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ delay: 0.15 + index * 0.03, duration: 0.1 }}
+>
+  <ul 
+    className="list-disc font-medium text-left"
+    style={{ listStylePosition: 'inside' }}
+  >
+    {card.points.map((point, i) => (
+      <motion.li 
+        key={i}
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ 
+          delay: 0.17 + index * 0.03 + i * 0.01,
+          duration: 0.08
+        }}
+      >
+        {point}
+      </motion.li>
+    ))}
+  </ul>
+</motion.div>
                                 <motion.div
                                   initial={{ opacity: 0, y: 20 }}
                                   animate={{ opacity: 1, y: 0 }}
                                   transition={{ delay: 0.2 + index * 0.03, duration: 0.1 }} // Reduced delays and duration
                                 >
-                                  <Button 
-                                    className="mt-4 w-full" 
-                                    onClick={() => window.location.href = card.link}
-                                  >
-                                    {card.cta}
-                                  </Button>
+                                <div className={`flex gap-2 ${card.ctas.length === 1 ? 'justify-center' : 'flex-row '}`}>
+    {card.ctas.map((cta, ctaIndex) => (
+      <CTAButton
+        key={ctaIndex}
+        variant={cta.variant as "primary" | "secondary" | "outline"}
+        onClick={() => window.location.href = cta.link}
+        className={`${card.ctas.length === 1 ? 'w-full' : 'flex-1'}`}
+      >
+        {cta.text}
+      </CTAButton>
+    ))}
+  </div>
                                 </motion.div>
                               </motion.div>
                             </GlassCard>

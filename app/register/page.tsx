@@ -39,7 +39,7 @@ export default function RegisterSelectionPage() {
         <Card className="flex flex-col h-full overflow-hidden border-2 hover:border-primary/50 transition-colors">
           <div className="relative h-48 w-full">
             <Image
-              src="/images/professional.jpg"
+              src="/images/subcontractor3.webp"
               alt="Construction materials supplier"
               fill
               className="object-cover"
@@ -93,7 +93,7 @@ export default function RegisterSelectionPage() {
         <Card className="flex flex-col h-full overflow-hidden border-2 hover:border-primary/50 transition-colors">
           <div className="relative h-48 w-full">
             <Image
-              src="/images/supplier.jpg"
+              src="/images/professional3.webp"
               alt="Construction professionals"
               fill
               className="object-cover"
