@@ -50,10 +50,10 @@ export const metadata: Metadata = {
     }
   },
   verification: {
-    google: 'your-google-verification-code',
-    other: {
-      'facebook-domain-verification': 'your-facebook-verification'
-    }
+    google: '83Uy9hWw_4o0hUPccW3AyLHfrOXfwE9WGrW4kEGlTMU',
+    // other: {
+    //   'facebook-domain-verification': 'your-facebook-verification'
+    // }
   }
 }
 
