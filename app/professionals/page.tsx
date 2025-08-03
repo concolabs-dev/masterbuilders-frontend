@@ -2,7 +2,22 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { HardHat, Building, Ruler, Search, CheckCircle, ArrowRight } from "lucide-react"
+import type { Metadata } from 'next'
 
+export const metadata: Metadata = {
+  title: 'Construction Professionals Directory Sri Lanka | Architects, Contractors, Engineers',
+  description: 'Find qualified construction professionals in Sri Lanka. Browse architects, contractors, engineers, quantity surveyors, and interior designers for your project.',
+  keywords: [
+    'construction professionals Sri Lanka',
+    'architects Sri Lanka',
+    'building contractors',
+    'civil engineers',
+    'quantity surveyors',
+    'interior designers',
+    'construction consultants',
+    'professional services directory'
+  ]
+}
 export default function ProfessionalsHub() {
   return (
     <div className="container mx-auto py-12 px-4">
@@ -22,7 +37,7 @@ export default function ProfessionalsHub() {
           designed to connect you with verified Contractors, Architects, and Quantity Surveyors, ensuring your projects
           are executed with expertise and precision.
         </p>
-        <div className="mt-8 flex justify-center gap-4">
+        <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
           <Link href="/professionals/showcase">
             <Button size="lg">
               Browse Professionals <ArrowRight className="ml-2 h-4 w-4" />

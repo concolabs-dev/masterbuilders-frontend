@@ -68,7 +68,11 @@ export default function FeaturesSection() {
         <div className="container mx-auto px-4">
           <FadeInWhenVisible>
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Everything Construction in One Place</h2>
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">Built Environment and Construction 
+</h2>
+              <h3 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">All in One Place
+
+</h3>
               <p className="text-sm md:text-xl text-gray-600 max-w-3xl mx-auto">
                 From real-time pricing to professional networks, BuildMarketLK is your comprehensive platform for all
                 construction needs in Sri Lanka.
