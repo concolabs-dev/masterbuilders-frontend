@@ -10,7 +10,7 @@ export default function AboutUsSection() {
             <div className="text-center mb-16">
                 <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">About Us</h2>
                 <p className="text-gray-600 max-w-4xl mx-auto leading-relaxed">
-                    BuildMarketLK is a pioneering joint venture formed by four industry leaders: the Ceylon Institute of Builders (CIOB), QSERVE, VFORM Consultants, and Concolabs. Together, we are reshaping Sri Lanka's construction landscape by technology-driven virtual and informative single window construction market access platform for all construction industry stakeholders and all other users.
+BuildMarketLK is a pioneering joint venture formed by four industry leaders: the Ceylon Institute of Builders (CIOB), QSERVE, VFORM Consultants, and Concolabs. Together, we are reshaping Sri Lanka's construction landscape by technology-driven virtual and informative single window construction market access platform for all construction industry stakeholders and all other users.
                 </p>
             </div>
           </FadeInWhenVisible>
