@@ -70,9 +70,9 @@ export default function ContactForm() {
                         <div>
                             <h4 className="font-semibold text-gray-900">Address</h4>
                             <p className="text-gray-600 text-sm">
-                                No. 123, Construction Avenue,
+                                4, 1/2 Bambalapitiya Dr,
                                 <br />
-                                Colombo 03, Sri Lanka
+                                Colombo 00400, Sri Lanka
                             </p>
                         </div>
                     </div>
@@ -83,7 +83,7 @@ export default function ContactForm() {
                             </div>
                             <div>
                                 <h4 className="font-semibold text-gray-900">Phone</h4>
-                                <p className="text-gray-600">+94 77 123 4567</p>
+                                <p className="text-gray-600">+94 72 040 0929</p>
                             </div>
                     </a>
 
