@@ -141,7 +141,7 @@ export default function ProfessionalCompanyPage({ params }: { params: { pid: str
             <div className="flex flex-wrap gap-6 text-sm">
               <div className="flex items-center gap-1">
                 <MapPin className="h-4 w-4 text-muted-foreground" />
-                <span>{String(professionalData.location)}</span>
+                <span>{String(professionalData.address)}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Phone className="h-4 w-4 text-muted-foreground" />

@@ -131,7 +131,7 @@ export function ProfessionalProfile({ professional, onUpdate }: ProfessionalProf
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
                 <div className="flex items-center text-sm text-muted-foreground">
                   <MapPin className="h-4 w-4 mr-2" />
-                  {typeof currentProfessional.location === "string" ? currentProfessional.location : JSON.stringify(currentProfessional.location)}
+                  {typeof currentProfessional.address === "string" ? currentProfessional.address : JSON.stringify(currentProfessional.address)}
                 </div>
                 <div className="flex items-center text-sm text-muted-foreground">
                   <Phone className="h-4 w-4 mr-2" />
