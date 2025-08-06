@@ -1,13 +1,4 @@
-import { handleAuth, handleLogin } from '@auth0/nextjs-auth0';
-// import { env } from 'process';
+// app/api/auth/[auth0]/route.js
+import { handleAuth } from '@auth0/nextjs-auth0';
 
-export const GET = handleAuth(
-    {login: handleLogin(
-        {
-        authorizationParams: {
-            audience: process.env.AUTH0_MANAGEMENT_API_AUDIENCE , // or AUTH0_AUDIENCE
-            scope: 'openid profile' // or AUTH0_SCOPE
-            }
-        })
-    }
-);
+export const GET = handleAuth();

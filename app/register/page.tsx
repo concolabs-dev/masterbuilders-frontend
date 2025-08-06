@@ -2,7 +2,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { CheckCircle, Building, Truck, ArrowRight, Ruler, HardHat } from "lucide-react"
+import { CheckCircle, Building, Truck, ArrowRight, Ruler, HardHat , LogIn} from "lucide-react"
 
 export default function RegisterSelectionPage() {
   return (
@@ -22,6 +22,15 @@ export default function RegisterSelectionPage() {
           Choose how you want to participate in our platform. Whether you're supplying materials or offering
           professional services, we have the right solution for you.
         </p>
+               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-5 text-sm text-muted-foreground">
+          <span>Already have an account?</span>
+          <Link href="/api/auth/login">
+            <Button variant="outline" size="sm" className="gap-2">
+              <LogIn className="h-4 w-4" />
+              Login
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Selection Cards */}
@@ -30,7 +39,7 @@ export default function RegisterSelectionPage() {
         <Card className="flex flex-col h-full overflow-hidden border-2 hover:border-primary/50 transition-colors">
           <div className="relative h-48 w-full">
             <Image
-              src="/images/professional.jpg"
+              src="/images/subcontractor3.webp"
               alt="Construction materials supplier"
               fill
               className="object-cover"
@@ -84,7 +93,7 @@ export default function RegisterSelectionPage() {
         <Card className="flex flex-col h-full overflow-hidden border-2 hover:border-primary/50 transition-colors">
           <div className="relative h-48 w-full">
             <Image
-              src="/images/supplier.jpg"
+              src="/images/professional3.webp"
               alt="Construction professionals"
               fill
               className="object-cover"

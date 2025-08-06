@@ -1,14 +1,10 @@
-
-import axios from "axios";
+import axios from "axios"
 import { getAccessToken } from "@auth0/nextjs-auth0";
+const API_BASE_URL = "https://ravinduhiran.live"
 
-//const BACKEND_API_SECRET = process.env.BACKEND_API_SECRET;
-
+const BACKEND_API_SECRET = process.env.BACKEND_API_SECRET;
 const backend_api_axios = axios.create({
-  baseURL: "/api/backend", 
-  headers: {
-    "Content-Type": "application/json",
-  },
+	baseURL: API_BASE_URL,
 });
 
 // Types
@@ -196,7 +192,7 @@ export const getMaterialsByCategory = async (category: string, subcategory?: str
   return response.data
 }
 
-export const createMaterial = async (material: Omit<Material, "Number">) => {
+export const createMaterial = async (material: Material) => {
   const response = await backend_api_axios.post<Material>("/materials", material)
   return response.data
 }
@@ -376,4 +372,58 @@ export const updateProject = async (id: string, project: Partial<Project>): Prom
 // Delete a project
 export const deleteProject = async (id: string): Promise<void> => {
   await backend_api_axios.delete(`/projects/${id}`)
+}
+export const getProjectsWithFilters = async (filters: {
+  pid?: string;
+  year?: string;
+  company_type?: string;
+}): Promise<Project[]> => {
+  const params = new URLSearchParams();
+  
+  if (filters.pid) params.append("pid", filters.pid);
+  if (filters.year) params.append("year", filters.year);
+  if (filters.company_type) params.append("company_type", filters.company_type);
+  
+  const response = await backend_api_axios.get<Project[]>("/projects/filter", { params });
+  return response.data;
+}
+
+// Search projects by name or description
+export const searchProjects = async (searchQuery: string, filters?: {
+  pid?: string;
+  year?: string;
+  type?: string;
+}): Promise<{
+  query: string;
+  count: number;
+  results: Project[];
+}> => {
+  const params = new URLSearchParams({ q: searchQuery });
+  
+  if (filters?.pid) params.append("pid", filters.pid);
+  if (filters?.year) params.append("year", filters.year);
+  if (filters?.type) params.append("type", filters.type);
+  
+  const response = await backend_api_axios.get("/projects/search", { params });
+  return response.data;
+}
+
+// Get projects with professional information included
+export interface ProjectWithProfessional extends Project {
+  professional?: Professional;
+}
+
+export const getProjectsWithProfessionalInfo = async (filters?: {
+  pid?: string;
+  year?: string;
+  company_type?: string;
+}): Promise<ProjectWithProfessional[]> => {
+  const params = new URLSearchParams();
+  
+  if (filters?.pid) params.append("pid", filters.pid);
+  if (filters?.year) params.append("year", filters.year);
+  if (filters?.company_type) params.append("company_type", filters.company_type);
+  
+  const response = await backend_api_axios.get<ProjectWithProfessional[]>("/projects/with-professional", { params });
+  return response.data;
 }

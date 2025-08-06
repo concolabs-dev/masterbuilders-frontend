@@ -24,10 +24,10 @@ export function MainNav() {
     <div className="mr-4 hidden md:flex">
      <Link href="/" className="mr-6 flex items-center space-x-2">
         <Image
-          src="/images/logobm.png"
+          src="/images/logo.jpeg"
           alt="Master Builders Logo"
-          width={40}
-          height={40}
+          width={60}
+          height={60}
         />
         <span className="hidden font-bold sm:inline-block">BuildMarketLk</span>
       </Link>
@@ -42,13 +42,7 @@ export function MainNav() {
         >
           About Us
         </a>
-        <a
-          href="#services"
-          onClick={(e) => scrollToSection(e, "services")}
-          className="transition-colors hover:text-foreground/80 text-muted-foreground"
-        >
-          Services
-        </a>
+  
         <a
           href="#contact"
           onClick={(e) => scrollToSection(e, "contact")}
@@ -65,6 +59,9 @@ export function MainNav() {
      
         <Link href="/professionals" className="transition-colors hover:text-foreground/80 text-primary">
           Professionals
+        </Link>
+         <Link href="/projects" className="transition-colors hover:text-foreground/80 text-primary">
+          Projects
         </Link>
       </nav>
     </div>
