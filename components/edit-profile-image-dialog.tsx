@@ -27,13 +27,18 @@ export function EditProfileImageDialog({ open, onOpenChange, currentImage, onSav
           <DialogTitle>Edit Profile Picture</DialogTitle>
         </DialogHeader>
         <div className="py-4">
-          <ImageUpload
-            value={image}
-            onChange={setImage}
-            label="Upload profile picture"
-            description="This will be displayed on your supplier profile"
-            imageClassName="w-32 h-32 rounded-full object-cover mx-auto"
-          />
+         <ImageUpload
+  value={image}
+  onChange={setImage}
+  label="Company Logo"
+  description="Upload your company logo (square format recommended)"
+  dimensions={{ width: 300, height: 300 }}
+  enableCrop={true}
+  maxFileSize={3}
+  quality={90}
+  allowedFormats={['image/jpeg', 'image/png', 'image/webp']}
+  imageClassName="w-32 h-32 object-cover rounded-xl"
+/>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>

@@ -505,23 +505,33 @@ function ProfessionalRegistration() {
               <div className="space-y-6">
                 <div className="space-y-2">
                   <Label>Company Logo</Label>
-                  <ImageUpload
-                    value={formData.logo}
-                    onChange={(url) => updateFormData("logo", url)}
-                    label="Upload company logo"
-                    description="This will be displayed on your company profile"
-                    imageClassName="w-32 h-32 object-contain"
-                  />
+              <ImageUpload
+  value={formData.logo}
+  onChange={(url) => updateFormData("logo", url)}
+  label="Company Logo"
+  description="Upload your company logo (square format recommended)"
+  dimensions={{ width: 300, height: 300 }}
+  enableCrop={true}
+  maxFileSize={3}
+  quality={90}
+  allowedFormats={['image/jpeg', 'image/png', 'image/webp']}
+  imageClassName="w-32 h-32 object-cover rounded-xl"
+/>
                 </div>
                 <div className="space-y-2">
                   <Label>Cover Image</Label>
-                  <ImageUpload
-                    value={formData.coverImage}
-                    onChange={(url) => updateFormData("coverImage", url)}
-                    label="Upload cover image"
-                    description="This will be displayed at the top of your company profile"
-                    imageClassName="w-full h-40 object-cover rounded-md"
-                  />
+               <ImageUpload
+  value={formData.coverImage}
+  onChange={(url) => updateFormData("coverImage", url)}
+  label="Cover Image"
+  description="Upload a cover image for your company profile"
+  dimensions={{ width: 1200, height: 400 }}
+  enableCrop={true}
+  maxFileSize={8}
+  quality={85}
+  allowedFormats={['image/jpeg', 'image/png', 'image/webp']}
+  imageClassName="w-full h-40 object-cover rounded-xl"
+/>
                 </div>
               </div>
             )}

@@ -27,13 +27,18 @@ export function EditCoverImageDialog({ open, onOpenChange, currentImage, onSave 
           <DialogTitle>Edit Cover Photo</DialogTitle>
         </DialogHeader>
         <div className="py-4">
-          <ImageUpload
-            value={image}
-            onChange={setImage}
-            label="Upload cover photo"
-            description="This will be displayed at the top of your supplier profile"
-            imageClassName="w-full h-40 object-cover rounded-md"
-          />
+         <ImageUpload
+  value={image}
+  onChange={setImage}
+  label="Cover Image"
+  description="Upload a cover image for your company profile"
+  dimensions={{ width: 1200, height: 400 }}
+  enableCrop={true}
+  maxFileSize={8}
+  quality={85}
+  allowedFormats={['image/jpeg', 'image/png', 'image/webp']}
+  imageClassName="w-full h-40 object-cover rounded-xl"
+/>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>

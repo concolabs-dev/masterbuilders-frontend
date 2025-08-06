@@ -515,12 +515,18 @@ function SupplierDashboardPage() {
                     {/* Replace plain input with ImageUpload for add item */}
                     <div className="grid gap-2">
                       <Label htmlFor="image">Image URL</Label>
-                      <ImageUpload
-                        value={addImageUrl}
-                        onChange={(url) => setAddImageUrl(url)}
-                        label="Upload Image"
-                        description="Upload an image for the item"
-                      />
+                    <ImageUpload
+  value={addImageUrl}
+  onChange={(url) => setAddImageUrl(url)}
+  label="Product Image"
+  description="Upload product/item image"
+  dimensions={{ width: 600, height: 600 }}
+  enableCrop={true}
+  maxFileSize={5}
+  quality={88}
+  allowedFormats={['image/jpeg', 'image/png', 'image/webp']}
+  imageClassName="w-full h-48 object-cover rounded-lg"
+/>
                     </div>
                   </div>
                   <DialogFooter>
@@ -661,12 +667,18 @@ function SupplierDashboardPage() {
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="edit-image">Image URL</Label>
-                  <ImageUpload
-                    value={editImageUrl}
-                    onChange={(url) => setEditImageUrl(url)}
-                    label="Upload Image"
-                    description="Upload an image for the item"
-                  />
+               <ImageUpload
+    value={editImageUrl}
+    onChange={(url) => setEditImageUrl(url)}
+    label="Product Image"
+    description="Upload product/item image"
+    dimensions={{ width: 600, height: 600 }}
+    enableCrop={true}
+    maxFileSize={5}
+  quality={88}
+  allowedFormats={['image/jpeg', 'image/png', 'image/webp']}
+  imageClassName="w-full h-48 object-cover rounded-lg"
+/>
                 </div>
               </div>
               <DialogFooter>
