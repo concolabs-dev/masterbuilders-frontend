@@ -88,15 +88,15 @@ export function SiteFooter() {
           <div className="space-y-3">
             <h3 className="text-sm font-medium">Contact</h3>
             <ul className="space-y-2 text-sm">
-              <li className="text-muted-foreground">123 Main Street, Colombo 05, Sri Lanka</li>
+              <li className="text-muted-foreground">4, 1/2 Bambalapitiya Dr, Colombo 00400</li>
               <li>
                 <a href="mailto:info@buildmarketlk.com" className="text-muted-foreground hover:text-foreground">
                   info@mbuildmarketlk.com
                 </a>
               </li>
               <li>
-                <a href="tel:+94771234567" className="text-muted-foreground hover:text-foreground">
-                  +94 77 123 4567
+                <a href="tel:+94720400929" className="text-muted-foreground hover:text-foreground">
+                  +94 72 040 0929
                 </a>
               </li>
             </ul>

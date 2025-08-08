@@ -31,6 +31,7 @@ function SupplierOnboarding() {
   const progress = (step / totalSteps) * 100
   const { user } = useUser()
   const [alreadyRegistered, setAlreadyRegistered] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
   useEffect(() => {
     if (!user?.sub) return
     getSupplierByPPID(user.sub)
@@ -110,8 +111,9 @@ function SupplierOnboarding() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     // final validation
+    if (isSubmitting) return
     if (!validateStep()) return
-
+setIsSubmitting(true)
     const supplierPayload = {
       email: formData.email,
       pid: user?.sub || "",
@@ -128,10 +130,16 @@ function SupplierOnboarding() {
       cover_pic_url: formData.coverImage,
     }
     try {
-      await createSupplier(supplierPayload)
-      router.push("/onboarding/success")
+        const response = await createSupplier(supplierPayload)
+      console.log("Supplier created successfully:", response)
+      
+      if (response) {
+        router.push("/onboarding/success")
+      }
     } catch (err) {
       console.error("Failed to create supplier", err)
+    }finally {
+      setIsSubmitting(false)
     }
   }
   if (alreadyRegistered) {
@@ -340,7 +348,7 @@ function SupplierOnboarding() {
             </Button>
           ) : (
             <Button type="submit" form="onboardingForm" className="bg-primary">
-              Complete <Check className="ml-2 h-4 w-4" />
+                   {isSubmitting ? "Creating..." : "Complete"} <Check className="ml-2 h-4 w-4" />
             </Button>
           )}
         </CardFooter>

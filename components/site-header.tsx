@@ -7,13 +7,38 @@ import { MainNav } from "@/components/main-nav"
 import { MobileNav } from "@/components/mobile-nav"
 import { useUser } from "@auth0/nextjs-auth0/client"
 import { useRouter } from "next/navigation"
-import { useState, KeyboardEvent } from "react";
+import { useState, KeyboardEvent, useEffect } from "react";
 import { Menu } from "@headlessui/react";
+import { getProfessionalByPID, getSupplierByPID } from "@/app/api"; // Import your API functions
 
 export function SiteHeader() {
   const { user, error, isLoading } = useUser();
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
+  const [userType, setUserType] = useState<'professional' | 'supplier' | null>(null);
+
+  // Check user type when component mounts
+  useEffect(() => {
+    if (!user?.sub) return;
+
+    // Check if user is a professional
+    getProfessionalByPID(user.sub)
+      .then((existing) => {
+        if (existing) {
+          setUserType('professional');
+          return;
+        }
+        
+        // If not a professional, check if user is a supplier
+        return getSupplierByPID(user.sub as string);
+      })
+      .then((existing) => {
+        if (existing && userType !== 'professional') {
+          setUserType('supplier');
+        }
+      })
+      .catch((err) => console.error("Failed checking user type:", err));
+  }, [user?.sub]);
 
   const handleSearch = () => {
     if (searchTerm.trim()) {
@@ -29,6 +54,17 @@ export function SiteHeader() {
 
   const handleLogout = async () => {
     window.location.href = "/api/auth/logout";
+  };
+
+  const handleDashboardClick = () => {
+    if (userType === 'professional') {
+      router.push("/professionals/dashboard");
+    } else if (userType === 'supplier') {
+      router.push("/supplier/dashboard");
+    } else {
+      // Fallback to supplier dashboard if type is unknown
+      router.push("/supplier/dashboard");
+    }
   };
 
   return (
@@ -49,20 +85,20 @@ export function SiteHeader() {
             />
           </div>
           {user ? (
-            <div className="relative">
+            <div className="relative z-[100]">
               <Menu>
-                <Menu.Button as={Button} className="hidden md:flex items-center space-x-2">
+                <Menu.Button as={Button} className="hidden z-[100] md:flex items-center space-x-2">
                   <span>Dashboard</span>
-                  <ChevronDown className="h-4 w-4" />
+                  <ChevronDown className="h-4 z-[100] w-4" />
                 </Menu.Button>
-                <Menu.Items className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg">
+                <Menu.Items className="absolute right-0  z-[100] mt-2 w-48 bg-white border rounded-md shadow-lg">
                   <Menu.Item>
                     {({ active }) => (
                       <button
                         className={`${
                           active ? "bg-gray-100" : ""
-                        } w-full text-left px-4 py-2 text-sm text-gray-700`}
-                        onClick={() => router.push("/supplier/dashboard/")}
+                        } w-full text-left px-4 py-2 z-[100] text-sm text-gray-700`}
+                        onClick={handleDashboardClick}
                       >
                         Dashboard
                       </button>
@@ -73,7 +109,7 @@ export function SiteHeader() {
                       <button
                         className={`${
                           active ? "bg-gray-100" : ""
-                        } w-full text-left px-4 py-2 text-sm text-gray-700`}
+                        } w-full text-left px-4 z-[100] py-2 text-sm text-gray-700`}
                         onClick={handleLogout}
                       >
                         Logout
