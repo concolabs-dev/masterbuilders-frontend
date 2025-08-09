@@ -226,6 +226,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
               {project.professional ? (
                 <>
                   {/* Company Logo and Name */}
+                  <Link href={`/professionals/${project.professional.pid}`}>
                   <div className="flex items-center gap-4 mb-4">
                     <div className="h-16 w-16 rounded-lg overflow-hidden bg-gray-100">
                       <Image
@@ -247,7 +248,9 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
                       </Badge>
                     </div>
                   </div>
+                  </Link>
 
+                  {/* Company Rating */}
                   {/* Company Description */}
                   <p className="text-sm text-muted-foreground mb-6">
                     {project.professional.company_description || "No description available."}
