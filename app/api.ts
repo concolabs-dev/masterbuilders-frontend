@@ -122,6 +122,28 @@ export interface Project {
   images: string[]
   pid: string // PID of the associated Professional
 }
+export interface ProfessionalSearchResult {
+  query: string
+  count: number
+  results: Professional[]
+}
+
+export interface ProfessionalTypesResponse {
+  professional_types: string[]
+  count: number
+}
+
+export interface ProfessionalFilters {
+  company_type?: string
+  location?: string
+  year_from?: string
+  year_to?: string
+  employees_min?: string
+  employees_max?: string
+  specialization?: string
+  service?: string
+}
+
 export const getSuppliers = async () => {
   const response = await backend_api_axios.get<Supplier[]>("/suppliers")
   return response.data
@@ -426,4 +448,43 @@ export const getProjectsWithProfessionalInfo = async (filters?: {
   
   const response = await backend_api_axios.get<ProjectWithProfessional[]>("/projects/with-professional", { params });
   return response.data;
+}
+
+export const searchProfessionals = async (
+  searchQuery: string,
+  filters?: {
+    company_type?: string
+    location?: string
+  }
+): Promise<ProfessionalSearchResult> => {
+  const params = new URLSearchParams({ q: searchQuery })
+  
+  if (filters?.company_type) params.append("company_type", filters.company_type)
+  if (filters?.location) params.append("location", filters.location)
+  
+  const response = await backend_api_axios.get<ProfessionalSearchResult>("/professionals/search", { params })
+  return response.data
+}
+
+// NEW: Get professionals with various filters
+export const getProfessionalsWithFilters = async (filters: ProfessionalFilters = {}): Promise<Professional[]> => {
+  const params = new URLSearchParams()
+  
+  if (filters.company_type) params.append("company_type", filters.company_type)
+  if (filters.location) params.append("location", filters.location)
+  if (filters.year_from) params.append("year_from", filters.year_from)
+  if (filters.year_to) params.append("year_to", filters.year_to)
+  if (filters.employees_min) params.append("employees_min", filters.employees_min)
+  if (filters.employees_max) params.append("employees_max", filters.employees_max)
+  if (filters.specialization) params.append("specialization", filters.specialization)
+  if (filters.service) params.append("service", filters.service)
+  
+  const response = await backend_api_axios.get<Professional[]>("/professionals/filter", { params })
+  return response.data
+}
+
+// NEW: Get all unique professional/company types
+export const getProfessionalTypes = async (): Promise<ProfessionalTypesResponse> => {
+  const response = await backend_api_axios.get<ProfessionalTypesResponse>("/professionals/types")
+  return response.data
 }

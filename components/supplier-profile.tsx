@@ -421,7 +421,7 @@ export function SupplierProfile({ supplier, onUpdate, admin }: SupplierProfilePr
     <>
       <Card className="overflow-hidden">
         <div className="relative h-48 md:h-64 w-full">
-          <ImageWithFallback
+          <Image
             src={currentSupplier.coverImage || "/placeholder.svg?height=400&width=800"}
             alt={`${currentSupplier.name} cover`}
             fill
@@ -442,7 +442,7 @@ export function SupplierProfile({ supplier, onUpdate, admin }: SupplierProfilePr
         <CardContent className="pt-0">
           <div className="flex flex-col md:flex-row gap-6 -mt-12 md:-mt-16">
             <div className="relative h-24 w-24 md:h-32 md:w-32 rounded-full shadow-md border-4 border-background overflow-hidden bg-background">
-              <ImageWithFallback
+              <Image
                 src={currentSupplier.profileImage || "/placeholder.svg?height=200&width=200"}
                 alt={currentSupplier.name}
                 fill
