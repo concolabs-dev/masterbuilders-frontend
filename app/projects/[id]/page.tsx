@@ -13,6 +13,7 @@ import {
   type Project,
   type Professional 
 } from "@/app/api"
+import DOMPurify from 'dompurify'
 
 interface ProjectWithProfessional extends Project {
   professional?: Professional;
@@ -24,20 +25,59 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Sanitize project data
+  const sanitizeProject = (project: Project): Project => {
+    return {
+      ...project,
+      name: DOMPurify.sanitize(project.name || ''),
+      type: DOMPurify.sanitize(project.type || ''),
+      description: DOMPurify.sanitize(project.description || ''),
+      location: DOMPurify.sanitize(project.location || ''),
+      year: DOMPurify.sanitize(String(project.year || '')),
+      pid: DOMPurify.sanitize(project.pid || ''),
+      images: project.images?.map(image => DOMPurify.sanitize(image)) || []
+    }
+  }
+
+  // Sanitize professional data
+  const sanitizeProfessional = (professional: Professional): Professional => {
+    return {
+      ...professional,
+      company_name: DOMPurify.sanitize(professional.company_name || ''),
+      company_type: DOMPurify.sanitize(professional.company_type || ''),
+      company_description: DOMPurify.sanitize(professional.company_description || ''),
+      email: DOMPurify.sanitize(professional.email || ''),
+      telephone_number: DOMPurify.sanitize(professional.telephone_number || ''),
+      website: DOMPurify.sanitize(professional.website || ''),
+      address: DOMPurify.sanitize(professional.address || ''),
+      pid: DOMPurify.sanitize(professional.pid || ''),
+      company_logo_url: DOMPurify.sanitize(professional.company_logo_url || ''),
+      cover_image_url: DOMPurify.sanitize(professional.cover_image_url || ''),
+      specializations: professional.specializations?.map(spec => DOMPurify.sanitize(spec)) || [],
+      services_offered: professional.services_offered?.map(service => DOMPurify.sanitize(service)) || [],
+      certifications_accreditations: professional.certifications_accreditations?.map(cert => DOMPurify.sanitize(cert)) || []
+    }
+  }
+
   useEffect(() => {
     const fetchProjectData = async () => {
       try {
         setLoading(true)
         setError(null)
         
+        // Sanitize the project ID parameter
+        const sanitizedId = DOMPurify.sanitize(params.id)
+        
         // Fetch project data
-        const projectData = await getProjectById(params.id)
+        const projectData = await getProjectById(sanitizedId)
+        const sanitizedProject = sanitizeProject(projectData)
         
         // Fetch professional data if PID exists
         let professionalData: Professional | undefined
-        if (projectData.pid) {
+        if (sanitizedProject.pid) {
           try {
-            professionalData = await getProfessionalByPID(projectData.pid)
+            const rawProfessionalData = await getProfessionalByPID(sanitizedProject.pid)
+            professionalData = sanitizeProfessional(rawProfessionalData)
           } catch (err) {
             console.warn("Failed to fetch professional data:", err)
             // Don't throw error, just continue without professional data
@@ -45,12 +85,13 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
         }
         
         setProject({
-          ...projectData,
+          ...sanitizedProject,
           professional: professionalData
         })
       } catch (err) {
         console.error("Error fetching project:", err)
-        setError("Failed to load project details. Please try again later.")
+        const sanitizedError = DOMPurify.sanitize("Failed to load project details. Please try again later.")
+        setError(sanitizedError)
       } finally {
         setLoading(false)
       }
@@ -60,6 +101,19 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
       fetchProjectData()
     }
   }, [params.id])
+
+  // Handle image selection with sanitization
+  const handleImageSelect = (index: number) => {
+    // Ensure index is within bounds and is a number
+    const sanitizedIndex = Math.max(0, Math.min(index, (project?.images?.length || 1) - 1))
+    setSelectedImageIndex(sanitizedIndex)
+  }
+
+  // Handle email subject sanitization
+  const getEmailSubject = () => {
+    const sanitizedProjectName = DOMPurify.sanitize(project?.name || 'Project')
+    return `Inquiry about ${sanitizedProjectName}`
+  }
 
   // Loading state
   if (loading) {
@@ -178,7 +232,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
                       className={`relative h-16 rounded-md overflow-hidden cursor-pointer border-2 ${
                         selectedImageIndex === index ? "border-primary" : "border-gray-200"
                       }`}
-                      onClick={() => setSelectedImageIndex(index)}
+                      onClick={() => handleImageSelect(index)}
                     >
                       <Image
                         src={image || "/images/logo-placeholder.svg"}
@@ -227,30 +281,29 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
                 <>
                   {/* Company Logo and Name */}
                   <Link href={`/professionals/${project.professional.pid}`}>
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="h-16 w-16 rounded-lg overflow-hidden bg-gray-100">
-                      <Image
-                        src={project.professional.company_logo_url || "/images/logo-placeholder.svg"}
-                        alt={project.professional.company_name}
-                        width={64}
-                        height={64}
-                        className="object-cover"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = "/placeholder.svg?height=64&width=64&text=No+Logo";
-                        }}
-                      />
+                    <div className="flex items-center gap-4 mb-4 hover:bg-gray-50 p-2 rounded-lg transition-colors">
+                      <div className="h-16 w-16 rounded-lg overflow-hidden bg-gray-100">
+                        <Image
+                          src={project.professional.company_logo_url || "/images/logo-placeholder.svg"}
+                          alt={project.professional.company_name}
+                          width={64}
+                          height={64}
+                          className="object-cover"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = "/placeholder.svg?height=64&width=64&text=No+Logo";
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold">{project.professional.company_name}</h3>
+                        <Badge variant="outline" className="text-xs">
+                          {project.professional.company_type}
+                        </Badge>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-semibold">{project.professional.company_name}</h3>
-                      <Badge variant="outline" className="text-xs">
-                        {project.professional.company_type}
-                      </Badge>
-                    </div>
-                  </div>
                   </Link>
 
-                  {/* Company Rating */}
                   {/* Company Description */}
                   <p className="text-sm text-muted-foreground mb-6">
                     {project.professional.company_description || "No description available."}
@@ -261,19 +314,36 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
                     {project.professional.telephone_number && (
                       <div className="flex items-center gap-3 text-sm">
                         <Phone className="h-4 w-4 text-muted-foreground" />
-                        <span>{project.professional.telephone_number}</span>
+                        <a 
+                          href={`tel:${project.professional.telephone_number}`}
+                          className="hover:text-primary"
+                        >
+                          {project.professional.telephone_number}
+                        </a>
                       </div>
                     )}
                     {project.professional.email && (
                       <div className="flex items-center gap-3 text-sm">
                         <Mail className="h-4 w-4 text-muted-foreground" />
-                        <span>{project.professional.email}</span>
+                        <a 
+                          href={`mailto:${project.professional.email}`}
+                          className="hover:text-primary"
+                        >
+                          {project.professional.email}
+                        </a>
                       </div>
                     )}
                     {project.professional.website && (
                       <div className="flex items-center gap-3 text-sm">
                         <Globe className="h-4 w-4 text-muted-foreground" />
-                        <span>{project.professional.website}</span>
+                        <a 
+                          href={project.professional.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:text-primary"
+                        >
+                          {project.professional.website}
+                        </a>
                       </div>
                     )}
                     {project.professional.address && (
@@ -297,6 +367,11 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
                                 {spec}
                               </Badge>
                             ))}
+                            {project.professional.specializations.length > 3 && (
+                              <Badge variant="outline" className="text-xs text-muted-foreground">
+                                +{project.professional.specializations.length - 3} more
+                              </Badge>
+                            )}
                           </div>
                         </div>
                       )}
@@ -310,6 +385,11 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
                                 {service}
                               </Badge>
                             ))}
+                            {project.professional.services_offered.length > 3 && (
+                              <Badge variant="outline" className="text-xs text-muted-foreground">
+                                +{project.professional.services_offered.length - 3} more
+                              </Badge>
+                            )}
                           </div>
                         </div>
                       )}
@@ -318,7 +398,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
 
                   {/* Contact Button */}
                   <Button className="w-full" asChild>
-                    <a href={`mailto:${project.professional.email}?subject=Inquiry about ${project.name}`}>
+                    <a href={`mailto:${project.professional.email}?subject=${encodeURIComponent(getEmailSubject())}`}>
                       Contact Company
                     </a>
                   </Button>

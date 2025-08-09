@@ -23,6 +23,7 @@ import {
   getProfessionalTypes,
   ProfessionalSearchResult
 } from "@/app/api"
+import DOMPurify from 'dompurify'
 
 export default function ProfessionalsShowcase() {
   const [professionals, setProfessionals] = useState<Professional[]>([])
@@ -37,6 +38,45 @@ export default function ProfessionalsShowcase() {
 
   // Ref for scrolling to results
   const resultsRef = useRef<HTMLDivElement>(null)
+
+  // Sanitize professional data
+  const sanitizeProfessional = (professional: Professional): Professional => {
+    return {
+      ...professional,
+      company_name: DOMPurify.sanitize(professional.company_name || ''),
+      company_type: DOMPurify.sanitize(professional.company_type || ''),
+      company_description: DOMPurify.sanitize(professional.company_description || ''),
+      address: DOMPurify.sanitize(professional.address || ''),
+      email: DOMPurify.sanitize(professional.email || ''),
+      telephone_number: DOMPurify.sanitize(professional.telephone_number || ''),
+      website: DOMPurify.sanitize(professional.website || ''),
+      pid: DOMPurify.sanitize(professional.pid || ''),
+      cover_image_url: DOMPurify.sanitize(professional.cover_image_url || ''),
+      company_logo_url: DOMPurify.sanitize(professional.company_logo_url || ''),
+      specializations: professional.specializations?.map(spec => DOMPurify.sanitize(spec)) || [],
+      services_offered: professional.services_offered?.map(service => DOMPurify.sanitize(service)) || [],
+      certifications_accreditations: professional.certifications_accreditations?.map(cert => DOMPurify.sanitize(cert)) || []
+    }
+  }
+
+  // Sanitize professionals array
+  const sanitizeProfessionals = (professionals: Professional[]): Professional[] => {
+    return professionals.map(sanitizeProfessional)
+  }
+
+  // Sanitize professional types
+  const sanitizeProfessionalTypes = (types: string[]): string[] => {
+    return types.map(type => DOMPurify.sanitize(type))
+  }
+
+  // Sanitize search results
+  const sanitizeSearchResults = (results: ProfessionalSearchResult): ProfessionalSearchResult => {
+    return {
+      ...results,
+      query: DOMPurify.sanitize(results.query || ''),
+      results: sanitizeProfessionals(results.results || [])
+    }
+  }
 
   // Scroll to results function
   const scrollToResults = () => {
@@ -57,10 +97,13 @@ export default function ProfessionalsShowcase() {
           getProfessionals(),
           getProfessionalTypes()
         ])
-        setProfessionals(professionalsData)
-        setProfessionalTypes(typesData.professional_types)
+        
+        // Sanitize data before setting state
+        setProfessionals(sanitizeProfessionals(professionalsData))
+        setProfessionalTypes(sanitizeProfessionalTypes(typesData.professional_types))
       } catch (err) {
-        setError("Failed to load professionals")
+        const sanitizedError = DOMPurify.sanitize("Failed to load professionals")
+        setError(sanitizedError)
         console.error(err)
       } finally {
         setLoading(false)
@@ -72,7 +115,9 @@ export default function ProfessionalsShowcase() {
 
   // Handle search
   const handleSearch = async () => {
-    if (!searchTerm.trim()) {
+    const sanitizedSearchTerm = DOMPurify.sanitize(searchTerm.trim())
+    
+    if (!sanitizedSearchTerm) {
       // If no search term, apply filters only
       await handleFilter()
       return
@@ -80,15 +125,20 @@ export default function ProfessionalsShowcase() {
 
     try {
       setSearching(true)
-      const filters = selectedCompanyType ? { company_type: selectedCompanyType } : undefined
-      const results = await searchProfessionals(searchTerm, filters)
-      setSearchResults(results)
-      setProfessionals(results.results)
+      const sanitizedCompanyType = selectedCompanyType ? DOMPurify.sanitize(selectedCompanyType) : undefined
+      const filters = sanitizedCompanyType ? { company_type: sanitizedCompanyType } : undefined
+      const results = await searchProfessionals(sanitizedSearchTerm, filters)
+      
+      // Sanitize search results before setting state
+      const sanitizedResults = sanitizeSearchResults(results)
+      setSearchResults(sanitizedResults)
+      setProfessionals(sanitizedResults.results)
       
       // Scroll to results after search completes
       setTimeout(scrollToResults, 100)
     } catch (err) {
-      setError("Search failed")
+      const sanitizedError = DOMPurify.sanitize("Search failed")
+      setError(sanitizedError)
       console.error(err)
     } finally {
       setSearching(false)
@@ -97,18 +147,21 @@ export default function ProfessionalsShowcase() {
 
   // Handle filter by company type
   const handleFilter = async () => {
-    if (!selectedCompanyType) {
+    const sanitizedCompanyType = selectedCompanyType ? DOMPurify.sanitize(selectedCompanyType) : ""
+    
+    if (!sanitizedCompanyType) {
       // If no filter, get all professionals
       try {
         setSearching(true)
         const data = await getProfessionals()
-        setProfessionals(data)
+        setProfessionals(sanitizeProfessionals(data))
         setSearchResults(null)
         
         // Scroll to results after filter completes
         setTimeout(scrollToResults, 100)
       } catch (err) {
-        setError("Failed to load professionals")
+        const sanitizedError = DOMPurify.sanitize("Failed to load professionals")
+        setError(sanitizedError)
         console.error(err)
       } finally {
         setSearching(false)
@@ -119,15 +172,16 @@ export default function ProfessionalsShowcase() {
     try {
       setSearching(true)
       const filteredData = await getProfessionalsWithFilters({
-        company_type: selectedCompanyType
+        company_type: sanitizedCompanyType
       })
-      setProfessionals(filteredData)
+      setProfessionals(sanitizeProfessionals(filteredData))
       setSearchResults(null)
       
       // Scroll to results after filter completes
       setTimeout(scrollToResults, 100)
     } catch (err) {
-      setError("Filter failed")
+      const sanitizedError = DOMPurify.sanitize("Filter failed")
+      setError(sanitizedError)
       console.error(err)
     } finally {
       setSearching(false)
@@ -142,12 +196,13 @@ export default function ProfessionalsShowcase() {
     try {
       setSearching(true)
       const data = await getProfessionals()
-      setProfessionals(data)
+      setProfessionals(sanitizeProfessionals(data))
       
       // Scroll to results after clearing
       setTimeout(scrollToResults, 100)
     } catch (err) {
-      setError("Failed to reload professionals")
+      const sanitizedError = DOMPurify.sanitize("Failed to reload professionals")
+      setError(sanitizedError)
       console.error(err)
     } finally {
       setSearching(false)
@@ -163,7 +218,14 @@ export default function ProfessionalsShowcase() {
 
   // Handle company type selection
   const handleCompanyTypeChange = (value: string) => {
-    setSelectedCompanyType(value)
+    const sanitizedValue = DOMPurify.sanitize(value)
+    setSelectedCompanyType(sanitizedValue)
+  }
+
+  // Handle search input change
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const sanitizedValue = DOMPurify.sanitize(e.target.value)
+    setSearchTerm(sanitizedValue)
   }
 
   // Clear company type filter
@@ -173,7 +235,8 @@ export default function ProfessionalsShowcase() {
 
   // Group professionals alphabetically by company name
   const groupedProfessionals = professionals.reduce((acc: Record<string, Professional[]>, professional) => {
-    const firstLetter = professional.company_name.charAt(0).toUpperCase()
+    const sanitizedCompanyName = DOMPurify.sanitize(professional.company_name || '')
+    const firstLetter = sanitizedCompanyName.charAt(0).toUpperCase()
     if (!acc[firstLetter]) {
       acc[firstLetter] = []
     }
@@ -196,7 +259,7 @@ export default function ProfessionalsShowcase() {
               placeholder="Search by company name, description, specializations, or services..."
               className="pl-10"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchInputChange}
               onKeyPress={handleKeyPress}
             />
           </div>

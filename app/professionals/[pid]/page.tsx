@@ -12,6 +12,7 @@ import { getProfessionalByPID, getProjectsByPID, Professional, Project } from "@
 import Loading from "@/components/loading"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
+import DOMPurify from 'dompurify';
 
 export default function ProfessionalCompanyPage({ params }: { params: { pid: string } }) {
   const [professionalData, setProfessionalData] = useState<Professional | null>(null)
@@ -20,34 +21,72 @@ export default function ProfessionalCompanyPage({ params }: { params: { pid: str
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Sanitize professional data
+  const sanitizeProfessionalData = (data: Professional): Professional => {
+    return {
+      ...data,
+      company_name: DOMPurify.sanitize(data.company_name || ''),
+      company_type: DOMPurify.sanitize(data.company_type || ''),
+      company_description: DOMPurify.sanitize(data.company_description || ''),
+      email: DOMPurify.sanitize(data.email || ''),
+      telephone_number: DOMPurify.sanitize(data.telephone_number || ''),
+      website: DOMPurify.sanitize(data.website || ''),
+      address: DOMPurify.sanitize(data.address || ''),
+      company_logo_url: DOMPurify.sanitize(data.company_logo_url || ''),
+      cover_image_url: DOMPurify.sanitize(data.cover_image_url || ''),
+      services_offered: data.services_offered?.map(service => DOMPurify.sanitize(service)) || [],
+      specializations: data.specializations?.map(spec => DOMPurify.sanitize(spec)) || [],
+      certifications_accreditations: data.certifications_accreditations?.map(cert => DOMPurify.sanitize(cert)) || []
+    }
+  }
+
+  // Sanitize project data
+  const sanitizeProjectData = (projects: Project[]): Project[] => {
+    return projects.map(project => ({
+      ...project,
+      name: DOMPurify.sanitize(project.name || ''),
+      type: DOMPurify.sanitize(project.type || ''),
+      description: DOMPurify.sanitize(project.description || ''),
+      location: DOMPurify.sanitize(project.location || ''),
+      year: DOMPurify.sanitize(String(project.year || '')),
+      images: project.images?.map(image => DOMPurify.sanitize(image)) || []
+    }))
+  }
+
   // Fetch professional and project data based on PID
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true)
 
+        // Sanitize the pid parameter
+        const sanitizedPid = DOMPurify.sanitize(params.pid);
+
         // Fetch professional data
-        const professional = await getProfessionalByPID(params.pid)
+        const professional = await getProfessionalByPID(sanitizedPid)
         console.log(professional)
-        setProfessionalData(professional)
+        const sanitizedProfessional = sanitizeProfessionalData(professional)
+        setProfessionalData(sanitizedProfessional)
 
         // Fetch projects associated with the professional's PID
-        const projects = await getProjectsByPID(params.pid)
-        setProjects(projects)
+        const projects = await getProjectsByPID(sanitizedPid)
+        const sanitizedProjects = sanitizeProjectData(projects || [])
+        setProjects(sanitizedProjects)
 
         // Set the first project as the selected project
-        if(projects){
-        if (projects.length > 0) {
-          setSelectedProject(projects[0])
+        if(sanitizedProjects){
+          if (sanitizedProjects.length > 0) {
+            setSelectedProject(sanitizedProjects[0])
+          }
+        }else{
+          setSelectedProject(null)  
         }
-      }else{
-        setSelectedProject(null)  
-      }
 
         setError(null)
       } catch (err) {
         console.error("Failed to fetch data:", err)
-        setError("Failed to load professional data. Please try again later.")
+        const sanitizedError = DOMPurify.sanitize("Failed to load professional data. Please try again later.");
+        setError(sanitizedError)
       } finally {
         setIsLoading(false)
       }
@@ -111,7 +150,7 @@ export default function ProfessionalCompanyPage({ params }: { params: { pid: str
       <div className="relative mb-8">
         <div className="h-64 w-full relative rounded-xl overflow-hidden">
           <Image
-            src={professionalData.cover_image_url || "images/cover-placeholder.svg"}
+            src={professionalData.cover_image_url || "/images/cover-placeholder.svg"}
             alt={`${professionalData.company_name} cover`}
             fill
             className="object-cover"
@@ -119,7 +158,7 @@ export default function ProfessionalCompanyPage({ params }: { params: { pid: str
         </div>
         <div className="absolute -bottom-16 left-8 h-32 w-32 rounded-xl border-4 border-background bg-background overflow-hidden">
           <Image
-            src={professionalData.company_logo_url  || "images/logo-placeholder.svg"}
+            src={professionalData.company_logo_url || "/images/logo-placeholder.svg"}
             alt={professionalData.company_name}
             fill
             className="object-cover"
@@ -141,7 +180,7 @@ export default function ProfessionalCompanyPage({ params }: { params: { pid: str
             <div className="flex flex-wrap gap-6 text-sm">
               <div className="flex items-center gap-1">
                 <MapPin className="h-4 w-4 text-muted-foreground" />
-                <span>{String(professionalData.address)}</span>
+                <span>{professionalData.address}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Phone className="h-4 w-4 text-muted-foreground" />
@@ -151,10 +190,19 @@ export default function ProfessionalCompanyPage({ params }: { params: { pid: str
                 <Mail className="h-4 w-4 text-muted-foreground" />
                 <span>{professionalData.email}</span>
               </div>
-              <div className="flex items-center gap-1">
-                <Globe className="h-4 w-4 text-muted-foreground" />
-                <span>{professionalData.website}</span>
-              </div>
+              {professionalData.website && (
+                <div className="flex items-center gap-1">
+                  <Globe className="h-4 w-4 text-muted-foreground" />
+                  <a 
+                    href={professionalData.website} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="hover:text-primary"
+                  >
+                    {professionalData.website}
+                  </a>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex flex-col gap-2 min-w-[200px]">
@@ -178,10 +226,10 @@ export default function ProfessionalCompanyPage({ params }: { params: { pid: str
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="md:col-span-1 space-y-4">
               <h3 className="text-lg font-semibold mb-4">Projects</h3>
-              {!projects && (
+              {!projects || projects.length === 0 && (
                 <p className="text-muted-foreground">No projects available.</p>
               )}
-              {projects &&projects.map((project) => (
+              {projects && projects.map((project) => (
                 <Card
                   key={project.id}
                   className={`cursor-pointer hover:border-primary transition-colors ${
@@ -218,7 +266,7 @@ export default function ProfessionalCompanyPage({ params }: { params: { pid: str
                   </div>
                   <p className="mb-6">{selectedProject.description}</p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {selectedProject.images.map((image, index) => (
+                    {selectedProject.images && selectedProject.images.map((image, index) => (
                       <div key={index} className="relative h-48 rounded-md overflow-hidden">
                         <Image
                           src={image || "images/cover-placeholder.svg"}
@@ -231,6 +279,16 @@ export default function ProfessionalCompanyPage({ params }: { params: { pid: str
                   </div>
                 </>
               )}
+              {!selectedProject && projects && projects.length > 0 && (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">Select a project to view details</p>
+                </div>
+              )}
+              {(!projects || projects.length === 0) && (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground">No projects available to display</p>
+                </div>
+              )}
             </div>
           </div>
         </TabsContent>
@@ -238,28 +296,97 @@ export default function ProfessionalCompanyPage({ params }: { params: { pid: str
         {/* Services Tab */}
         <TabsContent value="services" className="mt-6">
           <h3 className="text-xl font-semibold mb-6">Our Services</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {professionalData.services_offered?.map((service, index) => (
-              <Card key={index}>
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="bg-primary/10 p-3 rounded-full">
-                      <Building className="h-6 w-6 text-primary" />
+          {(!professionalData.services_offered || professionalData.services_offered.length === 0) ? (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">No services information available</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {professionalData.services_offered.map((service, index) => (
+                <Card key={index}>
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="bg-primary/10 p-3 rounded-full">
+                        <Building className="h-6 w-6 text-primary" />
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-medium mb-2">{service}</h4>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-lg font-medium mb-2">{service}</h4>
-                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+
+          {/* Specializations Section */}
+          {professionalData.specializations && professionalData.specializations.length > 0 && (
+            <div className="mt-8">
+              <h4 className="text-lg font-semibold mb-4">Specializations</h4>
+              <div className="flex flex-wrap gap-2">
+                {professionalData.specializations.map((specialization, index) => (
+                  <Badge key={index} variant="outline">
+                    {specialization}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Certifications Section */}
+          {professionalData.certifications_accreditations && professionalData.certifications_accreditations.length > 0 && (
+            <div className="mt-8">
+              <h4 className="text-lg font-semibold mb-4">Certifications & Accreditations</h4>
+              <div className="space-y-2">
+                {professionalData.certifications_accreditations.map((cert, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                    <span>{cert}</span>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                ))}
+              </div>
+            </div>
+          )}
         </TabsContent>
 
         {/* About Tab */}
         <TabsContent value="about" className="mt-6">
           <h3 className="text-xl font-semibold mb-4">About {professionalData.company_name}</h3>
-          <p className="mb-6">{professionalData.company_description}</p>
+          <div className="space-y-4">
+            <p className="mb-6">{professionalData.company_description}</p>
+            
+            {/* Contact Information */}
+            <div className="bg-gray-50 p-6 rounded-lg">
+              <h4 className="text-lg font-medium mb-4">Contact Information</h4>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <Phone className="h-4 w-4 text-muted-foreground" />
+                  <span>{professionalData.telephone_number}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Mail className="h-4 w-4 text-muted-foreground" />
+                  <span>{professionalData.email}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <MapPin className="h-4 w-4 text-muted-foreground" />
+                  <span>{professionalData.address}</span>
+                </div>
+                {professionalData.website && (
+                  <div className="flex items-center gap-3">
+                    <Globe className="h-4 w-4 text-muted-foreground" />
+                    <a 
+                      href={professionalData.website} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      {professionalData.website}
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </TabsContent>
 
         {/* Reviews Tab */}
@@ -269,12 +396,13 @@ export default function ProfessionalCompanyPage({ params }: { params: { pid: str
               <Star className="h-8 w-8 text-primary" />
             </div>
             <div>
-              {/* <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold">{professionalData.rating}</span>
-                <span className="text-muted-foreground">out of 5</span>
-              </div>
-              <p className="text-muted-foreground">Based on {professionalData.reviews} reviews</p> */}
+              <h3 className="text-xl font-semibold">Reviews</h3>
+              <p className="text-muted-foreground">Reviews feature coming soon</p>
+              {/* Placeholder for future review implementation */}
             </div>
+          </div>
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">No reviews available at this time</p>
           </div>
         </TabsContent>
       </Tabs>

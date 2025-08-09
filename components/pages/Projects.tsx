@@ -1,5 +1,3 @@
-
-
 "use client"
 
 import { useState, useMemo, useEffect } from "react"
@@ -28,6 +26,7 @@ import {
   type Professional
 } from "@/app/api"
 import { ImageWithFallback } from "../ui/ImageWithFallback"
+import DOMPurify from 'dompurify'
 
 const projectTypes = [
   "All Types",
@@ -74,14 +73,104 @@ export default function ProjectsPageContent() {
   const [error, setError] = useState<string | null>(null)
   const [companyDialogOpen, setCompanyDialogOpen] = useState(false)
 
+  // Sanitize project data
+  const sanitizeProject = (project: ProjectWithProfessional): ProjectWithProfessional => {
+    return {
+      ...project,
+      id: DOMPurify.sanitize(String(project.id || '')),
+      name: DOMPurify.sanitize(project.name || ''),
+      type: DOMPurify.sanitize(project.type || ''),
+      description: DOMPurify.sanitize(project.description || ''),
+      location: DOMPurify.sanitize(project.location || ''),
+      year: DOMPurify.sanitize(String(project.year || '')),
+      pid: DOMPurify.sanitize(project.pid || ''),
+      images: project.images?.map(image => DOMPurify.sanitize(image)) || [],
+      professional: project.professional ? sanitizeProfessional(project.professional) : undefined
+    }
+  }
+
+  // Sanitize professional data
+  const sanitizeProfessional = (professional: Professional): Professional => {
+    return {
+      ...professional,
+      company_name: DOMPurify.sanitize(professional.company_name || ''),
+      company_type: DOMPurify.sanitize(professional.company_type || ''),
+      company_description: DOMPurify.sanitize(professional.company_description || ''),
+      email: DOMPurify.sanitize(professional.email || ''),
+      telephone_number: DOMPurify.sanitize(professional.telephone_number || ''),
+      website: DOMPurify.sanitize(professional.website || ''),
+      address: DOMPurify.sanitize(professional.address || ''),
+      pid: DOMPurify.sanitize(professional.pid || ''),
+      company_logo_url: DOMPurify.sanitize(professional.company_logo_url || ''),
+      cover_image_url: DOMPurify.sanitize(professional.cover_image_url || ''),
+      specializations: professional.specializations?.map(spec => DOMPurify.sanitize(spec)) || [],
+      services_offered: professional.services_offered?.map(service => DOMPurify.sanitize(service)) || [],
+      certifications_accreditations: professional.certifications_accreditations?.map(cert => DOMPurify.sanitize(cert)) || []
+    }
+  }
+
+  // Sanitize projects array
+  const sanitizeProjects = (projects: ProjectWithProfessional[]): ProjectWithProfessional[] => {
+    return projects.map(sanitizeProject)
+  }
+
+  // Sanitize companies array
+  const sanitizeCompanies = (companies: Professional[]): Professional[] => {
+    return companies.map(sanitizeProfessional)
+  }
+
+  // Handle search input change with sanitization
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const sanitizedValue = DOMPurify.sanitize(e.target.value)
+    setSearchTerm(sanitizedValue)
+  }
+
+  // Handle type selection with sanitization
+  const handleTypeChange = (value: string) => {
+    const sanitizedValue = DOMPurify.sanitize(value)
+    setSelectedType(sanitizedValue)
+  }
+
+  // Handle company type selection with sanitization
+  const handleCompanyTypeChange = (value: string) => {
+    const sanitizedValue = DOMPurify.sanitize(value)
+    setSelectedCompanyType(sanitizedValue)
+  }
+
+  // Handle sort selection with sanitization
+  const handleSortChange = (value: string) => {
+    const sanitizedValue = DOMPurify.sanitize(value)
+    setSortBy(sanitizedValue)
+  }
+
+  // Handle company toggle with sanitization
+  const handleCompanyToggle = (companyPid: string) => {
+    const sanitizedPid = DOMPurify.sanitize(companyPid)
+    setSelectedCompanies(prev => 
+      prev.includes(sanitizedPid)
+        ? prev.filter(pid => pid !== sanitizedPid)
+        : [...prev, sanitizedPid]
+    )
+  }
+
+  // Get selected company names with sanitization
+  const getSelectedCompanyNames = () => {
+    return companies
+      .filter(company => selectedCompanies.includes(company.pid))
+      .map(company => DOMPurify.sanitize(company.company_name))
+  }
+
   // Fetch companies on component mount
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
         const companiesData = await getProfessionals()
-        setCompanies(companiesData)
+        const sanitizedCompanies = sanitizeCompanies(companiesData)
+        setCompanies(sanitizedCompanies)
       } catch (err) {
         console.error("Error fetching companies:", err)
+        const sanitizedError = DOMPurify.sanitize("Failed to load companies")
+        setError(sanitizedError)
       }
     }
 
@@ -98,10 +187,12 @@ export default function ProjectsPageContent() {
         const data = await getProjectsWithProfessionalInfo()
         console.log("Fetched projects data:", data)
         console.log("First project ID:", data[0]?.id)
-        setProjects(data)
+        const sanitizedProjects = sanitizeProjects(data)
+        setProjects(sanitizedProjects)
       } catch (err) {
         console.error("Error fetching projects:", err)
-        setError("Failed to load projects. Please try again later.")
+        const sanitizedError = DOMPurify.sanitize("Failed to load projects. Please try again later.")
+        setError(sanitizedError)
       } finally {
         setLoading(false)
       }
@@ -112,17 +203,18 @@ export default function ProjectsPageContent() {
 
   // Handle search with debouncing
   useEffect(() => {
-    if (!searchTerm.trim()) return
+    const sanitizedSearchTerm = DOMPurify.sanitize(searchTerm.trim())
+    if (!sanitizedSearchTerm) return
 
     const debounceTimer = setTimeout(async () => {
       try {
         setLoading(true)
         const searchFilters = {
-          type: selectedType !== "All Types" ? selectedType : undefined,
+          type: selectedType !== "All Types" ? DOMPurify.sanitize(selectedType) : undefined,
         }
         
-        console.log("Searching projects with term:", searchTerm)
-        const searchResult = await searchProjects(searchTerm, searchFilters)
+        console.log("Searching projects with term:", sanitizedSearchTerm)
+        const searchResult = await searchProjects(sanitizedSearchTerm, searchFilters)
         console.log("Search results:", searchResult)
         
         // Get professional info for search results
@@ -136,10 +228,12 @@ export default function ProjectsPageContent() {
         )
         
         console.log("Projects with professional info:", projectsWithProfessional)
-        setProjects(projectsWithProfessional)
+        const sanitizedResults = sanitizeProjects(projectsWithProfessional)
+        setProjects(sanitizedResults)
       } catch (err) {
         console.error("Error searching projects:", err)
-        setError("Search failed. Please try again.")
+        const sanitizedError = DOMPurify.sanitize("Search failed. Please try again.")
+        setError(sanitizedError)
       } finally {
         setLoading(false)
       }
@@ -150,13 +244,14 @@ export default function ProjectsPageContent() {
 
   // Handle filters
   useEffect(() => {
-    if (searchTerm.trim()) return // Don't filter if actively searching
+    const sanitizedSearchTerm = DOMPurify.sanitize(searchTerm.trim())
+    if (sanitizedSearchTerm) return // Don't filter if actively searching
 
     const fetchFilteredProjects = async () => {
       try {
         setLoading(true)
         const filters = {
-          company_type: selectedCompanyType !== "All Companies" ? selectedCompanyType : undefined,
+          company_type: selectedCompanyType !== "All Companies" ? DOMPurify.sanitize(selectedCompanyType) : undefined,
         }
 
         console.log("Applying filters:", filters)
@@ -170,10 +265,12 @@ export default function ProjectsPageContent() {
         
         console.log("Filtered projects data:", data)
         console.log("Setting projects state with:", data.length, "projects")
-        setProjects(data)
+        const sanitizedData = sanitizeProjects(data)
+        setProjects(sanitizedData)
       } catch (err) {
         console.error("Error filtering projects:", err)
-        setError("Failed to filter projects.")
+        const sanitizedError = DOMPurify.sanitize("Failed to filter projects.")
+        setError(sanitizedError)
       } finally {
         setLoading(false)
       }
@@ -188,9 +285,12 @@ export default function ProjectsPageContent() {
     console.log("Projects length:", projects.length)
     
     let filtered = projects.filter((project) => {
-      const matchesType = selectedType === "All Types" || project.type === selectedType
+      const sanitizedSelectedType = DOMPurify.sanitize(selectedType)
+      const sanitizedProjectType = DOMPurify.sanitize(project.type || '')
+      
+      const matchesType = sanitizedSelectedType === "All Types" || sanitizedProjectType === sanitizedSelectedType
       const matchesCompany = selectedCompanies.length === 0 || 
-        (project.professional && selectedCompanies.includes(project.professional.pid))
+        (project.professional && selectedCompanies.includes(DOMPurify.sanitize(project.professional.pid)))
       
       return matchesType && matchesCompany
     })
@@ -198,17 +298,20 @@ export default function ProjectsPageContent() {
     console.log("After filtering:", filtered.length)
 
     // Sort projects
+    const sanitizedSortBy = DOMPurify.sanitize(sortBy)
     filtered.sort((a, b) => {
-      switch (sortBy) {
+      switch (sanitizedSortBy) {
         case "year":
-          return parseInt(b.year) - parseInt(a.year)
+          return parseInt(DOMPurify.sanitize(b.year)) - parseInt(DOMPurify.sanitize(a.year))
         case "name":
-          return a.name.localeCompare(b.name)
+          return DOMPurify.sanitize(a.name).localeCompare(DOMPurify.sanitize(b.name))
         case "company":
-          return (a.professional?.company_name || "").localeCompare(b.professional?.company_name || "")
+          const aCompanyName = DOMPurify.sanitize(a.professional?.company_name || "")
+          const bCompanyName = DOMPurify.sanitize(b.professional?.company_name || "")
+          return aCompanyName.localeCompare(bCompanyName)
         case "rating":
           // Since we don't have rating in the API, we'll sort by year as fallback
-          return parseInt(b.year) - parseInt(a.year)
+          return parseInt(DOMPurify.sanitize(b.year)) - parseInt(DOMPurify.sanitize(a.year))
         default:
           return 0
       }
@@ -228,27 +331,32 @@ export default function ProjectsPageContent() {
     try {
       setLoading(true)
       const data = await getProjectsWithProfessionalInfo()
-      setProjects(data)
+      const sanitizedData = sanitizeProjects(data)
+      setProjects(sanitizedData)
     } catch (err) {
       console.error("Error resetting filters:", err)
-      setError("Failed to reset filters.")
+      const sanitizedError = DOMPurify.sanitize("Failed to reset filters.")
+      setError(sanitizedError)
     } finally {
       setLoading(false)
     }
   }
 
-  const handleCompanyToggle = (companyPid: string) => {
-    setSelectedCompanies(prev => 
-      prev.includes(companyPid)
-        ? prev.filter(pid => pid !== companyPid)
-        : [...prev, companyPid]
-    )
+  // Remove filter handlers with sanitization
+  const removeTypeFilter = () => {
+    setSelectedType("All Types")
   }
 
-  const getSelectedCompanyNames = () => {
-    return companies
-      .filter(company => selectedCompanies.includes(company.pid))
-      .map(company => company.company_name)
+  const removeCompanyTypeFilter = () => {
+    setSelectedCompanyType("All Companies")
+  }
+
+  const removeCompanyFilter = (companyName: string) => {
+    const sanitizedCompanyName = DOMPurify.sanitize(companyName)
+    const company = companies.find(c => DOMPurify.sanitize(c.company_name) === sanitizedCompanyName)
+    if (company) {
+      handleCompanyToggle(company.pid)
+    }
   }
 
   if (error) {
@@ -282,7 +390,7 @@ export default function ProjectsPageContent() {
             <Input
               placeholder="Search projects, companies, or descriptions..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchInputChange}
               className="pl-10"
             />
           </div>
@@ -293,7 +401,7 @@ export default function ProjectsPageContent() {
         </div>
 
         <div className="flex flex-col md:flex-row gap-4">
-          <Select value={selectedType} onValueChange={setSelectedType}>
+          <Select value={selectedType} onValueChange={handleTypeChange}>
             <SelectTrigger className="w-full md:w-48">
               <SelectValue placeholder="Project Type" />
             </SelectTrigger>
@@ -306,7 +414,7 @@ export default function ProjectsPageContent() {
             </SelectContent>
           </Select>
 
-          <Select value={selectedCompanyType} onValueChange={setSelectedCompanyType}>
+          <Select value={selectedCompanyType} onValueChange={handleCompanyTypeChange}>
             <SelectTrigger className="w-full md:w-48">
               <SelectValue placeholder="Company Type" />
             </SelectTrigger>
@@ -389,7 +497,7 @@ export default function ProjectsPageContent() {
             </DialogContent>
           </Dialog>
 
-          <Select value={sortBy} onValueChange={setSortBy}>
+          <Select value={sortBy} onValueChange={handleSortChange}>
             <SelectTrigger className="w-full md:w-48">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
@@ -410,7 +518,7 @@ export default function ProjectsPageContent() {
               <Badge variant="secondary" className="px-3 py-1">
                 Type: {selectedType}
                 <button
-                  onClick={() => setSelectedType("All Types")}
+                  onClick={removeTypeFilter}
                   className="ml-2 hover:text-red-500"
                 >
                   ×
@@ -421,7 +529,7 @@ export default function ProjectsPageContent() {
               <Badge variant="secondary" className="px-3 py-1">
                 Company Type: {selectedCompanyType}
                 <button
-                  onClick={() => setSelectedCompanyType("All Companies")}
+                  onClick={removeCompanyTypeFilter}
                   className="ml-2 hover:text-red-500"
                 >
                   ×
@@ -432,10 +540,7 @@ export default function ProjectsPageContent() {
               <Badge key={index} variant="secondary" className="px-3 py-1">
                 {companyName}
                 <button
-                  onClick={() => {
-                    const company = companies.find(c => c.company_name === companyName)
-                    if (company) handleCompanyToggle(company.pid)
-                  }}
+                  onClick={() => removeCompanyFilter(companyName)}
                   className="ml-2 hover:text-red-500"
                 >
                   ×
@@ -497,10 +602,10 @@ export default function ProjectsPageContent() {
               hasId: !!project.id,
               idType: typeof project.id
             })
-            const projectPid = project.pid
+            const projectPid = DOMPurify.sanitize(project.pid || '')
             // Create fallback for missing ID
-            const projectId = project.id || `fallback-${index}`
-            const projectKey = project.id || `key-${index}`
+            const projectId = DOMPurify.sanitize(project.id || `fallback-${index}`)
+            const projectKey = DOMPurify.sanitize(project.id || `key-${index}`)
 
             if (!project.id) {
               console.warn(`Project missing ID:`, project)

@@ -16,7 +16,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Check, ChevronRight, MapPin } from "lucide-react"
 import { createProfessional, getProfessionalByPID, Professional} from "@/app/api"
 import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client"
-
+import DOMPurify from 'dompurify';
 
 function ProfessionalRegistration() {
   const router = useRouter()
@@ -59,8 +59,16 @@ function ProfessionalRegistration() {
   })
 
   const updateFormData = (field: string, value: string | string[]) => {
-    setFormData({ ...formData, [field]: value })
-  }
+    let sanitizedValue = value;
+    
+    if (typeof value === 'string') {
+      sanitizedValue = DOMPurify.sanitize(value);
+    } else if (Array.isArray(value)) {
+      sanitizedValue = value.map(item => DOMPurify.sanitize(item));
+    }
+    
+    setFormData({ ...formData, [field]: sanitizedValue });
+  };
 
   const handleNext = () => {
     if (step < totalSteps) {
