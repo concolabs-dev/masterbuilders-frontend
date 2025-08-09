@@ -1,14 +1,44 @@
+import axios from "axios"
+import { getAccessToken } from "@auth0/nextjs-auth0"
 
-import axios from "axios";
-import { getAccessToken } from "@auth0/nextjs-auth0";
 const API_BASE_URL = "https://ravinduhiran.live"
+const BACKEND_API_SECRET = process.env.NEXT_PUBLIC_BACKEND_API_SECRET || ""
 
 const backend_api_axios = axios.create({
-  baseURL: "/api/backend", 
+  baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
+    "api-secret": BACKEND_API_SECRET, // Fixed header name
   },
 });
+
+// Add request interceptor to automatically add Auth0 token
+backend_api_axios.interceptors.request.use(
+  async (config) => {
+    try {
+      const { accessToken } = await getAccessToken()
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`
+      }
+    } catch (error) {
+      console.log("Failed to get access token:", error)
+      // This allows for public endpoints that don't require auth
+    }
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+
+// Add response interceptor for error handling
+backend_api_axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error("API Error:", error.response?.data || error.message)
+    return Promise.reject(error)
+  }
+)
 
 // Types
 export interface Material {
@@ -211,14 +241,6 @@ export const deleteMaterial = async (id: string) => {
 
 // Types API calls
 export const getTypes = async () => {
-
-  try {
-    const token = await getAccessToken()
-    console.log(token)
-  } catch (err) {
-    console.log(err)
-  }
-
   const response = await backend_api_axios.get<Category[]>("/types")
   console.log(response.data)
   return response.data
@@ -242,7 +264,8 @@ export const updateType = async (id: string, type: Partial<Category>) => {
 export const deleteType = async (id: string) => {
   await backend_api_axios.delete(`/types/${id}`)
 }
-//items api calls
+
+// Items API calls
 export const getItems = async () => {
   const response = await backend_api_axios.get<Item[]>("/items")
   return response.data
