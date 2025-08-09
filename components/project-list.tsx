@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Pencil, Trash2, Star, StarOff } from "lucide-react"
+import { ImageWithFallback } from "./ui/ImageWithFallback"
 
 interface ProjectListProps {
   projects: {
@@ -48,8 +49,8 @@ export function ProjectList({ projects, onEdit, onDelete, onToggleFeature }: Pro
               <TableRow key={project.id}>
                 <TableCell>
                   <div className="relative h-10 w-10 rounded-md overflow-hidden">
-                    <Image
-                      src={project.images[0] || "/placeholder.svg?height=40&width=40"}
+                    <ImageWithFallback
+                      src={project.images[0] || "/images/logo-placeholder.svg"}
                       alt={project.name}
                       fill
                       className="object-cover"

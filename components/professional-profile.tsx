@@ -11,6 +11,7 @@ import { EditProfessionalDetailsDialog } from "./edit-professional-details-dialo
 import { EditServicesDialog } from "./edit-services-dialog"
 import { Badge } from "./ui/badge"
 import { updateProfessional, Professional } from "@/app/api"
+import { ImageWithFallback } from "./ui/ImageWithFallback"
 interface ProfessionalProfileProps {
   professional: Professional
   onUpdate?: (updatedProfessional: ProfessionalProfileProps["professional"]) => void
@@ -77,8 +78,8 @@ export function ProfessionalProfile({ professional, onUpdate }: ProfessionalProf
     <>
       <Card className="overflow-hidden">
         <div className="relative h-48 md:h-64 w-full">
-          <Image
-            src={currentProfessional.cover_image_url || "/placeholder.svg?height=400&width=1200"}
+          <ImageWithFallback
+            src={currentProfessional.cover_image_url || "/images/cover-placeholder.svg"}
             alt={`${currentProfessional.company_name} cover`}
             fill
             className="object-cover"
@@ -96,8 +97,8 @@ export function ProfessionalProfile({ professional, onUpdate }: ProfessionalProf
         <CardContent className="pt-0">
           <div className="flex flex-col md:flex-row gap-6 -mt-12 md:-mt-16">
             <div className="relative h-24 w-24 md:h-32 md:w-32 rounded-full border-4 border-background overflow-hidden bg-background">
-              <Image
-                src={currentProfessional.company_logo_url || "/placeholder.svg?height=200&width=200"}
+              <ImageWithFallback
+                src={currentProfessional.company_logo_url || "/images/logo-placeholder.svg"}
                 alt={currentProfessional.company_name}
                 fill
                 className="object-cover"

@@ -27,6 +27,7 @@ import {
   type ProjectWithProfessional,
   type Professional
 } from "@/app/api"
+import { ImageWithFallback } from "../ui/ImageWithFallback"
 
 const projectTypes = [
   "All Types",
@@ -355,7 +356,7 @@ export default function ProjectsPageContent() {
                       )}
                     </div>
                     <div className="flex items-center space-x-3 flex-1">
-                      <Image
+                      <ImageWithFallback
                         src={company.company_logo_url || "/placeholder.svg?height=32&width=32"}
                         alt={company.company_name}
                         width={32}
@@ -509,7 +510,7 @@ export default function ProjectsPageContent() {
               <Link key={projectKey} href={`/projects/${projectId}`}>
                 <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full">
                   <div className="relative">
-                    <Image
+                    <ImageWithFallback
                       src={project.images?.[0] || "/placeholder.svg?height=200&width=300"}
                       alt={project.name}
                       width={300}
@@ -549,7 +550,7 @@ export default function ProjectsPageContent() {
                       <div className="border-t pt-3">
                         <Link href={`/professionals/${projectPid}`} onClick={(e) => e.stopPropagation()}>
                           <div className="flex items-center gap-2 hover:bg-gray-50 p-1 rounded transition-colors">
-                            <Image
+                            <ImageWithFallback
                               src={project.professional.company_logo_url || "/placeholder.svg?height=24&width=24"}
                               alt={project.professional.company_name}
                               width={24}

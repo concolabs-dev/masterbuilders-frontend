@@ -161,7 +161,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
               <>
                 <div className="relative h-96 rounded-lg overflow-hidden mb-4">
                   <Image
-                    src={project.images[selectedImageIndex] || "/placeholder.svg?height=500&width=800&text=No+Image"}
+                    src={project.images[selectedImageIndex] || "/images/cover-placeholder.svg"}
                     alt={`${project.name} image ${selectedImageIndex + 1}`}
                     fill
                     className="object-cover"
@@ -181,7 +181,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
                       onClick={() => setSelectedImageIndex(index)}
                     >
                       <Image
-                        src={image || "/placeholder.svg?height=100&width=100&text=No+Image"}
+                        src={image || "/images/logo-placeholder.svg"}
                         alt={`${project.name} thumbnail ${index + 1}`}
                         fill
                         className="object-cover"
@@ -229,7 +229,7 @@ export default function ProjectDetailPage({ params }: { params: { id: string } }
                   <div className="flex items-center gap-4 mb-4">
                     <div className="h-16 w-16 rounded-lg overflow-hidden bg-gray-100">
                       <Image
-                        src={project.professional.company_logo_url || "/placeholder.svg?height=64&width=64&text=Logo"}
+                        src={project.professional.company_logo_url || "/images/logo-placeholder.svg"}
                         alt={project.professional.company_name}
                         width={64}
                         height={64}
