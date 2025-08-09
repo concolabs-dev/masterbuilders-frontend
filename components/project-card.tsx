@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Pencil, Trash2, MapPin, Calendar, Star, StarOff } from "lucide-react"
+import { ImageWithFallback } from "./ui/ImageWithFallback"
 
 interface ProjectCardProps {
   project: {
@@ -26,8 +27,8 @@ export function ProjectCard({ project, onEdit, onDelete, onToggleFeature }: Proj
   return (
     <Card className="overflow-hidden flex flex-col h-full">
       <div className="relative h-48 w-full">
-        <Image
-          src={project.images[0] || "/placeholder.svg?height=200&width=300"}
+        <ImageWithFallback
+          src={project.images[0] }
           alt={project.name}
           fill
           className="object-cover"

@@ -310,26 +310,36 @@ setIsSubmitting(true)
               <div className="space-y-6">
                 <div className="space-y-2">
                   <Label>Profile Picture</Label>
-                  <ImageUpload
-                    value={formData.profileImage}
-                    onChange={(url) => updateFormData("profileImage", url)}
-                    label="Upload profile picture"
-                    description="This will be displayed on your supplier profile"
-                    imageClassName="w-32 h-32 rounded-full object-cover"
-                  />
+               <ImageUpload
+  value={formData.profileImage}
+  onChange={(url) => updateFormData("profileImage", url)}
+  label="Profile Image"
+  description="Upload supplier profile image"
+  dimensions={{ width: 400, height: 400 }}
+  enableCrop={true}
+  maxFileSize={4}
+  quality={88}
+  allowedFormats={['image/jpeg', 'image/png', 'image/webp']}
+  imageClassName="w-32 h-32 object-cover rounded-lg"
+/>
                         {errors.profileImage && (
                     <p className="text-red-500">{errors.profileImage}</p>
                   )}
                 </div>
                 <div className="space-y-2">
                   <Label>Cover Image</Label>
-                  <ImageUpload
-                    value={formData.coverImage}
-                    onChange={(url) => updateFormData("coverImage", url)}
-                    label="Upload cover image"
-                    description="This will be displayed at the top of your supplier profile"
-                    imageClassName="w-full h-40 object-cover rounded-md"
-                  />
+               <ImageUpload
+  value={formData.coverImage}
+  onChange={(url) => updateFormData("coverImage", url)}
+  label="Cover Image"
+  description="Upload supplier cover/banner image"
+  dimensions={{ width: 1200, height: 400 }}
+  enableCrop={true}
+  maxFileSize={8}
+  quality={85}
+  allowedFormats={['image/jpeg', 'image/png', 'image/webp']}
+  imageClassName="w-full h-40 object-cover rounded-lg"
+/>
                         {errors.coverImage  && (
                     <p className="text-red-500">{errors.coverImage}</p>
                   )}
