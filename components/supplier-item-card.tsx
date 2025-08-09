@@ -28,7 +28,7 @@ export function SupplierItemCard({ item, onEdit, onDelete, admin, displayCurrenc
   return (
     <Card className="overflow-hidden flex flex-col h-full">
       <div className="relative h-48 w-full">
-        <ImageWithFallback
+        <Image
           src={item.imgUrl || "/placeholder.svg?height=200&width=300"}
           alt={item.name}
           fill

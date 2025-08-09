@@ -1,10 +1,11 @@
 'use client';
+
 import { Modal, ModalBody, ModalContent, ModalFooter } from '@/components/ui/animated-modal';
 import { Button } from '@/components/ui/button';
 import GlassCard from '@/components/ui/GlassCard';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Bell, BookOpen, CheckCircle, DollarSign, GitCompare, Handshake, HardHat, LineChart, Link, Map, Package, ParkingMeter, Phone, Pin, ShieldCheck, Tag, Truck } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 const ListOfServices = [
   { 

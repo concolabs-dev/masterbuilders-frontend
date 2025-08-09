@@ -92,7 +92,7 @@ export function SupplierItemList({
               >
                 <TableCell>
                   <div className="relative h-10 w-10 rounded-md overflow-hidden">
-                    <ImageWithFallback
+                    <Image
                       src={item.imgUrl || "/placeholder.svg?height=40&width=40"}
                       alt={item.name}
                       fill

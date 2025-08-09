@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { getMaterialsByCategory, getTypes, searchMaterials, getExchangeRates } from "../../app/api"
 import { MaterialCard } from "@/components/material-card"
 import { PriceChart } from "@/components/price-chart"
@@ -63,6 +63,19 @@ export default function CataloguePage() {
   const [selectedCurrency, setSelectedCurrency] = useState<string>("LKR")
   const [exchangeRates, setExchangeRates] = useState<Record<string, number>>({})
   const [materialItems, setMaterialItems] = useState<Item[]>([])
+
+  // Ref for scrolling to results
+  const resultsRef = useRef<HTMLDivElement>(null)
+
+  // Scroll to results function
+  const scrollToResults = () => {
+    if (resultsRef.current) {
+      resultsRef.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+      })
+    }
+  }
 
   useEffect(() => {
     setIsLoading(true)
@@ -140,10 +153,16 @@ export default function CataloguePage() {
           const data = await searchMaterials(searchQuery, selectedSubcategory || undefined)
           setTempSearchQuery("")
           setMaterials(data)
+          
+          // Scroll to results after search
+          setTimeout(scrollToResults, 200)
         } else if (selectedCategory) {
           // Fetch based on category when no search query
           const data = await getMaterialsByCategory(selectedCategory, selectedSubcategory || undefined)
           setMaterials(data)
+          
+          // Scroll to results after category selection
+          setTimeout(scrollToResults, 200)
         }
       } catch (error) {
         console.error("Error fetching materials:", error)
@@ -155,6 +174,30 @@ export default function CataloguePage() {
   // A helper to get the conversion rate (1 for LKR, or lookup from exchangeRates)
   const getConversionRate = () => {
     return selectedCurrency === "LKR" ? 1 : (exchangeRates[selectedCurrency] || 1)
+  }
+
+  // Handle category selection with scroll
+  const handleCategorySelection = (category: string) => {
+    setSelectedCategory(category)
+    setSelectedSubcategory(null)
+    setExpandedCategories((prev) =>
+      prev.includes(category)
+        ? prev.filter((c) => c !== category)
+        : [...prev, category]
+    )
+    // Close sidebar on mobile after selection
+    if (window.innerWidth < 768) {
+      setShowSidebar(false)
+    }
+  }
+
+  // Handle subcategory selection with scroll
+  const handleSubcategorySelection = (subcategory: string) => {
+    setSelectedSubcategory(subcategory)
+    // Close sidebar on mobile after selection
+    if (window.innerWidth < 768) {
+      setShowSidebar(false)
+    }
   }
 
   return (
@@ -208,15 +251,7 @@ export default function CataloguePage() {
                         className={`w-full justify-start pl-6 text-slate-300 hover:text-white hover:bg-slate-800 ${
                           selectedCategory === category.name ? "font-bold" : ""
                         }`}
-                        onClick={() => {
-                          setSelectedCategory(category.name)
-                          setSelectedSubcategory(null)
-                          setExpandedCategories((prev) =>
-                            prev.includes(category.name)
-                              ? prev.filter((c) => c !== category.name)
-                              : [...prev, category.name]
-                          )
-                        }}
+                        onClick={() => handleCategorySelection(category.name)}
                       >
                         {expandedCategories.includes(category.name) ? (
                           <ChevronDown className="mr-2 h-4 w-4" />
@@ -234,9 +269,7 @@ export default function CataloguePage() {
                               className={`w-full justify-start pl-8 text-slate-400 hover:text-white hover:bg-slate-800 ${
                                 selectedSubcategory === sub.name ? "font-bold" : ""
                               }`}
-                              onClick={() => {
-                                setSelectedSubcategory(sub.name)
-                              }}
+                              onClick={() => handleSubcategorySelection(sub.name)}
                             >
                               {sub.name}
                             </Button>
@@ -249,42 +282,48 @@ export default function CataloguePage() {
             </div>
           ))}
         </aside>
+        
+        {/* Main content area with results ref */}
         <div className="space-y-6">
           <h1 className="text-3xl font-bold">Cost Catalogue</h1>
-          <div className="flex items-center gap-4">
-            <Input
-              placeholder="Search materials..."
-              className="max-w-sm"
-              value={tempsearchQuery}
-              onChange={(e) => setTempSearchQuery(e.target.value)}
-              onKeyUp={handleKeyPress}
-            />
-            <Button onClick={handleButtonClick}>Search</Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setTempSearchQuery("")
-                setSearchQuery("")
-              }}
-            >
-              Clear
-            </Button>
-            <Select onValueChange={(value) => setSelectedCurrency(value)}>
-              <SelectTrigger className="w-[180px] bg-primary text-white font-semibold hover:bg-primary/90 focus:ring-2 focus:ring-primary/50 rounded-lg ">
-                <span className="text-white">
-                  <SelectValue placeholder="Select Currency" />
-                </span>
-              </SelectTrigger>
-              <SelectContent>
-                {Object.keys(exchangeRates).map((currency) => (
-                  <SelectItem key={currency} value={currency}>
-                    {currency}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+  <Input
+    placeholder="Search materials..."
+    className="w-full sm:max-w-md"
+    value={tempsearchQuery}
+    onChange={(e) => setTempSearchQuery(e.target.value)}
+    onKeyUp={handleKeyPress}
+  />
+  <div className="flex gap-2">
+    <Button onClick={handleButtonClick}>Search</Button>
+    <Button
+      variant="outline"
+      onClick={() => {
+        setTempSearchQuery("")
+        setSearchQuery("")
+      }}
+    >
+      Clear
+    </Button>
+    <Select onValueChange={(value) => setSelectedCurrency(value)}>
+      <SelectTrigger className="w-[180px] bg-primary text-white font-semibold hover:bg-primary/90 focus:ring-2 focus:ring-primary/50 rounded-lg">
+        <span className="text-white">
+          <SelectValue placeholder="Select Currency" />
+        </span>
+      </SelectTrigger>
+      <SelectContent>
+        {Object.keys(exchangeRates).map((currency) => (
+          <SelectItem key={currency} value={currency}>
+            {currency}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  </div>
+</div>
+          
+          {/* Results section with ref for scrolling */}
+          <div ref={resultsRef} className="grid gap-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
             {materials.length > 0 ? (
               materials.map((material) => {
                 const priceLKR = material.Prices.find((p) => p[1])?.[1] || 0
@@ -304,11 +343,14 @@ export default function CataloguePage() {
                 )
               })
             ) : (
-              <p className="text-gray-500">No materials found</p>
+              <div className="col-span-full text-center py-8">
+                <p className="text-gray-500">No materials found</p>
+              </div>
             )}
           </div>
         </div>
       </div>
+      
       <Dialog open={!!selectedMaterial} onOpenChange={() => setSelectedMaterial(null)}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           {selectedMaterial && (
@@ -417,7 +459,7 @@ export default function CataloguePage() {
                     <p>No items available from suppliers for this material.</p>
                   </div>
                 </div>
-              )}
+                )}
             </div>
           )}
         </DialogContent>
