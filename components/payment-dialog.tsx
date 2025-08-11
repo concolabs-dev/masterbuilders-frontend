@@ -99,7 +99,7 @@ export function PaymentDialog({ open, onOpenChange, amount, onPayment }: Payment
                 </div>
               </RadioGroup>
             </div>
-
+{/* TODO: */}
             {paymentMethod === "credit_card" && (
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
