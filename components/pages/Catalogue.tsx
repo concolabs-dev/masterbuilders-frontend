@@ -356,7 +356,7 @@ export default function CataloguePage() {
           {selectedMaterial && (
             <div className="p-4 space-y-4 bg-white rounded-lg">
               <h2 className="text-2xl font-bold text-center mb-4">{selectedMaterial.Name}</h2>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4 text-center text-sm md:text-base">
                 <div className="col-span-2 text-center">
                   {(() => {
                     const latestPriceLKR =
@@ -369,7 +369,7 @@ export default function CataloguePage() {
                     return (
                       <p className="text-gray-700 text-lg">
                         Latest Price:{" "}
-                        <span className="text-green-600">
+                        <span className="text-green-700 font-bold">
                           {selectedCurrency} {displayedPrice.toFixed(2)}
                         </span>
                       </p>
@@ -414,7 +414,7 @@ export default function CataloguePage() {
               />
               
                       {selectedMaterial && materialItems && materialItems.length > 0 && (
-                  <div>
+                  <div className="">
                     <h2 className="text-lg font-semibold mb-4">Available Items from Suppliers</h2>
                     <div className="grid gap-3 sm:grid-cols-3 md:grid-cols-3 xl:grid-cols-3">
                       {materialItems.map((item) => {
