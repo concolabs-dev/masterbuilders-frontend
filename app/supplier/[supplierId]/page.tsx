@@ -122,7 +122,7 @@ import {
 import CategorySidebar from "@/components/categorySidebar"
 import { Suspense } from "react"
 import Loading from "@/components/loading"
-import { withRoleGuard } from "@/app/hoc/withRoleGuard";
+
 function PublicSupplierPage() {
   const { supplierId } = useParams<{ supplierId: string }>()
   const [supplier, setSupplier] = useState<Supplier | null>(null)
@@ -320,4 +320,4 @@ function PublicSupplierPage() {
   );
 }
 
-export default withRoleGuard(PublicSupplierPage, ["supplier"]);
+export default PublicSupplierPage

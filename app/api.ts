@@ -1,14 +1,13 @@
 import axios from "axios"
 import { getAccessToken } from "@auth0/nextjs-auth0"
 
-const API_BASE_URL = "https://ravinduhiran.live"
+const API_BASE_URL = "http://localhost:8040"
 const BACKEND_API_SECRET = process.env.NEXT_PUBLIC_BACKEND_API_SECRET || ""
 
 const backend_api_axios = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
-    "api-secret": BACKEND_API_SECRET, // Fixed header name
   },
 });
 
