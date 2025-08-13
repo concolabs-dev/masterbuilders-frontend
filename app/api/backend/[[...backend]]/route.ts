@@ -5,6 +5,10 @@ async function forwardRequest(request: Request, params: { backend?: string[] }):
     const originalUrl = new URL(request.url);
     const backendPath = params.backend ? params.backend.join("/") : "";
     const url = `${BACKEND_API_URL}/${backendPath}${originalUrl.search}`;
+<<<<<<< HEAD
+=======
+	const {accessToken} = await getAccessToken();
+>>>>>>> a2b00036850ab8c7fd97c0ac508a29ac51019597
     
     const headers = new Headers(request.headers);
     headers.delete("host");

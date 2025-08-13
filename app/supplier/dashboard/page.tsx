@@ -47,7 +47,12 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+<<<<<<< HEAD
 } from "@/components/ui/select"
+=======
+} from "@/components/ui/select";
+import { withRoleGuard } from "@/app/hoc/withRoleGuard";
+>>>>>>> a2b00036850ab8c7fd97c0ac508a29ac51019597
 import { BillingOverview } from "@/components/billing-overview"
 import { InvoiceTable } from "@/components/invoice-table"
 import { PaymentMethods } from "@/components/payment-methods"

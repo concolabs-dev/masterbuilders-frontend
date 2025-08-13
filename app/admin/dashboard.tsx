@@ -1,6 +1,9 @@
 
+<<<<<<< HEAD
 "use client"
 
+=======
+>>>>>>> a2b00036850ab8c7fd97c0ac508a29ac51019597
 import { ChevronDown, ChevronRight, Eye, Menu, Search } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query"
@@ -38,9 +41,15 @@ import {
   searchMaterials,
   Professional,
   Supplier,
+<<<<<<< HEAD
 } from "../api"
 import { useUser, withPageAuthRequired } from '@auth0/nextjs-auth0/client'
 import withAuth from "../hoc/withAuth"
+=======
+} from "../api";
+import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
+import { withRoleGuard } from "../hoc/withRoleGuard";
+>>>>>>> a2b00036850ab8c7fd97c0ac508a29ac51019597
 import MonthManager from "@/components/MonthManager"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -221,6 +230,16 @@ const updateCategoryMutation = useMutation({
   },
 })
 
+<<<<<<< HEAD
+=======
+const updateCategoryMutation = useMutation({
+  mutationFn: ({ id, category }: { id: string; category: any }) => updateType(id, category as any),
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ["categories"] })
+  },
+})
+
+>>>>>>> a2b00036850ab8c7fd97c0ac508a29ac51019597
 
   const deleteCategoryMutation = useMutation({
     mutationFn: deleteType,
@@ -748,6 +767,145 @@ const filteredProfessionals = (professionals || []).filter((professional) =>
           defaultValue={selectedSupplier?.email} 
         />
       </div>
+<<<<<<< HEAD
+=======
+    </div>
+    <div className="grid grid-cols-2 gap-4">
+      <div className="grid gap-2">
+        <Label htmlFor="supplier-telephone">Phone</Label>
+        <Input 
+          id="supplier-telephone" 
+          name="telephone" 
+          defaultValue={selectedSupplier?.telephone} 
+        />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="supplier-address">Address</Label>
+        <Input 
+          id="supplier-address" 
+          name="address" 
+          defaultValue={selectedSupplier?.address} 
+        />
+      </div>
+    </div>
+    <div className="grid gap-2">
+      <Label htmlFor="supplier-description">Business Description</Label>
+      <Textarea 
+        id="supplier-description" 
+        name="business_description"
+        defaultValue={selectedSupplier?.business_description}
+        placeholder="Business description..." 
+      />
+    </div>
+  </div>
+</form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Professional Dialog */}
+      <Dialog open={!!selectedProfessional} onOpenChange={() => setSelectedProfessional(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Edit Professional</DialogTitle>
+            <DialogDescription>Update professional information and account status.</DialogDescription>
+          </DialogHeader>
+          <form
+  onSubmit={(e) => {
+    e.preventDefault()
+    if (selectedProfessional) {
+      const formData = new FormData(e.currentTarget)
+      const updatedProfessional: Partial<Professional> = {
+        company_name: formData.get("company_name") as string,
+        email: formData.get("email") as string,
+        telephone_number: formData.get("telephone_number") as string,
+        address: formData.get("address") as string,
+        company_type: formData.get("company_type") as string,
+        company_description: formData.get("company_description") as string,
+      }
+      updateProfessionalMutation.mutate({ 
+        id: selectedProfessional.id, 
+        professional: updatedProfessional 
+      })
+      setSelectedProfessional(null)
+    }
+  }}
+>
+  <div className="grid gap-4 py-4">
+    <div className="grid grid-cols-2 gap-4">
+      <div className="grid gap-2">
+        <Label htmlFor="professional-company-name">Company Name</Label>
+        <Input 
+          id="professional-company-name" 
+          name="company_name" 
+          defaultValue={selectedProfessional?.company_name} 
+        />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="professional-email">Email</Label>
+        <Input 
+          id="professional-email" 
+          name="email" 
+          type="email" 
+          defaultValue={selectedProfessional?.email} 
+        />
+      </div>
+    </div>
+    <div className="grid grid-cols-2 gap-4">
+      <div className="grid gap-2">
+        <Label htmlFor="professional-telephone">Phone</Label>
+        <Input 
+          id="professional-telephone" 
+          name="telephone_number" 
+          defaultValue={selectedProfessional?.telephone_number} 
+        />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="professional-address">Address</Label>
+        <Input 
+          id="professional-address" 
+          name="address" 
+          defaultValue={selectedProfessional?.address} 
+        />
+      </div>
+    </div>
+    <div className="grid grid-cols-2 gap-4">
+      <div className="grid gap-2">
+        <Label htmlFor="professional-company-type">Company Type</Label>
+        <Select defaultValue={selectedProfessional?.company_type}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Architecture">Architecture</SelectItem>
+            <SelectItem value="Engineering">Engineering</SelectItem>
+            <SelectItem value="Construction">Construction</SelectItem>
+            <SelectItem value="Consulting">Consulting</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="professional-website">Website</Label>
+        <Input 
+          id="professional-website" 
+          name="website" 
+          defaultValue={selectedProfessional?.website} 
+        />
+      </div>
+    </div>
+    <div className="grid gap-2">
+      <Label htmlFor="professional-description">Company Description</Label>
+      <Textarea 
+        id="professional-description" 
+        name="company_description"
+        defaultValue={selectedProfessional?.company_description}
+        placeholder="Company description..." 
+      />
+    </div>
+  </div>
+</form>
+        </DialogContent>
+      </Dialog>
+>>>>>>> a2b00036850ab8c7fd97c0ac508a29ac51019597
     </div>
     <div className="grid grid-cols-2 gap-4">
       <div className="grid gap-2">
