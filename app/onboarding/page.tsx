@@ -134,7 +134,7 @@ setIsSubmitting(true)
       console.log("Supplier created successfully:", response)
       
       if (response) {
-        router.push("/onboarding/success")
+        router.push('/api/auth/login?prompt=none&returnTo=/onboarding/success')
       }
     } catch (err) {
       console.error("Failed to create supplier", err)
