@@ -1,14 +1,19 @@
+"use client";
 
-"use client"
-
-import { useState, useEffect, FormEvent } from "react"
-import Image from "next/image"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useEffect, FormEvent } from "react";
+import Image from "next/image";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -47,7 +52,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
+import { withRoleGuard } from "@/app/hoc/withRoleGuard";
 import { BillingOverview } from "@/components/billing-overview"
 import { InvoiceTable } from "@/components/invoice-table"
 import { PaymentMethods } from "@/components/payment-methods"
@@ -96,16 +102,16 @@ const mockPaymentMethods = [
   },
 ]
 function SupplierDashboardPage() {
-  const { user, error: userError, isLoading: userLoading } = useUser()
-  const [supplier, setSupplier] = useState<Supplier | null>(null)
-  const [supplierLoading, setSupplierLoading] = useState(true)
-  const [supplierError, setSupplierError] = useState<Error | null>(null)
+  const { user, error: userError, isLoading: userLoading } = useUser();
+  const [supplier, setSupplier] = useState<Supplier | null>(null);
+  const [supplierLoading, setSupplierLoading] = useState(true);
+  const [supplierError, setSupplierError] = useState<Error | null>(null);
 
   // Items loaded from the API.
-  const [items, setItems] = useState<Item[]>([])
-  const [selectedItem, setSelectedItem] = useState<Item | null>(null)
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
-  const [searchQuery, setSearchQuery] = useState("")
+  const [items, setItems] = useState<Item[]>([]);
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [searchQuery, setSearchQuery] = useState("");
 
   // State for new item dialog selections.
   const [types, setTypes] = useState<Category[]>([])
@@ -175,33 +181,36 @@ function SupplierDashboardPage() {
     if (supplier) {
       getItemsBySupplier(supplier.pid)
         .then((data) => setItems(data))
-        .catch((err) => console.error("Error fetching items:", err))
+        .catch((err) => console.error("Error fetching items:", err));
     }
-  }, [supplier])
+  }, [supplier]);
 
   // Fetch available types for item creation.
   useEffect(() => {
     getTypes()
       .then((data) => setTypes(data))
-      .catch((err) => console.error("Error fetching types:", err))
-  }, [])
+      .catch((err) => console.error("Error fetching types:", err));
+  }, []);
 
   // When category selections change, fetch materials matching those selections.
   useEffect(() => {
     if (selectedCategory && selectedSubcategory) {
       getMaterialsByCategory(selectedCategory, selectedSubcategory)
         .then((data) => setMaterials(data))
-        .catch((err) => console.error("Error fetching materials:", err))
+        .catch((err) => console.error("Error fetching materials:", err));
     } else if (selectedCategory) {
       getMaterialsByCategory(selectedCategory)
-        .then((data) => {setMaterials(data); console.log(data[0].id);})
-        .catch((err) => console.error("Error fetching materials:", err))
+        .then((data) => {
+          setMaterials(data);
+          console.log(data[0].id);
+        })
+        .catch((err) => console.error("Error fetching materials:", err));
     } else {
-      setMaterials([])
-      setSelectedMaterial("")
+      setMaterials([]);
+      setSelectedMaterial("");
     }
-    console.log(materials)
-  }, [selectedCategory, selectedSubcategory])
+    console.log(materials);
+  }, [selectedCategory, selectedSubcategory]);
 
   // Map API supplier to the shape required by SupplierProfile.
   const mapSupplierToProfile = (supplier: Supplier) => ({
@@ -217,7 +226,7 @@ function SupplierDashboardPage() {
     profileImage: supplier.profile_pic_url,
     coverImage: supplier.cover_pic_url,
     description: supplier.business_description,
-  })
+  });
 
   // Filter items by search query.
   // const filteredItems = items.filter(
@@ -226,34 +235,41 @@ function SupplierDashboardPage() {
   //     item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
   //     item.category.toLowerCase().includes(searchQuery.toLowerCase()),
   // )
-  const filteredItems =items && items.filter((item) => {
-    const matchesSearch =
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase());
-  
-    // If selectedType is empty, we allow all items by default.
-    const matchesType =
-      !selectedType || item.type?.toLowerCase() === selectedType.toLowerCase();
-  
-    // If selectedCategory is empty, we allow all items by default.
-    const matchesCategory =
-      !selectedCategory || item.category.toLowerCase() === selectedCategory.toLowerCase();
-  
-    // If selectedSubcategory is empty/null, we allow all items by default.
-    const matchesSubcategory =
-      !selectedSubcategory || item.subcategory.toLowerCase() === selectedSubcategory.toLowerCase();
-   
-    return matchesSearch && matchesType && matchesCategory && matchesSubcategory;
-  });
-  
+  const filteredItems =
+    items &&
+    items.filter((item) => {
+      const matchesSearch =
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+      // If selectedType is empty, we allow all items by default.
+      const matchesType =
+        !selectedType ||
+        item.type?.toLowerCase() === selectedType.toLowerCase();
+
+      // If selectedCategory is empty, we allow all items by default.
+      const matchesCategory =
+        !selectedCategory ||
+        item.category.toLowerCase() === selectedCategory.toLowerCase();
+
+      // If selectedSubcategory is empty/null, we allow all items by default.
+      const matchesSubcategory =
+        !selectedSubcategory ||
+        item.subcategory.toLowerCase() === selectedSubcategory.toLowerCase();
+
+      return (
+        matchesSearch && matchesType && matchesCategory && matchesSubcategory
+      );
+    });
+
   // Handle adding a new item using the API.
   const handleAddItem = async (e: FormEvent<HTMLFormElement>) => {
-    console.log(supplier?.id)
-    console.log(selectedMaterial)
-    e.preventDefault()
+    console.log(supplier?.id);
+    console.log(selectedMaterial);
+    e.preventDefault();
 
-    const formData = new FormData(e.currentTarget)
-    const selectedMat = materials.find((m) => m.id === selectedMaterial)
+    const formData = new FormData(e.currentTarget);
+    const selectedMat = materials.find((m) => m.id === selectedMaterial);
     const newItem = {
       name: formData.get("name") as string,
       description: formData.get("description") as string,
@@ -266,51 +282,51 @@ function SupplierDashboardPage() {
       price: Number(formData.get("price")),
       // Use addImageUrl state instead of a plain text input.
       imgUrl: addImageUrl,
-    }
+    };
     try {
-      const created = await createItem(newItem)
-      setItems([...items, created])
-      e.currentTarget.reset()
+      const created = await createItem(newItem);
+      setItems([...items, created]);
+      e.currentTarget.reset();
       // Reset selection states.
-      setSelectedType("")
-      setSelectedCategory("")
-      setSelectedSubcategory("")
-      setMaterials([])
-      setSelectedMaterial("")
-      setAddImageUrl("")
+      setSelectedType("");
+      setSelectedCategory("");
+      setSelectedSubcategory("");
+      setMaterials([]);
+      setSelectedMaterial("");
+      setAddImageUrl("");
     } catch (err) {
-      console.error("Error creating item", err)
+      console.error("Error creating item", err);
     }
-    window.location.reload()
-  }
+    window.location.reload();
+  };
 
   // Handle updating an item.
-  const [editImageUrl, setEditImageUrl] = useState("")
+  const [editImageUrl, setEditImageUrl] = useState("");
   useEffect(() => {
     if (selectedItem) {
-      setEditImageUrl(selectedItem.imgUrl)
+      setEditImageUrl(selectedItem.imgUrl);
     }
-  }, [selectedItem])
+  }, [selectedItem]);
   const handleUpdateItem = async (id: string, updatedItem: Partial<Item>) => {
     try {
-      const updated = await updateItem(id, updatedItem)
-      setItems(items.map((item) => (item.id === id ? updated : item)))
-      setSelectedItem(null)
-      window.location.reload()
+      const updated = await updateItem(id, updatedItem);
+      setItems(items.map((item) => (item.id === id ? updated : item)));
+      setSelectedItem(null);
+      window.location.reload();
     } catch (err) {
-      console.error("Error updating item", err)
+      console.error("Error updating item", err);
     }
-  }
+  };
 
   // Handle deleting an item.
   const handleDeleteItem = async (id: string) => {
     try {
-      await deleteItem(id)
-      setItems(items.filter((item) => item.id !== id))
+      await deleteItem(id);
+      setItems(items.filter((item) => item.id !== id));
     } catch (err) {
-      console.error("Error deleting item", err)
+      console.error("Error deleting item", err);
     }
-  }
+  };
 
   if (userLoading || supplierLoading) {
     return <Loading />
@@ -323,19 +339,24 @@ function SupplierDashboardPage() {
           The dashboard will be available soon after approval.
         </p>
       </div>
-    )
+    );
   }
   if (userError || supplierError) {
-    return <div>Error loading supplier data.</div>
+    return <div>Error loading supplier data.</div>;
   }
 
   if (!supplier) {
-    return <div>No supplier found for {user?.email}.</div>
+    return <div>No supplier found for {user?.email}.</div>;
   }
- 
+
   return (
     <div className="container mx-auto py-10">
-      {supplier && <SupplierProfile supplier={mapSupplierToProfile(supplier)} admin={true} />}
+      {supplier && (
+        <SupplierProfile
+          supplier={mapSupplierToProfile(supplier)}
+          admin={true}
+        />
+      )}
       <Tabs defaultValue="catalogue" className="mt-8">
         <div className="flex justify-between items-center mb-4">
           <TabsList>
@@ -565,10 +586,14 @@ function SupplierDashboardPage() {
           <Card>
             <CardHeader>
               <CardTitle>Analytics</CardTitle>
-              <CardDescription>View your sales and performance metrics.</CardDescription>
+              <CardDescription>
+                View your sales and performance metrics.
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">Analytics features coming soon.</p>
+              <p className="text-muted-foreground">
+                Analytics features coming soon.
+              </p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -577,10 +602,14 @@ function SupplierDashboardPage() {
           <Card>
             <CardHeader>
               <CardTitle>Settings</CardTitle>
-              <CardDescription>Manage your account settings and preferences.</CardDescription>
+              <CardDescription>
+                Manage your account settings and preferences.
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">Settings features coming soon.</p>
+              <p className="text-muted-foreground">
+                Settings features coming soon.
+              </p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -611,7 +640,7 @@ function SupplierDashboardPage() {
         open={!!selectedItem}
         onOpenChange={(open) => {
           if (!open) {
-            setTimeout(() => setSelectedItem(null), 0)
+            setTimeout(() => setSelectedItem(null), 0);
           }
         }}
       >
@@ -625,27 +654,36 @@ function SupplierDashboardPage() {
           {selectedItem && (
             <form
               onSubmit={(e) => {
-                e.preventDefault()
-                const formData = new FormData(e.currentTarget)
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
                 const updatedItem = {
                   name: formData.get("name") as string,
                   description: formData.get("description") as string,
-               
+
                   unit: formData.get("unit") as string,
                   price: Number(formData.get("price")),
                   imgUrl: editImageUrl,
-                }
-                handleUpdateItem(selectedItem.id, updatedItem)
+                };
+                handleUpdateItem(selectedItem.id, updatedItem);
               }}
             >
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
                   <Label htmlFor="edit-name">Name</Label>
-                  <Input id="edit-name" name="name" defaultValue={selectedItem.name} required />
+                  <Input
+                    id="edit-name"
+                    name="name"
+                    defaultValue={selectedItem.name}
+                    required
+                  />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="edit-description">Description</Label>
-                  <Textarea id="edit-description" name="description" defaultValue={selectedItem.description} />
+                  <Textarea
+                    id="edit-description"
+                    name="description"
+                    defaultValue={selectedItem.description}
+                  />
                 </div>
                 {/* <div className="grid gap-2">
                   <Label htmlFor="edit-category">Category</Label>
@@ -658,11 +696,22 @@ function SupplierDashboardPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-2">
                     <Label htmlFor="edit-unit">Unit</Label>
-                    <Input id="edit-unit" name="unit" defaultValue={selectedItem.unit} required />
+                    <Input
+                      id="edit-unit"
+                      name="unit"
+                      defaultValue={selectedItem.unit}
+                      required
+                    />
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="edit-price">Price (Rs.)</Label>
-                    <Input id="edit-price" name="price" type="number" defaultValue={selectedItem.price} required />
+                    <Input
+                      id="edit-price"
+                      name="price"
+                      type="number"
+                      defaultValue={selectedItem.price}
+                      required
+                    />
                   </div>
                 </div>
                 <div className="grid gap-2">
@@ -696,7 +745,7 @@ function SupplierDashboardPage() {
         onPayment={handlePayment}
       />
     </div>
-  )
+  );
 }
 
-export default withPageAuthRequired(SupplierDashboardPage)
+export default withRoleGuard(SupplierDashboardPage, ["supplier", "admin"]);

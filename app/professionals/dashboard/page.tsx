@@ -23,7 +23,7 @@ import {
 import Loading from "../loading"
 import { AlertCircle } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-
+import { withRoleGuard } from "@/app/hoc/withRoleGuard";
 // Mock projects data - keeping this for now
 const initialProjects = [
   {
@@ -80,7 +80,7 @@ const initialProjects = [
   },
 ]
 
-export default function ProfessionalDashboardPage() {
+function ProfessionalDashboardPage() {
   const { user, isLoading: isUserLoading, error: userError } = useUser()
   const [professionalData, setProfessionalData] = useState<Professional | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -424,3 +424,5 @@ export default function ProfessionalDashboardPage() {
     </div>
   )
 }
+const GuardedDashboardPage = withRoleGuard(ProfessionalDashboardPage, ["professional", "admin"]);
+export default GuardedDashboardPage;

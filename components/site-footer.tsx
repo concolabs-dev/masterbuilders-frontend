@@ -91,7 +91,7 @@ export function SiteFooter() {
               <li className="text-muted-foreground">4, 1/2 Bambalapitiya Dr, Colombo 00400</li>
               <li>
                 <a href="mailto:info@buildmarketlk.com" className="text-muted-foreground hover:text-foreground">
-                  info@mbuildmarketlk.com
+                  info@buildmarketlk.com
                 </a>
               </li>
               <li>
@@ -108,7 +108,7 @@ export function SiteFooter() {
             © {new Date().getFullYear()} BuildMarketlk. All rights reserved.
           </p>
           <p className="text-sm text-muted-foreground mt-2 md:mt-0">
-            Powered by{" "}
+            Designed and Developed by{" "}
             <Link href="https://concolabs.com" className="hover:text-foreground">
               Concolabs
             </Link>

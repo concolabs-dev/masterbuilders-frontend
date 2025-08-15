@@ -23,3 +23,5 @@ export async function getSession(req: NextRequest) {
   console.log("Session:", session);
   return session;
 }
+
+// TODO (risinu) - store roles in the session or get then from useUser (auth0 api call)
