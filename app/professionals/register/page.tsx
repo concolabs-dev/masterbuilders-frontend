@@ -1,44 +1,65 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Progress } from "@/components/ui/progress"
-import { ImageUpload } from "@/components/image-upload"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Check, ChevronRight, MapPin } from "lucide-react"
-import { createProfessional, getProfessionalByPID, Professional} from "@/app/api"
-import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client"
-
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Progress } from "@/components/ui/progress";
+import { ImageUpload } from "@/components/image-upload";
+import { PaymentPackage } from "@/components/paymentPackage";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Check, ChevronRight, MapPin } from "lucide-react";
+import {
+  createProfessional,
+  getProfessionalByPID,
+  Professional,
+} from "@/app/api";
+import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client";
 
 function ProfessionalRegistration() {
-  const router = useRouter()
-  const [step, setStep] = useState(1)
-  const totalSteps = 5
-  const progress = (step / totalSteps) * 100
+  const router = useRouter();
+  const [step, setStep] = useState(1);
+  const totalSteps = 5;
+  const progress = (step / totalSteps) * 100;
 
-  const { user } = useUser()
-  const [alreadyRegistered, setAlreadyRegistered] = useState(false)
-    useEffect(() => {
-      if (!user?.sub) return
-      getProfessionalByPID(user.sub)
+  const { user } = useUser();
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
+  useEffect(() => {
+    if (!user?.sub) return;
+    getProfessionalByPID(user.sub)
       .then((existing: Professional | undefined) => {
-        if (existing) setAlreadyRegistered(true)
+        if (existing) setAlreadyRegistered(true);
       })
-      .catch((err) => console.error("Failed checking professional by PID:", err))
-      getProfessionalByPID(user.sub)
-        .then((existing: Professional | undefined) => {
-        if (existing) router.push("/professionals/dashboard")
-        })
-        .catch((err) => console.error("Failed checking professional by PID:", err))
-    }, [user?.sub, router])
+      .catch((err) =>
+        console.error("Failed checking professional by PID:", err)
+      );
+    getProfessionalByPID(user.sub)
+      .then((existing: Professional | undefined) => {
+        // if (existing) router.push("/professionals/dashboard"); uncomment this
+      })
+      .catch((err) =>
+        console.error("Failed checking professional by PID:", err)
+      );
+  }, [user?.sub, router]);
 
   const [formData, setFormData] = useState({
     companyName: "",
@@ -56,29 +77,29 @@ function ProfessionalRegistration() {
     certifications: [] as string[],
     logo: "",
     coverImage: "",
-  })
+  });
 
   const updateFormData = (field: string, value: string | string[]) => {
-    setFormData({ ...formData, [field]: value })
-  }
+    setFormData({ ...formData, [field]: value });
+  };
 
   const handleNext = () => {
     if (step < totalSteps) {
-      setStep(step + 1)
-      window.scrollTo(0, 0)
+      setStep(step + 1);
+      window.scrollTo(0, 0);
     }
-  }
+  };
 
   const handleBack = () => {
     if (step > 1) {
-      setStep(step - 1)
-      window.scrollTo(0, 0)
+      setStep(step - 1);
+      window.scrollTo(0, 0);
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log("Form submitted:", formData)
+    e.preventDefault();
+    console.log("Form submitted:", formData);
     const professionalPayload = {
       company_name: formData.companyName, // Maps to CompanyName in Go
       company_type: formData.type, // Maps to CompanyType in Go
@@ -100,20 +121,27 @@ function ProfessionalRegistration() {
       cover_image_url: formData.coverImage || "", // Maps to CoverImageURL in Go
       pid: user?.sub || "", // Maps to PID in Go
     };
-    console.log("Professional Payload:", professionalPayload)
-  
+    console.log("Professional Payload:", professionalPayload);
+
     try {
-         await createProfessional(professionalPayload).then((response) => {
-        if (response) {   console.log("Professional created successfully")
-      router.push("register/success")}})
-
+      await createProfessional(professionalPayload).then((response) => {
+        if (response) {
+          console.log("Professional created successfully");
+          // router.push("register/success");
+        }
+      });
     } catch (err) {
-      console.error("Failed to create professional", err)
+      console.error("Failed to create professional", err);
     }
+  };
 
-  }
-
-  const professionalTypes = ["Architect", "Contractor", "Quantity Surveyor", "Interior Designer", "Structural Engineer"]
+  const professionalTypes = [
+    "Architect",
+    "Contractor",
+    "Quantity Surveyor",
+    "Interior Designer",
+    "Structural Engineer",
+  ];
   const specialtyOptions = [
     "Residential",
     "Commercial",
@@ -129,51 +157,51 @@ function ProfessionalRegistration() {
     "Healthcare",
     "Educational",
     "Hospitality",
-     "Mixed-Use Development",
-  "Affordable Housing",
-  "Luxury Residential",
-  "Retail & Shopping Centers",
-  "Office Buildings",
-  "Warehouses & Logistics",
-  "Manufacturing Facilities",
-  "Religious Buildings",
-  "Sports & Recreation",
-  "Transportation Infrastructure",
-  "Water & Wastewater Treatment",
-  "Power & Energy Projects",
-  "Telecommunications Infrastructure",
-  "Agricultural Buildings",
-  "Government Buildings",
-  "Cultural & Heritage Buildings",
-  "Resort & Tourism",
-  "Residential Complexes",
-  "Gated Communities",
-  "Condominiums",
-  "Villa Projects",
-  "Beach & Coastal Properties",
-  "Hill Country Properties",
-  "Eco-Friendly Construction",
-  "Smart Buildings",
-  "Prefabricated Construction",
-  "Modular Construction",
-  "Heritage Restoration",
-  "Seismic Design",
-  "Tropical Architecture",
-  "Green Roofs & Walls",
-  "Solar Integration",
-  "Rainwater Harvesting",
-  "Disaster-Resistant Construction",
-  "Low-Cost Housing",
-  "Social Housing",
-  "Student Housing",
-  "Senior Living",
-  "Co-working Spaces",
-  "Data Centers",
-  "Laboratories",
-  "Clean Rooms",
-  "Cold Storage",
-  "Food Processing Facilities"
-  ]
+    "Mixed-Use Development",
+    "Affordable Housing",
+    "Luxury Residential",
+    "Retail & Shopping Centers",
+    "Office Buildings",
+    "Warehouses & Logistics",
+    "Manufacturing Facilities",
+    "Religious Buildings",
+    "Sports & Recreation",
+    "Transportation Infrastructure",
+    "Water & Wastewater Treatment",
+    "Power & Energy Projects",
+    "Telecommunications Infrastructure",
+    "Agricultural Buildings",
+    "Government Buildings",
+    "Cultural & Heritage Buildings",
+    "Resort & Tourism",
+    "Residential Complexes",
+    "Gated Communities",
+    "Condominiums",
+    "Villa Projects",
+    "Beach & Coastal Properties",
+    "Hill Country Properties",
+    "Eco-Friendly Construction",
+    "Smart Buildings",
+    "Prefabricated Construction",
+    "Modular Construction",
+    "Heritage Restoration",
+    "Seismic Design",
+    "Tropical Architecture",
+    "Green Roofs & Walls",
+    "Solar Integration",
+    "Rainwater Harvesting",
+    "Disaster-Resistant Construction",
+    "Low-Cost Housing",
+    "Social Housing",
+    "Student Housing",
+    "Senior Living",
+    "Co-working Spaces",
+    "Data Centers",
+    "Laboratories",
+    "Clean Rooms",
+    "Cold Storage",
+    "Food Processing Facilities",
+  ];
   const serviceOptions = [
     "Architectural Design",
     "Construction Management",
@@ -192,55 +220,58 @@ function ProfessionalRegistration() {
     "Dispute Management",
     "Contracts Management",
     "Technical Auditing",
-     "Building Surveying",
-  "Environmental Impact Assessment",
-  "Geotechnical Engineering",
-  "Fire Safety Consulting",
-  "Energy Auditing",
-  "Property Valuation",
-  "Building Maintenance",
-  "Renovation & Restoration",
-  "3D Modeling & Visualization",
-  "Permit & Approval Services",
-  "Material Testing & Quality Control",
-  "Site Investigation",
-  "Construction Procurement",
-  "Value Engineering",
-  "Risk Management",
-  "Health & Safety Consulting",
-  "Building Code Compliance",
-  "LEED Certification Consulting",
-  "Demolition Services",
-  "Waterproofing Consultation",
-  "Acoustics Consulting",
-  "Lighting Design",
-  "HVAC Design",
-  "Plumbing Design",
-  "Electrical Design",
-  "Security Systems Design",
-  "Smart Building Integration",
-  "Post-Construction Services",
-  "Warranty & Defects Management",
-  "Building Performance Analysis",
-  "Construction Documentation",
-  "As-Built Documentation",
-  "Facility Management Consulting",
-  "Space Planning",
-  "Building Automation Systems",
-  "Renewable Energy Systems Design",
-  "Solar Panel Installation Design",
-  "Green Building Certification",
-  "Construction Scheduling",
-  "Resource Planning",
-  "Subcontractor Management"
-  ]
+    "Building Surveying",
+    "Environmental Impact Assessment",
+    "Geotechnical Engineering",
+    "Fire Safety Consulting",
+    "Energy Auditing",
+    "Property Valuation",
+    "Building Maintenance",
+    "Renovation & Restoration",
+    "3D Modeling & Visualization",
+    "Permit & Approval Services",
+    "Material Testing & Quality Control",
+    "Site Investigation",
+    "Construction Procurement",
+    "Value Engineering",
+    "Risk Management",
+    "Health & Safety Consulting",
+    "Building Code Compliance",
+    "LEED Certification Consulting",
+    "Demolition Services",
+    "Waterproofing Consultation",
+    "Acoustics Consulting",
+    "Lighting Design",
+    "HVAC Design",
+    "Plumbing Design",
+    "Electrical Design",
+    "Security Systems Design",
+    "Smart Building Integration",
+    "Post-Construction Services",
+    "Warranty & Defects Management",
+    "Building Performance Analysis",
+    "Construction Documentation",
+    "As-Built Documentation",
+    "Facility Management Consulting",
+    "Space Planning",
+    "Building Automation Systems",
+    "Renewable Energy Systems Design",
+    "Solar Panel Installation Design",
+    "Green Building Certification",
+    "Construction Scheduling",
+    "Resource Planning",
+    "Subcontractor Management",
+  ];
 
   return (
     <div className="container max-w-3xl py-10">
       <div className="mb-8 space-y-4">
-        <h1 className="text-3xl font-bold">Professional Company Registration</h1>
+        <h1 className="text-3xl font-bold">
+          Professional Company Registration
+        </h1>
         <p className="text-muted-foreground">
-          Complete your company profile to join our network of trusted professionals.
+          Complete your company profile to join our network of trusted
+          professionals.
         </p>
       </div>
 
@@ -249,7 +280,9 @@ function ProfessionalRegistration() {
           <span className="text-sm font-medium">
             Step {step} of {totalSteps}
           </span>
-          <span className="text-sm font-medium">{Math.round(progress)}% Complete</span>
+          <span className="text-sm font-medium">
+            {Math.round(progress)}% Complete
+          </span>
         </div>
         <Progress value={progress} className="h-2" />
       </div>
@@ -270,7 +303,7 @@ function ProfessionalRegistration() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form id="registrationForm" onSubmit={handleSubmit}>
+          <form id="registrationForm">
             {step === 1 && (
               <div className="space-y-4">
                 <div className="space-y-2">
@@ -279,13 +312,18 @@ function ProfessionalRegistration() {
                     id="companyName"
                     placeholder="Your company name"
                     value={formData.companyName}
-                    onChange={(e) => updateFormData("companyName", e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("companyName", e.target.value)
+                    }
                     required
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="type">Company Type</Label>
-                  <Select value={formData.type} onValueChange={(value) => updateFormData("type", value)}>
+                  <Select
+                    value={formData.type}
+                    onValueChange={(value) => updateFormData("type", value)}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select company type" />
                     </SelectTrigger>
@@ -304,7 +342,9 @@ function ProfessionalRegistration() {
                     id="description"
                     placeholder="Tell us about your company, its history, and what makes it unique"
                     value={formData.description}
-                    onChange={(e) => updateFormData("description", e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("description", e.target.value)
+                    }
                     className="min-h-[120px]"
                   />
                 </div>
@@ -315,12 +355,19 @@ function ProfessionalRegistration() {
                       id="founded"
                       placeholder="e.g. 2010"
                       value={formData.founded}
-                      onChange={(e) => updateFormData("founded", e.target.value)}
+                      onChange={(e) =>
+                        updateFormData("founded", e.target.value)
+                      }
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="employees">Number of Employees</Label>
-                    <Select value={formData.employees} onValueChange={(value) => updateFormData("employees", value)}>
+                    <Select
+                      value={formData.employees}
+                      onValueChange={(value) =>
+                        updateFormData("employees", value)
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select range" />
                       </SelectTrigger>
@@ -357,7 +404,9 @@ function ProfessionalRegistration() {
                     type="tel"
                     placeholder="Your contact number"
                     value={formData.telephone}
-                    onChange={(e) => updateFormData("telephone", e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("telephone", e.target.value)
+                    }
                     required
                   />
                 </div>
@@ -391,7 +440,10 @@ function ProfessionalRegistration() {
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          location: { ...formData.location, lat: e.target.value },
+                          location: {
+                            ...formData.location,
+                            lat: e.target.value,
+                          },
                         })
                       }
                     />
@@ -405,7 +457,10 @@ function ProfessionalRegistration() {
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          location: { ...formData.location, lng: e.target.value },
+                          location: {
+                            ...formData.location,
+                            lng: e.target.value,
+                          },
                         })
                       }
                     />
@@ -415,7 +470,8 @@ function ProfessionalRegistration() {
                   <div className="text-center">
                     <MapPin className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
                     <p className="text-sm text-muted-foreground">
-                      Map integration will be available soon. For now, please enter your coordinates manually if known.
+                      Map integration will be available soon. For now, please
+                      enter your coordinates manually if known.
                     </p>
                   </div>
                 </div>
@@ -426,25 +482,38 @@ function ProfessionalRegistration() {
               <div className="space-y-6">
                 <div className="space-y-2">
                   <Label>Specializations</Label>
-                  <p className="text-sm text-muted-foreground mb-3">Select the areas your company specializes in</p>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Select the areas your company specializes in
+                  </p>
                   <div className="grid grid-cols-2 gap-2">
                     {specialtyOptions.map((specialty) => (
-                      <div key={specialty} className="flex items-center space-x-2">
+                      <div
+                        key={specialty}
+                        className="flex items-center space-x-2"
+                      >
                         <Checkbox
                           id={`specialty-${specialty}`}
                           checked={formData.specialties.includes(specialty)}
                           onCheckedChange={(checked: boolean) => {
                             if (checked) {
-                              updateFormData("specialties", [...formData.specialties, specialty])
+                              updateFormData("specialties", [
+                                ...formData.specialties,
+                                specialty,
+                              ]);
                             } else {
                               updateFormData(
                                 "specialties",
-                                formData.specialties.filter((s) => s !== specialty),
-                              )
+                                formData.specialties.filter(
+                                  (s) => s !== specialty
+                                )
+                              );
                             }
                           }}
                         />
-                        <Label htmlFor={`specialty-${specialty}`} className="text-sm font-normal">
+                        <Label
+                          htmlFor={`specialty-${specialty}`}
+                          className="text-sm font-normal"
+                        >
                           {specialty}
                         </Label>
                       </div>
@@ -454,25 +523,36 @@ function ProfessionalRegistration() {
 
                 <div className="space-y-2">
                   <Label>Services Offered</Label>
-                  <p className="text-sm text-muted-foreground mb-3">Select the services your company provides</p>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Select the services your company provides
+                  </p>
                   <div className="grid grid-cols-2 gap-2">
                     {serviceOptions.map((service) => (
-                      <div key={service} className="flex items-center space-x-2">
+                      <div
+                        key={service}
+                        className="flex items-center space-x-2"
+                      >
                         <Checkbox
                           id={`service-${service}`}
                           checked={formData.services.includes(service)}
                           onCheckedChange={(checked: boolean) => {
                             if (checked) {
-                              updateFormData("services", [...formData.services, service])
+                              updateFormData("services", [
+                                ...formData.services,
+                                service,
+                              ]);
                             } else {
                               updateFormData(
                                 "services",
-                                formData.services.filter((s) => s !== service),
-                              )
+                                formData.services.filter((s) => s !== service)
+                              );
                             }
                           }}
                         />
-                        <Label htmlFor={`service-${service}`} className="text-sm font-normal">
+                        <Label
+                          htmlFor={`service-${service}`}
+                          className="text-sm font-normal"
+                        >
                           {service}
                         </Label>
                       </div>
@@ -481,9 +561,12 @@ function ProfessionalRegistration() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="certifications">Certifications & Accreditations</Label>
+                  <Label htmlFor="certifications">
+                    Certifications & Accreditations
+                  </Label>
                   <p className="text-sm text-muted-foreground mb-3">
-                    Enter any certifications or accreditations your company has (one per line)
+                    Enter any certifications or accreditations your company has
+                    (one per line)
                   </p>
                   <Textarea
                     id="certifications"
@@ -492,7 +575,7 @@ function ProfessionalRegistration() {
                     onChange={(e) =>
                       updateFormData(
                         "certifications",
-                        e.target.value.split("\n").filter((c) => c.trim()),
+                        e.target.value.split("\n").filter((c) => c.trim())
                       )
                     }
                     className="min-h-[120px]"
@@ -505,34 +588,93 @@ function ProfessionalRegistration() {
               <div className="space-y-6">
                 <div className="space-y-2">
                   <Label>Company Logo</Label>
-              <ImageUpload
-  value={formData.logo}
-  onChange={(url) => updateFormData("logo", url)}
-  label="Company Logo"
-  description="Upload your company logo (square format recommended)"
-  dimensions={{ width: 300, height: 300 }}
-  enableCrop={true}
-  maxFileSize={3}
-  quality={90}
-  allowedFormats={['image/jpeg', 'image/png', 'image/webp']}
-  imageClassName="w-32 h-32 object-cover rounded-xl"
-/>
+                  <ImageUpload
+                    value={formData.logo}
+                    onChange={(url) => updateFormData("logo", url)}
+                    label="Company Logo"
+                    description="Upload your company logo (square format recommended)"
+                    dimensions={{ width: 300, height: 300 }}
+                    enableCrop={true}
+                    maxFileSize={3}
+                    quality={90}
+                    allowedFormats={["image/jpeg", "image/png", "image/webp"]}
+                    imageClassName="w-32 h-32 object-cover rounded-xl"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label>Cover Image</Label>
-               <ImageUpload
-  value={formData.coverImage}
-  onChange={(url) => updateFormData("coverImage", url)}
-  label="Cover Image"
-  description="Upload a cover image for your company profile"
-  dimensions={{ width: 1200, height: 400 }}
-  enableCrop={true}
-  maxFileSize={8}
-  quality={85}
-  allowedFormats={['image/jpeg', 'image/png', 'image/webp']}
-  imageClassName="w-full h-40 object-cover rounded-xl"
-/>
+                  <ImageUpload
+                    value={formData.coverImage}
+                    onChange={(url) => updateFormData("coverImage", url)}
+                    label="Cover Image"
+                    description="Upload a cover image for your company profile"
+                    dimensions={{ width: 1200, height: 400 }}
+                    enableCrop={true}
+                    maxFileSize={8}
+                    quality={85}
+                    allowedFormats={["image/jpeg", "image/png", "image/webp"]}
+                    imageClassName="w-full h-40 object-cover rounded-xl"
+                  />
                 </div>
+              </div>
+            )}
+            {step === 5 && (
+              <div className="flex flex-row items-center space-x-6">
+                {/* TODO: add fildes */}
+                <PaymentPackage
+                  title="Basic"
+                  price="LKR 1,000"
+                  features={[
+                    "1 user",
+                    "Basic support",
+                    "Access to core features",
+                  ]}
+                  request={{
+                    order_id: "ItemNo12345",
+                    items: "BasicPackAge",
+                    amount: "1000",
+                    currency: "LKR",
+                    first_name: "Saman",
+                    last_name: "Perera",
+                    email: formData.email,
+                    phone: formData.telephone,
+                    city: formData.city,
+                    country: "Sri Lanka",
+                    address: formData.address,
+                  }}
+                />
+                <PaymentPackage
+                  title="Standard"
+                  price="LKR 1,000"
+                  features={[
+                    "1 user",
+                    "Basic support",
+                    "Access to core features",
+                  ]}
+                  highlighted={true}
+                  request={{
+                    order_id: "ItemNo12345",
+                    items: "BasicPackAge",
+                    amount: "1000",
+                    currency: "LKR",
+                    first_name: "Saman",
+                    last_name: "Perera",
+                    email: "anupa@gmail.com",
+                    phone: "07411130285",
+                    city: "gampaha",
+                    country: "Sri Lanka",
+                    address: "gampaha 112",
+                  }}
+                />
+                <PaymentPackage
+                  title="Premium"
+                  price="LKR 1,000"
+                  features={[
+                    "1 user",
+                    "Basic support",
+                    "Access to core features",
+                  ]}
+                />
               </div>
             )}
           </form>
@@ -546,14 +688,14 @@ function ProfessionalRegistration() {
               Continue <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
           ) : (
-            <Button type="submit" form="registrationForm" className="bg-primary">
-              Complete <Check className="ml-2 h-4 w-4" />
+            <Button variant="gray" onClick={handleSubmit}>
+              Pay Later <Check className="ml-2 h-4 w-4" />
             </Button>
           )}
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }
 
 export default withPageAuthRequired(ProfessionalRegistration);
