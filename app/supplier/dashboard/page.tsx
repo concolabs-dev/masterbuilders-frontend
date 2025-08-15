@@ -614,7 +614,7 @@ function SupplierDashboardPage() {
           </Card>
         </TabsContent>
                 <TabsContent value="billing" className="space-y-6">
-          <BillingOverview
+          {/* <BillingOverview
             currentBalance={2500}
             nextPaymentDue="March 30, 2024"
             nextPaymentAmount={2500}
@@ -631,7 +631,8 @@ function SupplierDashboardPage() {
               onDeletePaymentMethod={(id) => console.log("Delete payment method:", id)}
               onSetDefault={(id) => console.log("Set default payment method:", id)}
             />
-          </div>
+          </div> */}
+          <p>Billing </p>
         </TabsContent>
       </Tabs>
 
