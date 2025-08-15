@@ -386,212 +386,200 @@ function SupplierDashboardPage() {
         </div>
 
         <TabsContent value="catalogue" className="space-y-4">
-          <div className="flex flex-col md:flex-row">
-            <div className="md:w-1/4">
-              <CategorySidebar
-                selectedType={selectedType}
-                setSelectedType={setSelectedType}
-                selectedCategory={selectedCategory}
-                setSelectedCategory={setSelectedCategory}
-                selectedSubcategory={selectedSubcategory}
-                setSelectedSubcategory={setSelectedSubcategory}
+        <div className="flex flex-col md:flex-row">
+  <div className="md:w-1/4">
+    <CategorySidebar
+      selectedType={selectedType}
+      setSelectedType={setSelectedType}
+      selectedCategory={selectedCategory}
+      setSelectedCategory={setSelectedCategory}
+      selectedSubcategory={selectedSubcategory}
+      setSelectedSubcategory={setSelectedSubcategory}
+    />
+  </div>
+  <div className="md:w-3/4 ml-4">
+          <div className="flex justify-between items-center">
+            <div className="flex-1 max-w-sm mb-3">
+              <Input
+                placeholder="Search your catalogue..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <div className="md:w-3/4 ml-4">
-              <div className="flex justify-between items-center">
-                <div className="flex-1 max-w-sm mb-3">
-                  <Input
-                    placeholder="Search your catalogue..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button>
-                      <Plus className="mr-2 h-4 w-4" /> Add Item
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[600px]">
-                    <DialogHeader>
-                      <DialogTitle>Add New Item</DialogTitle>
-                      <DialogDescription>
-                        Add a new item to your catalogue. Select the type,
-                        category, subcategory and material.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <form onSubmit={handleAddItem}>
-                      <div className="grid gap-4 py-4">
-                        <div className="grid gap-2">
-                          <Label htmlFor="name">Name</Label>
-                          <Input id="name" name="name" required />
-                        </div>
-                        <div className="grid gap-2">
-                          <Label htmlFor="description">Description</Label>
-                          <Textarea id="description" name="description" />
-                        </div>
-                        {/* Select for Type */}
-                        <div className="grid gap-2">
-                          <Label htmlFor="type">Type</Label>
-                          <select
-                            id="type"
-                            value={selectedType}
-                            onChange={(e) => {
-                              setSelectedType(e.target.value);
-                              // Reset dependent selections.
-                              setSelectedCategory("");
-                              setSelectedSubcategory("");
-                            }}
-                            className="p-2 border rounded"
-                            required
-                          >
-                            <option value="">Select Type</option>
-                            {types.map((t) => (
-                              <option key={t.id} value={t.name}>
-                                {t.name}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="mr-2 h-4 w-4" /> Add Item
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[600px]">
+                <DialogHeader>
+                  <DialogTitle>Add New Item</DialogTitle>
+                  <DialogDescription>
+                    Add a new item to your catalogue. Select the type, category, subcategory and material.
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleAddItem}>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="name">Name</Label>
+                      <Input id="name" name="name" required />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="description">Description</Label>
+                      <Textarea id="description" name="description" />
+                    </div>
+                    {/* Select for Type */}
+                    <div className="grid gap-2">
+                      <Label htmlFor="type">Type</Label>
+                      <select
+                        id="type"
+                        value={selectedType}
+                        onChange={(e) => {
+                          setSelectedType(e.target.value)
+                          // Reset dependent selections.
+                          setSelectedCategory("")
+                          setSelectedSubcategory("")
+                        }}
+                        className="p-2 border rounded"
+                        required
+                      >
+                        <option value="">Select Type</option>
+                        {types.map((t) => (
+                          <option key={t.id} value={t.name}>
+                            {t.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    {/* Select for Category */}
+                    <div className="grid gap-2">
+                      <Label htmlFor="category">Category</Label>
+                      <select
+                        id="category"
+                        value={selectedCategory}
+                        onChange={(e) => {
+                          setSelectedCategory(e.target.value)
+                          setSelectedSubcategory("")
+                        }}
+                        className="p-2 border rounded"
+                        required
+                      >
+                        <option value="">Select Category</option>
+                        {selectedType &&
+                          types
+                            .find((t) => t.name === selectedType)
+                            ?.categories.map((cat) => (
+                              <option key={cat.name} value={cat.name}>
+                                {cat.name}
                               </option>
                             ))}
-                          </select>
-                        </div>
-                        {/* Select for Category */}
-                        <div className="grid gap-2">
-                          <Label htmlFor="category">Category</Label>
-                          <select
-                            id="category"
-                            value={selectedCategory}
-                            onChange={(e) => {
-                              setSelectedCategory(e.target.value);
-                              setSelectedSubcategory("");
-                            }}
-                            className="p-2 border rounded"
-                            required
-                          >
-                            <option value="">Select Category</option>
-                            {selectedType &&
-                              types
-                                .find((t) => t.name === selectedType)
-                                ?.categories.map((cat) => (
-                                  <option key={cat.name} value={cat.name}>
-                                    {cat.name}
-                                  </option>
-                                ))}
-                          </select>
-                        </div>
-                        {/* Select for Subcategory */}
-                        <div className="grid gap-2">
-                          <Label htmlFor="subcategory">Subcategory</Label>
-                          <select
-                            id="subcategory"
-                            value={selectedSubcategory ?? ""}
-                            onChange={(e) =>
-                              setSelectedSubcategory(e.target.value)
-                            }
-                            className="p-2 border rounded"
-                          >
-                            <option value="">Select Subcategory</option>
-                            {selectedCategory &&
-                              types
-                                .find((t) => t.name === selectedType)
-                                ?.categories.find(
-                                  (cat) => cat.name === selectedCategory
-                                )
-                                ?.subcategories?.map((sub) => (
-                                  <option key={sub.name} value={sub.name}>
-                                    {sub.name}
-                                  </option>
-                                ))}
-                          </select>
-                        </div>
-                        {/* Select for Material */}
-                        <div className="grid gap-2">
-                          <Label htmlFor="material">Material</Label>
-                          <select
-                            id="material"
-                            value={selectedMaterial}
-                            onChange={(e) => {
-                              setSelectedMaterial(e.target.value);
-                              const foundMat = materials.find(
-                                (m) => m.id === e.target.value
-                              );
-                              setUnit(foundMat?.Unit || "");
-                            }}
-                            className="p-2 border rounded"
-                            required
-                          >
-                            <option value="">Select Material</option>
-                            {materials.map((mat) => (
-                              <option key={mat.id} value={mat.id}>
-                                {mat.Name}
+                      </select>
+                    </div>
+                    {/* Select for Subcategory */}
+                    <div className="grid gap-2">
+                      <Label htmlFor="subcategory">Subcategory</Label>
+                      <select
+                        id="subcategory"
+                        value={selectedSubcategory ?? ""}
+                        onChange={(e) => setSelectedSubcategory(e.target.value)}
+                        className="p-2 border rounded"
+                        
+                      >
+                        <option value="">Select Subcategory</option>
+                        {selectedCategory &&
+                          types
+                            .find((t) => t.name === selectedType)
+                            ?.categories.find((cat) => cat.name === selectedCategory)
+                            ?.subcategories?.map((sub) => (
+                              <option key={sub.name} value={sub.name}>
+                                {sub.name}
                               </option>
                             ))}
-                          </select>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="grid gap-2">
-                            <Label htmlFor="unit">Unit</Label>
-                            <input
-                              id="unit"
-                              name="unit"
-                              value={unit}
-                              onChange={(e) => setUnit(e.target.value)}
-                              required
-                            />
-                          </div>
-                          <div className="grid gap-2">
-                            <Label htmlFor="price">Price (Rs.)</Label>
-                            <Input
-                              id="price"
-                              name="price"
-                              type="number"
-                              required
-                            />
-                          </div>
-                        </div>
-                        {/* Replace plain input with ImageUpload for add item */}
-                        <div className="grid gap-2">
-                          <Label htmlFor="image">Image URL</Label>
-                          <ImageUpload
-                            value={addImageUrl}
-                            onChange={(url) => setAddImageUrl(url)}
-                            label="Upload Image"
-                            description="Upload an image for the item"
-                          />
-                        </div>
+                      </select>
+                    </div>
+                    {/* Select for Material */}
+                    <div className="grid gap-2">
+                      <Label htmlFor="material">Material</Label>
+                      <select
+                        id="material"
+                        value={selectedMaterial}
+                        onChange={(e) => {setSelectedMaterial(e.target.value);   const foundMat = materials.find((m) => m.id === e.target.value);
+                          setUnit(foundMat?.Unit || "")}}
+                        className="p-2 border rounded"
+                        required
+                      >
+                        <option value="">Select Material</option>
+                        {materials.map((mat) => (
+                          <option key={mat.id} value={mat.id}>
+                            {mat.Name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="grid gap-2">
+                        <Label htmlFor="unit">Unit</Label>
+                          <input
+        id="unit"
+        name="unit"
+        value={unit}
+        onChange={(e) => setUnit(e.target.value)}
+        required
+      />
                       </div>
-                      <DialogFooter>
-                        <Button type="submit">Save Item</Button>
-                      </DialogFooter>
-                    </form>
-                  </DialogContent>
-                </Dialog>
-              </div>
-              {viewMode === "grid" ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredItems &&
-                    filteredItems.map((item) => (
-                      <SupplierItemCard
-                        key={item.id}
-                        item={item}
-                        onEdit={() => setSelectedItem(item)}
-                        onDelete={() => handleDeleteItem(item.id)}
-                        admin={true}
-                        displayCurrency="Rs."
-                      />
-                    ))}
-                </div>
-              ) : (
-                filteredItems && (
-                  <SupplierItemList
-                    items={filteredItems}
-                    onEdit={(item) => setSelectedItem(item)}
-                    onDelete={(id) => handleDeleteItem(id)}
-                    admin={true}
-                    displayCurrency="Rs."
-                  />
-                )
-              )}
-            </div>
+                      <div className="grid gap-2">
+                        <Label htmlFor="price">Price (Rs.)</Label>
+                        <Input id="price" name="price" type="number" required />
+                      </div>
+                    </div>
+                    {/* Replace plain input with ImageUpload for add item */}
+                    <div className="grid gap-2">
+                      <Label htmlFor="image">Image URL</Label>
+                    <ImageUpload
+  value={addImageUrl}
+  onChange={(url) => setAddImageUrl(url)}
+  label="Product Image"
+  description="Upload product/item image"
+  dimensions={{ width: 600, height: 600 }}
+  enableCrop={true}
+  maxFileSize={5}
+  quality={88}
+  allowedFormats={['image/jpeg', 'image/png', 'image/webp']}
+  imageClassName="w-full h-48 object-cover rounded-lg"
+/>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button type="submit">Save Item</Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
           </div>
+          {viewMode === "grid" ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredItems && filteredItems.map((item) => (
+                <SupplierItemCard
+                  key={item.id}
+                  item={item}
+                  onEdit={() => setSelectedItem(item)}
+                  onDelete={() => handleDeleteItem(item.id)}
+                  admin={true}
+                  displayCurrency="Rs."
+                />
+              ))}
+            </div>
+          ) : (
+           filteredItems && <SupplierItemList
+              items={filteredItems}
+              onEdit={(item) => setSelectedItem(item)}
+              onDelete={(id) => handleDeleteItem(id)}
+              admin={true}
+              displayCurrency="Rs."
+            />
+          )}
+          </div></div>
         </TabsContent>
 
         <TabsContent value="analytics">
@@ -728,12 +716,18 @@ function SupplierDashboardPage() {
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="edit-image">Image URL</Label>
-                  <ImageUpload
-                    value={editImageUrl}
-                    onChange={(url) => setEditImageUrl(url)}
-                    label="Upload Image"
-                    description="Upload an image for the item"
-                  />
+               <ImageUpload
+    value={editImageUrl}
+    onChange={(url) => setEditImageUrl(url)}
+    label="Product Image"
+    description="Upload product/item image"
+    dimensions={{ width: 600, height: 600 }}
+    enableCrop={true}
+    maxFileSize={5}
+  quality={88}
+  allowedFormats={['image/jpeg', 'image/png', 'image/webp']}
+  imageClassName="w-full h-48 object-cover rounded-lg"
+/>
                 </div>
               </div>
               <DialogFooter>

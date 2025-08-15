@@ -269,6 +269,7 @@ import { EditProfileImageDialog } from "./edit-profile-image-dialog"
 import { EditCoverImageDialog } from "./edit-cover-image-dialog"
 import { EditBusinessDetailsDialog } from "./edit-business-details-dialog"
 import { updateSupplier } from "@/app/api"
+import { ImageWithFallback } from "./ui/ImageWithFallback"
 
 interface SupplierProfileProps {
   supplier: {

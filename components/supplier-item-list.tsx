@@ -7,6 +7,7 @@ import { Pencil, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { getSupplierByPID, Supplier } from "@/app/api"
+import { ImageWithFallback } from "./ui/ImageWithFallback"
 
 interface SupplierItemListProps {
   items: {

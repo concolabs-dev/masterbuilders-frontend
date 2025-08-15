@@ -1,10 +1,11 @@
 'use client';
+
 import { Modal, ModalBody, ModalContent, ModalFooter } from '@/components/ui/animated-modal';
 import { Button } from '@/components/ui/button';
 import GlassCard from '@/components/ui/GlassCard';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Bell, BookOpen, CheckCircle, DollarSign, GitCompare, Handshake, HardHat, LineChart, Link, Map, Package, ParkingMeter, Phone, Pin, ShieldCheck, Tag, Truck } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 const ListOfServices = [
   { 
@@ -364,6 +365,8 @@ export function HeroSlider() {
   const [webpSupported, setWebpSupported] = useState<boolean | null>(null)
   const [imageSrc, setImageSrc] = useState<string>('')
   const containerRef = useRef<HTMLDivElement>(null)
+
+  const imageCache = useRef<{ [key: number]: HTMLImageElement }>({});
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -432,6 +435,7 @@ useEffect(() => {
           const img = new window.Image()
           img.src = url
           img.onload = () => {
+            imageCache.current[i] = img // Cache the image in memory
             loadedCount++
             setLoadingProgress(Math.round((loadedCount / TOTAL_FRAMES) * 100))
             resolve()
@@ -445,6 +449,7 @@ useEffect(() => {
               const fallbackImg = new window.Image();
               fallbackImg.src = fallbackUrl;
               fallbackImg.onload = () => {
+                imageCache.current[i] = fallbackImg; // Cache the PNG fallback
                 loadedCount++;
                 setLoadingProgress(Math.round((loadedCount / TOTAL_FRAMES) * 100));
                 resolve();
@@ -534,7 +539,7 @@ useEffect(() => {
             transition={{ duration: 0.4, delay: 0.2 }} // Reduced from 0.8, 0.4
           >
             <img
-              src={imageSrc || "/placeholder.svg"}
+              src={imageCache.current[currentImageIndex]?.src || "/placeholder.svg"}
               alt={`Animation frame ${currentImageIndex + 1}`}
               className="w-full h-full object-cover"
               onError={handleImageError}

@@ -194,13 +194,18 @@ export function EditProjectDialog({ open, onOpenChange, project, onSubmit }: Edi
                   </div>
                 ))}
               </div>
-              <ImageUpload
-                value=""
-                onChange={handleAddImage}
-                label="Add project image"
-                description="Upload images of your project"
-                imageClassName="w-full h-40 object-cover rounded-md"
-              />
+           <ImageUpload
+  value=""
+  onChange={handleAddImage}
+  label="Project Image"
+  description="Upload project showcase image"
+  dimensions={{ width: 800, height: 600 }}
+  enableCrop={true}
+  maxFileSize={6}
+  quality={85}
+  allowedFormats={['image/jpeg', 'image/png', 'image/webp']}
+  imageClassName="w-full h-48 object-cover rounded-lg"
+/>
             </div>
           </div>
         )}
