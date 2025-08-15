@@ -424,4 +424,5 @@ function ProfessionalDashboardPage() {
     </div>
   )
 }
-export default withRoleGuard(ProfessionalDashboardPage, ["professional", "admin"]);
+const GuardedDashboardPage = withRoleGuard(ProfessionalDashboardPage, ["professional", "admin"]);
+export default GuardedDashboardPage;

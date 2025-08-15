@@ -123,8 +123,8 @@ setIsSubmitting(true)
       email_given: formData.email,
       address: formData.address,
       location: {
-        latitude: parseFloat(formData.location.lat),
-        longitude: parseFloat(formData.location.lng),
+        latitude: parseFloat(formData.location.lat) || 1.0,
+        longitude: parseFloat(formData.location.lng) || 1.0,
       },
       profile_pic_url: formData.profileImage,
       cover_pic_url: formData.coverImage,
@@ -139,7 +139,7 @@ setIsSubmitting(true)
     } catch (err) {
       console.error("Failed to create supplier", err)
     }finally {
-      setIsSubmitting(false)
+      // setIsSubmitting(false)
     }
   }
   if (alreadyRegistered) {
@@ -357,7 +357,7 @@ setIsSubmitting(true)
               Continue <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
           ) : (
-            <Button type="submit" form="onboardingForm" className="bg-primary">
+            <Button type="submit" form="onboardingForm" className="bg-primary" disabled={isSubmitting}>
                    {isSubmitting ? "Creating..." : "Complete"} <Check className="ml-2 h-4 w-4" />
             </Button>
           )}

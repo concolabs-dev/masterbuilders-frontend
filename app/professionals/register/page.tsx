@@ -16,8 +16,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Check, ChevronRight, MapPin } from "lucide-react"
 import { createProfessional, getProfessionalByPID, Professional} from "@/app/api"
 import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client"
-
-
+ 
 function ProfessionalRegistration() {
   const router = useRouter()
   const [step, setStep] = useState(1)
@@ -26,6 +25,8 @@ function ProfessionalRegistration() {
 
   const { user } = useUser()
   const [alreadyRegistered, setAlreadyRegistered] = useState(false)
+   const [isSubmitting, setIsSubmitting] = useState(false)
+
     useEffect(() => {
       if (!user?.sub) return
       getProfessionalByPID(user.sub)
@@ -78,6 +79,8 @@ function ProfessionalRegistration() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+        if (isSubmitting) return // Prevent double submit
+    setIsSubmitting(true)
     console.log("Form submitted:", formData)
     const professionalPayload = {
       company_name: formData.companyName, // Maps to CompanyName in Go
@@ -90,8 +93,8 @@ function ProfessionalRegistration() {
       website: formData.website || "", // Maps to Website in Go
       address: formData.address || "", // Maps to Address in Go
       location: {
-        latitude: parseFloat(formData.location.lat) || 0, // Maps to Location.Latitude in Go
-        longitude: parseFloat(formData.location.lng) || 0, // Maps to Location.Longitude in Go
+        latitude: parseFloat(formData.location.lat) || 1.0, // Maps to Location.Latitude in Go
+        longitude: parseFloat(formData.location.lng) || 1.0, // Maps to Location.Longitude in Go
       },
       specializations: formData.specialties || [], // Maps to Specializations in Go
       services_offered: formData.services || [], // Maps to ServicesOffered in Go
@@ -106,11 +109,11 @@ function ProfessionalRegistration() {
         const response =await createProfessional(professionalPayload)
         if (response) {   
           console.log("Professional created successfully");
-          router.push('/api/auth/login?prompt=none&returnTo=/register/success')
+          router.push('/api/auth/login?prompt=none&returnTo=/professionals/register/success')
         }
     }  catch (err) {
       console.error("Failed to create professional", err)
-    }
+    }finally {  }
 
   }
 
@@ -382,7 +385,7 @@ function ProfessionalRegistration() {
                     required
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                {/* <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="latitude">Latitude (Optional)</Label>
                     <Input
@@ -419,7 +422,7 @@ function ProfessionalRegistration() {
                       Map integration will be available soon. For now, please enter your coordinates manually if known.
                     </p>
                   </div>
-                </div>
+                </div> */}
               </div>
             )}
 
@@ -547,8 +550,8 @@ function ProfessionalRegistration() {
               Continue <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
           ) : (
-            <Button type="submit" form="registrationForm" className="bg-primary">
-              Complete <Check className="ml-2 h-4 w-4" />
+            <Button type="submit" form="registrationForm" className="bg-primary" disabled={isSubmitting}>
+                        {isSubmitting ? "Submitting..." : <>Complete <Check className="ml-2 h-4 w-4" /></>}
             </Button>
           )}
         </CardFooter>

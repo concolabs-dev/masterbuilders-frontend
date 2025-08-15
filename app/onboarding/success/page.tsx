@@ -16,7 +16,7 @@ export default function SuccessPage() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            Thank you for joining Master Builders. Our team will review your information and get back to you shortly.
+            Thank you for joining BuildmarketLK. Our team will review your information and get back to you shortly.
           </p>
         </CardContent>
         <CardFooter className="flex justify-center">

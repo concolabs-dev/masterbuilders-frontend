@@ -226,8 +226,8 @@ export default function BuildInSL() {
             <p className="font-semibold text-xl mb-4">Build Market Pvt Ltd</p>
             <p className="flex items-center justify-center mb-2">
               <span className="mr-2">📧</span> Email:
-              <a href="mailto:invest@buildmarketlk.com" className="text-orange-600 ml-1 hover:underline">
-                invest@buildmarketlk.com
+              <a href="mailto:info@buildmarketlk.com" className="text-orange-600 ml-1 hover:underline">
+                info@buildmarketlk.com
               </a>
             </p>
             <Button className="mt-6 bg-orange-600 hover:bg-orange-700">
