@@ -52,7 +52,7 @@ export function ImageUpload({
   maxFileSize = 5,
   quality = 80,
   allowedFormats = ['image/jpeg', 'image/png', 'image/webp'],
-  aspectRatio,
+  aspectRatio = dimensions.width / dimensions.height,
 }: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [showCropDialog, setShowCropDialog] = useState(false)
@@ -117,73 +117,113 @@ export function ImageUpload({
   }
 
   // Convert image to WebP with crop
-  const convertToWebP = (
-    file: File,
-    targetDimensions: ImageDimensions,
-    cropData: CropArea,
-    imageElement: HTMLImageElement,
-    containerElement: HTMLDivElement
-  ): Promise<Blob> => {
-    return new Promise((resolve, reject) => {
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')
+const convertToWebP = (
+  file: File,
+  targetDimensions: ImageDimensions,
+  cropData: CropArea,
+  imageElement: HTMLImageElement,
+  containerElement: HTMLDivElement
+): Promise<Blob> => {
+  return new Promise((resolve, reject) => {
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
 
-      if (!ctx) {
-        reject(new Error('Could not get canvas context'))
-        return
-      }
+    if (!ctx) {
+      reject(new Error('Could not get canvas context'))
+      return
+    }
 
-      // Set canvas dimensions to target dimensions
-      canvas.width = targetDimensions.width
-      canvas.height = targetDimensions.height
+    // Target canvas
+    canvas.width = targetDimensions.width
+    canvas.height = targetDimensions.height
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      // Calculate scale factors
-      const containerRect = containerElement.getBoundingClientRect()
-      const imageRect = imageElement.getBoundingClientRect()
-      
-      const scaleX = imageElement.naturalWidth / imageRect.width
-      const scaleY = imageElement.naturalHeight / imageRect.height
+    const containerRect = containerElement.getBoundingClientRect()
+    const imageRect = imageElement.getBoundingClientRect()
 
-      // Calculate crop area in natural image coordinates
-      const naturalCropX = (cropData.x - (imageRect.left - containerRect.left)) * scaleX / zoom
-      const naturalCropY = (cropData.y - (imageRect.top - containerRect.top)) * scaleY / zoom
-      const naturalCropWidth = cropData.width * scaleX / zoom
-      const naturalCropHeight = cropData.height * scaleY / zoom
+    // Compute the displayed image area inside the <img> (object-contain + zoom)
+    const naturalW = imageElement.naturalWidth
+    const naturalH = imageElement.naturalHeight
+    const naturalAR = naturalW / naturalH
+    const boxW = imageRect.width
+    const boxH = imageRect.height
 
-      // Apply rotation if needed
-      if (rotation !== 0) {
-        ctx.translate(canvas.width / 2, canvas.height / 2)
-        ctx.rotate((rotation * Math.PI) / 180)
-        ctx.translate(-canvas.width / 2, -canvas.height / 2)
-      }
+    let displayedW: number
+    let displayedH: number
+    if (boxW / boxH > naturalAR) {
+      // Height-bound
+      displayedH = boxH
+      displayedW = boxH * naturalAR
+    } else {
+      // Width-bound
+      displayedW = boxW
+      displayedH = boxW / naturalAR
+    }
 
-      // Draw the cropped portion
-      ctx.drawImage(
-        imageElement,
-        Math.max(0, naturalCropX),
-        Math.max(0, naturalCropY),
-        Math.min(naturalCropWidth, imageElement.naturalWidth - naturalCropX),
-        Math.min(naturalCropHeight, imageElement.naturalHeight - naturalCropY),
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      )
+    // The displayed image is centered within the imageRect
+    const displayedLeft = imageRect.left + (boxW - displayedW) / 2
+    const displayedTop = imageRect.top + (boxH - displayedH) / 2
 
-      canvas.toBlob(
-        (blob) => {
-          if (blob) {
-            resolve(blob)
-          } else {
-            reject(new Error('Failed to convert image'))
-          }
-        },
-        'image/webp',
-        quality / 100
-      )
-    })
-  }
+    // Map crop from container-space to displayed-image space, then to natural space
+    const cropLeftAbs = containerRect.left + cropData.x
+    const cropTopAbs = containerRect.top + cropData.y
 
+    // Scale factors from displayed pixels to natural pixels
+    const scaleX = naturalW / displayedW
+    const scaleY = naturalH / displayedH
+
+    let srcX = (cropLeftAbs - displayedLeft) * scaleX
+    let srcY = (cropTopAbs - displayedTop) * scaleY
+    let srcW = cropData.width * scaleX
+    let srcH = cropData.height * scaleY
+
+    // Intersect with natural image bounds to avoid clipping-induced stretching
+    if (srcX < 0) {
+      srcW += srcX
+      srcX = 0
+    }
+    if (srcY < 0) {
+      srcH += srcY
+      srcY = 0
+    }
+    if (srcX + srcW > naturalW) {
+      srcW = naturalW - srcX
+    }
+    if (srcY + srcH > naturalH) {
+      srcH = naturalH - srcY
+    }
+    if (srcW <= 0 || srcH <= 0) {
+      reject(new Error('Crop is outside the image bounds'))
+      return
+    }
+
+    // Preserve aspect ratio in destination (letterbox into target canvas)
+    const scale = Math.min(canvas.width / srcW, canvas.height / srcH)
+    const destW = srcW * scale
+    const destH = srcH * scale
+    const destX = (canvas.width - destW) / 2
+    const destY = (canvas.height - destH) / 2
+
+    // Rotation is ignored during export for now (preview-only)
+    ctx.drawImage(
+      imageElement,
+      Math.round(srcX),
+      Math.round(srcY),
+      Math.round(srcW),
+      Math.round(srcH),
+      Math.round(destX),
+      Math.round(destY),
+      Math.round(destW),
+      Math.round(destH)
+    )
+
+    canvas.toBlob(
+      (blob) => (blob ? resolve(blob) : reject(new Error('Failed to convert image'))),
+      'image/webp',
+      quality / 100
+    )
+  })
+}
   // Upload file to S3
   async function uploadFile(file: Blob): Promise<string> {
     const formData = new FormData()
@@ -245,49 +285,56 @@ export function ImageUpload({
 
   // Process and upload image
   const processAndUpload = async (file: File, cropData?: CropArea) => {
-    setIsUploading(true)
-    try {
-      let webpBlob: Blob
+  setIsUploading(true)
+  try {
+    let webpBlob: Blob
 
-      if (cropData && imageRef.current && cropContainerRef.current) {
-        webpBlob = await convertToWebP(file, dimensions, cropData, imageRef.current, cropContainerRef.current)
-      } else {
-        // Convert without cropping
-        webpBlob = await new Promise((resolve, reject) => {
-          const img = new window.Image()
-          const canvas = document.createElement('canvas')
-          const ctx = canvas.getContext('2d')
+    if (cropData && imageRef.current && cropContainerRef.current) {
+      webpBlob = await convertToWebP(file, dimensions, cropData, imageRef.current, cropContainerRef.current)
+    } else {
+      // Convert without cropping: preserve aspect ratio (contain)
+      webpBlob = await new Promise((resolve, reject) => {
+        const img = new window.Image()
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        if (!ctx) {
+          reject(new Error('Could not get canvas context'))
+          return
+        }
 
-          if (!ctx) {
-            reject(new Error('Could not get canvas context'))
-            return
-          }
+        img.onload = () => {
+          canvas.width = dimensions.width
+          canvas.height = dimensions.height
+          ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-          img.onload = () => {
-            canvas.width = dimensions.width
-            canvas.height = dimensions.height
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-            
-            canvas.toBlob((blob) => {
-              if (blob) resolve(blob)
-              else reject(new Error('Failed to convert image'))
-            }, 'image/webp', quality / 100)
-          }
-          
-          img.onerror = () => reject(new Error('Failed to load image'))
-          img.src = URL.createObjectURL(file)
-        })
-      }
-      
-      const url = await uploadFile(webpBlob)
-      onChange(url)
-    } catch (error) {
-      console.error('Upload failed:', error)
-      alert(`Upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
-    } finally {
-      setIsUploading(false)
+          const scale = Math.min(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight)
+          const drawW = img.naturalWidth * scale
+          const drawH = img.naturalHeight * scale
+          const drawX = (canvas.width - drawW) / 2
+          const drawY = (canvas.height - drawH) / 2
+
+          ctx.drawImage(img, drawX, drawY, drawW, drawH)
+
+          canvas.toBlob((blob) => {
+            if (blob) resolve(blob)
+            else reject(new Error('Failed to convert image'))
+          }, 'image/webp', quality / 100)
+        }
+
+        img.onerror = () => reject(new Error('Failed to load image'))
+        img.src = URL.createObjectURL(file)
+      })
     }
+
+    const url = await uploadFile(webpBlob)
+    onChange(url)
+  } catch (error) {
+    console.error('Upload failed:', error)
+    alert(`Upload failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
+  } finally {
+    setIsUploading(false)
   }
+}
 
   // Handle mouse down on crop area
   const handleMouseDown = (e: React.MouseEvent, action: 'drag' | 'resize') => {
@@ -302,7 +349,7 @@ export function ImageUpload({
   }
 
   // Handle mouse move
-  const handleMouseMove = useCallback((e: MouseEvent) => {
+ const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!cropContainerRef.current) return
 
     const containerRect = cropContainerRef.current.getBoundingClientRect()
@@ -322,7 +369,6 @@ export function ImageUpload({
       setCropArea(prev => {
         const newWidth = Math.max(50, prev.width + deltaX)
         const newHeight = aspectRatio ? newWidth / aspectRatio : Math.max(50, prev.height + deltaY)
-        
         return {
           ...prev,
           width: Math.min(newWidth, containerRect.width - prev.x),

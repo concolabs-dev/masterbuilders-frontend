@@ -7,7 +7,7 @@ import { PriceChart } from "@/components/price-chart"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { ChevronDown, ChevronRight, Menu } from "lucide-react"
+import { ChevronDown, ChevronRight, Menu, X } from "lucide-react"
 import { Item, getItemsByMaterialID } from "@/app/api"
 import { SupplierItemCard } from "@/components/supplier-item-card"
 import { Head } from "next/document"
@@ -352,9 +352,20 @@ export default function CataloguePage() {
       </div>
       
       <Dialog open={!!selectedMaterial} onOpenChange={() => setSelectedMaterial(null)}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent showCloseButton={false} className="max-w-4xl max-h-[90vh] overflow-y-auto">
           {selectedMaterial && (
             <div className="p-4 space-y-4 bg-white rounded-lg">
+                 <div className="sticky top-2 z-50 flex justify-end px-2">
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  aria-label="Close"
+                  className="rounded-full shadow-md bg-white/90 text-gray-700 border hover:bg-white"
+                  onClick={() => setSelectedMaterial(null)}
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
               <h2 className="text-2xl font-bold text-center mb-4">{selectedMaterial.Name}</h2>
               <div className="grid grid-cols-2 gap-4 text-center text-sm md:text-base">
                 <div className="col-span-2 text-center">
@@ -369,7 +380,7 @@ export default function CataloguePage() {
                     return (
                       <p className="text-gray-700 text-lg">
                         Latest Price:{" "}
-                        <span className="text-green-700 font-bold">
+                        <span className="text-orange-600 font-bold">
                           {selectedCurrency} {displayedPrice.toFixed(2)}
                         </span>
                       </p>

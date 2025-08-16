@@ -3,13 +3,13 @@ import Image from "next/image"
 
 export function SiteFooter() {
   return (
-    <footer className="border-t bg-background">
-      <div className="container py-10 md:py-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+    <footer className="border-t bg-muted md:bg-background">
+      <div className="container py-4 md:py-10">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8">
           {/* Company Info */}
-          <div className="space-y-3">
+          <div className="space-y-2 md:space-y-3">
             <h3 className="text-sm font-medium">Build Market LK</h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs md:text-sm text-muted-foreground">
               Your trusted source for comprehensive construction pricing and supplier connections.
             </p>
             <div className="flex items-center gap-2">
@@ -30,8 +30,8 @@ export function SiteFooter() {
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="space-y-3">
+          {/* Quick Links - hidden on mobile */}
+          <div className="space-y-3 hidden md:block">
             <h3 className="text-sm font-medium">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
@@ -57,8 +57,8 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          {/* Legal */}
-          <div className="space-y-3">
+          {/* Legal - hidden on mobile */}
+          <div className="space-y-3 hidden md:block">
             <h3 className="text-sm font-medium">Legal</h3>
             <ul className="space-y-2 text-sm">
               <li>
@@ -84,10 +84,10 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          {/* Contact */}
-          <div className="space-y-3">
+          {/* Contact - kept on mobile but compact */}
+          <div className="space-y-2 md:space-y-3">
             <h3 className="text-sm font-medium">Contact</h3>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-1 md:space-y-2 text-xs md:text-sm">
               <li className="text-muted-foreground">4, 1/2 Bambalapitiya Dr, Colombo 00400</li>
               <li>
                 <a href="mailto:info@buildmarketlk.com" className="text-muted-foreground hover:text-foreground">
@@ -103,11 +103,11 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-8 pt-6 border-t flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-muted-foreground">
+        <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t flex flex-col md:flex-row justify-between items-center">
+          <p className="text-xs md:text-sm text-muted-foreground">
             © {new Date().getFullYear()} BuildMarketlk. All rights reserved.
           </p>
-          <p className="text-sm text-muted-foreground mt-2 md:mt-0">
+          <p className="hidden md:block text-sm text-muted-foreground mt-2 md:mt-0">
             Designed and Developed by{" "}
             <Link href="https://concolabs.com" className="hover:text-foreground">
               Concolabs
