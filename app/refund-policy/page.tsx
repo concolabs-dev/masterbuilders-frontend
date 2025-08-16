@@ -23,7 +23,7 @@ export default function RefundPolicyPage() {
         <CardContent className="pt-6">
           <div className="prose max-w-none">
             <p className="text-muted-foreground mb-6">
-              Thank you for shopping at Master Space Builders. We value your satisfaction and strive to provide you with
+              Thank you for shopping at Buildmarketlk. We value your satisfaction and strive to provide you with
               the best online shopping experience possible. If, for any reason, you are not completely satisfied with
               your purchase, we are here to help.
             </p>

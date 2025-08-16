@@ -215,7 +215,7 @@ export default function ProfessionalsHub() {
       </div>
 
       {/* How It Works Section */}
-      <div className="bg-slate-50 rounded-xl p-8 mb-12">
+      {/* <div className="bg-slate-50 rounded-xl p-8 mb-12">
         <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
           <Search className="h-6 w-6 text-primary" />
           <span>🔍 How It Works</span>
@@ -243,7 +243,7 @@ export default function ProfessionalsHub() {
             <p className="text-muted-foreground">Work together to bring your construction vision to life.</p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* CTA Section */}
       <div className="text-center">
