@@ -314,7 +314,7 @@ export default function ProfessionalsShowcase() {
                       <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
                         <div className="relative h-48 w-full overflow-hidden">
                           <Image
-                            src={pro.cover_image_url || "/images/cover-placeholder.svg"}
+                            src={pro.company_logo_url || "/images/cover-placeholder.svg"}
                             alt={pro.company_name}
                             fill
                             className="object-cover"

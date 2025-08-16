@@ -111,7 +111,7 @@ export default function ProfessionalCompanyPage({ params }: { params: { pid: str
       <div className="relative mb-8">
         <div className="h-64 w-full relative rounded-xl overflow-hidden">
           <Image
-            src={professionalData.cover_image_url || "images/cover-placeholder.svg"}
+            src={professionalData.cover_image_url || "/images/cover-placeholder.svg"}
             alt={`${professionalData.company_name} cover`}
             fill
             className="object-cover"
@@ -119,7 +119,7 @@ export default function ProfessionalCompanyPage({ params }: { params: { pid: str
         </div>
         <div className="absolute -bottom-16 left-8 h-32 w-32 rounded-xl border-4 border-background bg-background overflow-hidden">
           <Image
-            src={professionalData.company_logo_url  || "images/logo-placeholder.svg"}
+            src={professionalData.company_logo_url  || "/images/logo-placeholder.svg"}
             alt={professionalData.company_name}
             fill
             className="object-cover"
@@ -221,7 +221,7 @@ export default function ProfessionalCompanyPage({ params }: { params: { pid: str
                     {selectedProject.images.map((image, index) => (
                       <div key={index} className="relative h-48 rounded-md overflow-hidden">
                         <Image
-                          src={image || "images/cover-placeholder.svg"}
+                          src={image || "/images/cover-placeholder.svg"}
                           alt={`${selectedProject.name} image ${index + 1}`}
                           fill
                           className="object-cover"
