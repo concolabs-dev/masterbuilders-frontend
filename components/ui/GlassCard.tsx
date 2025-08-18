@@ -14,7 +14,7 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = "", style, 
     style={style}
   >
     {/* White gradient overlay */}
-    <div className="absolute inset-0 z-0 bg-gradient-to-br from-white/30 to-white/0 pointer-events-none" />
+    <div className="absolute inset-0 z-0 bg-gradient-to-br from-white/10 to-white/0 pointer-events-none" />
 
     {/* Background image on the left with gradient fade */}
     {bgImage && (
@@ -25,9 +25,9 @@ const GlassCard: React.FC<GlassCardProps> = ({ children, className = "", style, 
           fill
           className="object-cover object-left pointer-events-none"
           style={{
-            mask: 'linear-gradient(to right, black 0%, black 40%, transparent 80%)',
-            WebkitMask: 'linear-gradient(to right, black 0%, black 40%, transparent 80%)',
-            opacity: 1, // Adjust opacity as needed
+            mask: 'linear-gradient(to right, black 0%, black 40%, transparent 70%)',
+            WebkitMask: 'linear-gradient(to right, black 0%, black 40%, transparent 70%)',
+            opacity: 0.9, // Adjust opacity as needed
           }}
           priority={false}
         />

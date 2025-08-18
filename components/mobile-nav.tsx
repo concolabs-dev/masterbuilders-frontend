@@ -33,16 +33,18 @@ export function MobileNav() {
       <Link
         href="/"
         className={`flex flex-col items-center justify-center px-4 py-2 ${
-          pathname === "/" ? "text-primary" : "text-muted-foreground"
+          pathname === "" ? "text-primary" : "text-muted-foreground"
         }`}
       >
-        <Image
+        {/* <Image
           src="/images/logo.jpeg"
           alt="BuildMarket LK"
           width={50}
           height={60}
           className="object-contain"
-        />
+        /> */}
+        <Home className="h-6 w-6" />
+                <span className="text-xs">Home</span>
       </Link>
       
       <Link 

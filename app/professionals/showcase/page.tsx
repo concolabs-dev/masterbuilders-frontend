@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import { useSearchParams } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search, MapPin, Filter, X } from "lucide-react"
@@ -25,6 +26,7 @@ import {
 } from "@/app/api"
 
 export default function ProfessionalsShowcase() {
+  const searchParams = useSearchParams()
   const [professionals, setProfessionals] = useState<Professional[]>([])
   const [professionalTypes, setProfessionalTypes] = useState<string[]>([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -48,17 +50,34 @@ export default function ProfessionalsShowcase() {
     }
   }
 
-  // Fetch initial data
+  // Fetch initial data and apply URL filters
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
         setLoading(true)
-        const [professionalsData, typesData] = await Promise.all([
-          getProfessionals(),
-          getProfessionalTypes()
-        ])
-        setProfessionals(professionalsData)
+        
+        // Get URL parameter for type filter
+        const typeParam = searchParams.get('type')
+        
+        // Fetch professional types first
+        const typesData = await getProfessionalTypes()
         setProfessionalTypes(typesData.professional_types)
+        
+        // Set the filter from URL parameter if it exists
+        if (typeParam && typesData.professional_types.includes(typeParam)) {
+          setSelectedCompanyType(typeParam)
+          setIsFilterOpen(true) // Show filters section when coming from URL
+          
+          // Fetch filtered data
+          const filteredData = await getProfessionalsWithFilters({
+            company_type: typeParam
+          })
+          setProfessionals(filteredData)
+        } else {
+          // Fetch all professionals
+          const professionalsData = await getProfessionals()
+          setProfessionals(professionalsData)
+        }
       } catch (err) {
         setError("Failed to load professionals")
         console.error(err)
@@ -68,7 +87,7 @@ export default function ProfessionalsShowcase() {
     }
 
     fetchInitialData()
-  }, [])
+  }, [searchParams])
 
   // Handle search
   const handleSearch = async () => {
@@ -186,6 +205,15 @@ export default function ProfessionalsShowcase() {
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-3xl font-bold mb-6">Find Professional Services</h1>
+      
+      {/* Show filter info if coming from URL */}
+      {searchParams.get('type') && selectedCompanyType && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <div className="text-blue-800">
+            <span className="font-medium">Showing:</span> {selectedCompanyType} professionals
+          </div>
+        </div>
+      )}
       
       {/* Search and filter section */}
       <div className="space-y-4 mb-8">
@@ -314,7 +342,7 @@ export default function ProfessionalsShowcase() {
                       <Card className="h-full hover:shadow-md transition-shadow cursor-pointer">
                         <div className="relative h-48 w-full overflow-hidden">
                           <Image
-                            src={pro.company_logo_url || "/images/cover-placeholder.svg"}
+                            src={pro.company_logo_url || "/images/logo-placeholder.svg"}
                             alt={pro.company_name}
                             fill
                             className="object-cover"
