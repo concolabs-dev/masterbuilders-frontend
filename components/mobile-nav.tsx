@@ -16,7 +16,7 @@ export function MobileNav() {
         }`}
       >
         <List className="h-6 w-6" />
-        <span className="text-xs">Catalogue</span>
+        <span className="text-xs max-[405px]:text-[10px]">Catalogue</span>
       </Link>
       
       <Link
@@ -26,7 +26,7 @@ export function MobileNav() {
         }`}
       >
         <Users className="h-6 w-6" />
-        <span className="text-xs">Professionals</span>
+        <span className="text-xs max-[405px]:text-[10px]">People</span>
       </Link>
       
       {/* Logo in the center */}
@@ -44,7 +44,7 @@ export function MobileNav() {
           className="object-contain"
         /> */}
         <Home className="h-6 w-6" />
-                <span className="text-xs">Home</span>
+                <span className="text-xs max-[405px]:text-[10px]">Home</span>
       </Link>
       
       <Link 
@@ -57,7 +57,7 @@ export function MobileNav() {
           <Group className="h-6 w-6" />
           <span className="absolute right-0 top-0 h-2 w-2 rounded-full bg-primary" />
         </div>
-        <span className="text-xs">Suppliers</span>
+        <span className="text-xs max-[405px]:text-[10px]">Suppliers</span>
       </Link>
       
       <Link 
@@ -70,7 +70,7 @@ export function MobileNav() {
           <Building2 className="h-6 w-6" />
           <span className="absolute right-0 top-0 h-2 w-2 rounded-full bg-primary" />
         </div>
-        <span className="text-xs">Projects</span>
+        <span className="text-xs max-[405px]:text-[10px]">Projects</span>
       </Link>
     </nav>
   )
