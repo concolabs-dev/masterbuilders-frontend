@@ -150,13 +150,13 @@ function ProfessionalRegistration() {
     console.log("Professional Payload:", professionalPayload);
 
     try {
-        const response =await createProfessional(professionalPayload)
-        if (response) {   
-          console.log("Professional created successfully");
-          router.push('/api/auth/login?prompt=none&returnTo=/register/success')
-        }
-    }  catch (err) {
-      console.error("Failed to create professional", err)
+      const response = await createProfessional(professionalPayload);
+      if (response) {
+        console.log("Professional created successfully");
+        router.push("/api/auth/login?prompt=none&returnTo=/register/success");
+      }
+    } catch (err) {
+      console.error("Failed to create professional", err);
     }
   };
 
@@ -182,51 +182,51 @@ function ProfessionalRegistration() {
     "Healthcare",
     "Educational",
     "Hospitality",
-     "Mixed-Use Development",
-  "Affordable Housing",
-  "Luxury Residential",
-  "Retail & Shopping Centers",
-  "Office Buildings",
-  "Warehouses & Logistics",
-  "Manufacturing Facilities",
-  "Religious Buildings",
-  "Sports & Recreation",
-  "Transportation Infrastructure",
-  "Water & Wastewater Treatment",
-  "Power & Energy Projects",
-  "Telecommunications Infrastructure",
-  "Agricultural Buildings",
-  "Government Buildings",
-  "Cultural & Heritage Buildings",
-  "Resort & Tourism",
-  "Residential Complexes",
-  "Gated Communities",
-  "Condominiums",
-  "Villa Projects",
-  "Beach & Coastal Properties",
-  "Hill Country Properties",
-  "Eco-Friendly Construction",
-  "Smart Buildings",
-  "Prefabricated Construction",
-  "Modular Construction",
-  "Heritage Restoration",
-  "Seismic Design",
-  "Tropical Architecture",
-  "Green Roofs & Walls",
-  "Solar Integration",
-  "Rainwater Harvesting",
-  "Disaster-Resistant Construction",
-  "Low-Cost Housing",
-  "Social Housing",
-  "Student Housing",
-  "Senior Living",
-  "Co-working Spaces",
-  "Data Centers",
-  "Laboratories",
-  "Clean Rooms",
-  "Cold Storage",
-  "Food Processing Facilities"
-  ]
+    "Mixed-Use Development",
+    "Affordable Housing",
+    "Luxury Residential",
+    "Retail & Shopping Centers",
+    "Office Buildings",
+    "Warehouses & Logistics",
+    "Manufacturing Facilities",
+    "Religious Buildings",
+    "Sports & Recreation",
+    "Transportation Infrastructure",
+    "Water & Wastewater Treatment",
+    "Power & Energy Projects",
+    "Telecommunications Infrastructure",
+    "Agricultural Buildings",
+    "Government Buildings",
+    "Cultural & Heritage Buildings",
+    "Resort & Tourism",
+    "Residential Complexes",
+    "Gated Communities",
+    "Condominiums",
+    "Villa Projects",
+    "Beach & Coastal Properties",
+    "Hill Country Properties",
+    "Eco-Friendly Construction",
+    "Smart Buildings",
+    "Prefabricated Construction",
+    "Modular Construction",
+    "Heritage Restoration",
+    "Seismic Design",
+    "Tropical Architecture",
+    "Green Roofs & Walls",
+    "Solar Integration",
+    "Rainwater Harvesting",
+    "Disaster-Resistant Construction",
+    "Low-Cost Housing",
+    "Social Housing",
+    "Student Housing",
+    "Senior Living",
+    "Co-working Spaces",
+    "Data Centers",
+    "Laboratories",
+    "Clean Rooms",
+    "Cold Storage",
+    "Food Processing Facilities",
+  ];
   const serviceOptions = [
     "Architectural Design",
     "Construction Management",
@@ -245,48 +245,48 @@ function ProfessionalRegistration() {
     "Dispute Management",
     "Contracts Management",
     "Technical Auditing",
-     "Building Surveying",
-  "Environmental Impact Assessment",
-  "Geotechnical Engineering",
-  "Fire Safety Consulting",
-  "Energy Auditing",
-  "Property Valuation",
-  "Building Maintenance",
-  "Renovation & Restoration",
-  "3D Modeling & Visualization",
-  "Permit & Approval Services",
-  "Material Testing & Quality Control",
-  "Site Investigation",
-  "Construction Procurement",
-  "Value Engineering",
-  "Risk Management",
-  "Health & Safety Consulting",
-  "Building Code Compliance",
-  "LEED Certification Consulting",
-  "Demolition Services",
-  "Waterproofing Consultation",
-  "Acoustics Consulting",
-  "Lighting Design",
-  "HVAC Design",
-  "Plumbing Design",
-  "Electrical Design",
-  "Security Systems Design",
-  "Smart Building Integration",
-  "Post-Construction Services",
-  "Warranty & Defects Management",
-  "Building Performance Analysis",
-  "Construction Documentation",
-  "As-Built Documentation",
-  "Facility Management Consulting",
-  "Space Planning",
-  "Building Automation Systems",
-  "Renewable Energy Systems Design",
-  "Solar Panel Installation Design",
-  "Green Building Certification",
-  "Construction Scheduling",
-  "Resource Planning",
-  "Subcontractor Management"
-  ]
+    "Building Surveying",
+    "Environmental Impact Assessment",
+    "Geotechnical Engineering",
+    "Fire Safety Consulting",
+    "Energy Auditing",
+    "Property Valuation",
+    "Building Maintenance",
+    "Renovation & Restoration",
+    "3D Modeling & Visualization",
+    "Permit & Approval Services",
+    "Material Testing & Quality Control",
+    "Site Investigation",
+    "Construction Procurement",
+    "Value Engineering",
+    "Risk Management",
+    "Health & Safety Consulting",
+    "Building Code Compliance",
+    "LEED Certification Consulting",
+    "Demolition Services",
+    "Waterproofing Consultation",
+    "Acoustics Consulting",
+    "Lighting Design",
+    "HVAC Design",
+    "Plumbing Design",
+    "Electrical Design",
+    "Security Systems Design",
+    "Smart Building Integration",
+    "Post-Construction Services",
+    "Warranty & Defects Management",
+    "Building Performance Analysis",
+    "Construction Documentation",
+    "As-Built Documentation",
+    "Facility Management Consulting",
+    "Space Planning",
+    "Building Automation Systems",
+    "Renewable Energy Systems Design",
+    "Solar Panel Installation Design",
+    "Green Building Certification",
+    "Construction Scheduling",
+    "Resource Planning",
+    "Subcontractor Management",
+  ];
 
   return (
     <div className="container max-w-3xl py-10">
@@ -342,6 +342,11 @@ function ProfessionalRegistration() {
                     }
                     required
                   />
+                  {errors.companyName && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {errors.companyName}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="type">Company Type</Label>
@@ -360,6 +365,9 @@ function ProfessionalRegistration() {
                       ))}
                     </SelectContent>
                   </Select>
+                  {errors.type && (
+                    <p className="text-sm text-red-600 mt-1">{errors.type}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="description">Company Description</Label>
@@ -372,6 +380,11 @@ function ProfessionalRegistration() {
                     }
                     className="min-h-[120px]"
                   />
+                  {errors.description && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {errors.description}
+                    </p>
+                  )}
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -382,6 +395,11 @@ function ProfessionalRegistration() {
                       value={formData.founded}
                       onChange={(e) => handleChange("founded", e.target.value)}
                     />
+                    {errors.founded && (
+                      <p className="text-sm text-red-600 mt-1">
+                        {errors.founded}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="employees">Number of Employees</Label>
@@ -402,6 +420,11 @@ function ProfessionalRegistration() {
                         <SelectItem value="500+">500+</SelectItem>
                       </SelectContent>
                     </Select>
+                    {errors.employees && (
+                      <p className="text-sm text-red-600 mt-1">
+                        {errors.employees}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -419,6 +442,11 @@ function ProfessionalRegistration() {
                     onChange={(e) => handleChange("email", e.target.value)}
                     required
                   />
+                  {errors.email && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {errors.email}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="telephone">Telephone Number</Label>
@@ -430,6 +458,11 @@ function ProfessionalRegistration() {
                     onChange={(e) => handleChange("telephone", e.target.value)}
                     required
                   />
+                  {errors.telephone && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {errors.telephone}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="website">Website (Optional)</Label>
@@ -440,6 +473,11 @@ function ProfessionalRegistration() {
                     value={formData.website}
                     onChange={(e) => handleChange("website", e.target.value)}
                   />
+                  {errors.website && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {errors.website}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="address">Address</Label>
@@ -450,6 +488,11 @@ function ProfessionalRegistration() {
                     onChange={(e) => handleChange("address", e.target.value)}
                     required
                   />
+                  {errors.address && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {errors.address}
+                    </p>
+                  )}
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -663,4 +706,4 @@ function ProfessionalRegistration() {
   );
 }
 
-export default withPageAuthRequired(ProfessionalRegistration);
+export default ProfessionalRegistration;
