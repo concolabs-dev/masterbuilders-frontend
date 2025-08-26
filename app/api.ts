@@ -92,7 +92,6 @@ export interface Professional {
   certifications_accreditations: string[];
   company_logo_url: string;
   cover_image_url: string;
-  pid: string;
 }
 
 export interface Payment {
@@ -589,10 +588,8 @@ export const getProfessionalTypes =
   };
 
 // payment API calls
-export const stripeCheckout = async (priceId: string) => {
-  const response = await backend_api_axios.post<Professional>(
-    "/stripe/checkout"
-  );
+export const stripeCheckout = async (priceId: string, pid:string) => {
+  const response = await backend_api_axios.post("/stripe/checkout",{priceId: priceId, pid:pid});
   console.log(response.data);
   return response.data;
 };

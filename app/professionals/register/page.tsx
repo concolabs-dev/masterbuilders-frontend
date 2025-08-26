@@ -90,6 +90,15 @@ function ProfessionalRegistration() {
     }
   };
 
+    const handleNextStep = () => {
+        if (step === 4) {
+            handleSubmit(); // auto-submit on last step
+            handleNext();
+        } else {
+            handleNext();   // go to next step normally
+        }
+    };
+
   const handleBack = () => {
     if (step > 1) {
       setStep(step - 1);
@@ -97,8 +106,8 @@ function ProfessionalRegistration() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     console.log("Form submitted:", formData);
     const professionalPayload = {
       company_name: formData.companyName, // Maps to CompanyName in Go
@@ -119,7 +128,7 @@ function ProfessionalRegistration() {
       certifications_accreditations: formData.certifications || [], // Maps to CertificationsAccreditations in Go
       company_logo_url: formData.logo || "", // Maps to CompanyLogoUrl in Go
       cover_image_url: formData.coverImage || "", // Maps to CoverImageURL in Go
-      pid: user?.sub || "", // Maps to PID in Go
+      // pid: user?.sub?.split("|")[1] || "", // Maps to PID in Go
     };
     console.log("Professional Payload:", professionalPayload);
 
@@ -294,12 +303,14 @@ function ProfessionalRegistration() {
             {step === 2 && "Contact Details"}
             {step === 3 && "Specializations & Services"}
             {step === 4 && "Company Images"}
+            {step === 5 && "Subscription & Packages"}
           </CardTitle>
           <CardDescription>
             {step === 1 && "Tell us about your company"}
             {step === 2 && "How can clients reach you?"}
             {step === 3 && "What services and specialties do you offer?"}
             {step === 4 && "Upload your company logo and cover image"}
+            {step === 5 && "Choose your package"}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -618,9 +629,9 @@ function ProfessionalRegistration() {
                 </div>
               </div>
             )}
-            {step === 5 && (
+            {step === 5 && user != undefined &&(
               <div className="flex flex-row items-center space-x-6">
-                {/* TODO: add fildes */}
+                {/* TODO: add features */}
                 <PaymentPackage
                   title="Basic"
                   price="LKR 1,000"
@@ -629,19 +640,8 @@ function ProfessionalRegistration() {
                     "Basic support",
                     "Access to core features",
                   ]}
-                  request={{
-                    order_id: "ItemNo12345",
-                    items: "BasicPackAge",
-                    amount: "1000",
-                    currency: "LKR",
-                    first_name: "Saman",
-                    last_name: "Perera",
-                    email: formData.email,
-                    phone: formData.telephone,
-                    city: formData.city,
-                    country: "Sri Lanka",
-                    address: formData.address,
-                  }}
+                  priceId="price_1RzdD4Hb6l5GodkUOUMnQtew"
+                  pid={user.sub!}
                 />
                 <PaymentPackage
                   title="Standard"
@@ -652,19 +652,8 @@ function ProfessionalRegistration() {
                     "Access to core features",
                   ]}
                   highlighted={true}
-                  request={{
-                    order_id: "ItemNo12345",
-                    items: "BasicPackAge",
-                    amount: "1000",
-                    currency: "LKR",
-                    first_name: "Saman",
-                    last_name: "Perera",
-                    email: "anupa@gmail.com",
-                    phone: "07411130285",
-                    city: "gampaha",
-                    country: "Sri Lanka",
-                    address: "gampaha 112",
-                  }}
+                  priceId="price_1RwIfPHb6l5GodkUM506UReh"
+                  pid={user.sub!}
                 />
                 <PaymentPackage
                   title="Premium"
@@ -674,6 +663,8 @@ function ProfessionalRegistration() {
                     "Basic support",
                     "Access to core features",
                   ]}
+                  priceId="price_1RzdDPHb6l5GodkUGMgojptX"
+                  pid={user.sub!}
                 />
               </div>
             )}
@@ -684,11 +675,11 @@ function ProfessionalRegistration() {
             Back
           </Button>
           {step < totalSteps ? (
-            <Button onClick={handleNext}>
+            <Button onClick={handleNextStep}>
               Continue <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
           ) : (
-            <Button variant="gray" onClick={handleSubmit}>
+            <Button variant="gray" onClick={()=>router.push("/")}>
               Pay Later <Check className="ml-2 h-4 w-4" />
             </Button>
           )}

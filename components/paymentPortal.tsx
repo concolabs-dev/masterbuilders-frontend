@@ -20,12 +20,10 @@ interface Payment {
 
 type props = {
   priceId: string;
-  price: string;
-  description: string;
-  request: Payment;
+  pid: string;
 };
 
-export function PaymentPortal({ priceId, price, description, request }: props) {
+export function PaymentPortal({ priceId, pid }: props) {
   const handlePay = async (e: React.FormEvent) => {
     e.preventDefault();
     const stripe = await loadStripe(
@@ -35,32 +33,17 @@ export function PaymentPortal({ priceId, price, description, request }: props) {
       return;
     }
     try {
-      await stripeCheckout(priceId).then(async (response) => {
+      await stripeCheckout(priceId, pid).then(async (response) => {
         if (response) {
-          const data = response.data;
-          if (!data.ok) throw new Error("Something went wrong");
+          if (!response.ok) throw new Error("Something went wrong");
           await stripe.redirectToCheckout({
-            sessionId: data.result.id,
+            sessionId: response.result.id,
           });
           console.log("Professional created successfully with payment");
-          //   router.push("register/success");
         }
       });
     } catch (err) {
       console.error("Failed to create professional with payment", err);
-    }
-
-    try {
-      const response = await axios.post("/api/stripe/checkout", {
-        priceId: priceId,
-      });
-      const data = response.data;
-      if (!data.ok) throw new Error("Something went wrong");
-      await stripe.redirectToCheckout({
-        sessionId: data.result.id,
-      });
-    } catch (error) {
-      console.log(error);
     }
   };
 

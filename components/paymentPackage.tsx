@@ -31,7 +31,8 @@ interface PaymentPackageBoxProps {
   price: string;
   features: string[];
   highlighted?: boolean;
-  request: Payment;
+  priceId: string;
+  pid: string;
 }
 
 export function PaymentPackage({
@@ -40,7 +41,8 @@ export function PaymentPackage({
   price,
   features,
   highlighted = false,
-  request,
+  priceId,
+    pid
 }: PaymentPackageBoxProps) {
   return (
     <Card
@@ -67,7 +69,10 @@ export function PaymentPackage({
         </ul>
       </CardContent>
       <CardFooter className="flex flex-col justify-center">
-        <PaymentPortal request={request} />
+        <PaymentPortal
+            priceId={priceId}
+            pid={pid}
+        />
       </CardFooter>
     </Card>
   );
