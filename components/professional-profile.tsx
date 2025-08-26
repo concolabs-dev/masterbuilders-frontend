@@ -78,7 +78,7 @@ export function ProfessionalProfile({ professional, onUpdate }: ProfessionalProf
     <>
       <Card className="overflow-hidden">
         <div className="relative h-48 md:h-64 w-full">
-          <ImageWithFallback
+          <Image
             src={currentProfessional.cover_image_url || "/images/cover-placeholder.svg"}
             alt={`${currentProfessional.company_name} cover`}
             fill
@@ -97,7 +97,7 @@ export function ProfessionalProfile({ professional, onUpdate }: ProfessionalProf
         <CardContent className="pt-0">
           <div className="flex flex-col md:flex-row gap-6 -mt-12 md:-mt-16">
             <div className="relative h-24 w-24 md:h-32 md:w-32 rounded-full border-4 border-background overflow-hidden bg-background">
-              <ImageWithFallback
+              <Image
                 src={currentProfessional.company_logo_url || "/images/logo-placeholder.svg"}
                 alt={currentProfessional.company_name}
                 fill

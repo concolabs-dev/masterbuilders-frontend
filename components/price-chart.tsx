@@ -34,8 +34,8 @@ export function PriceChart({ itemName, prices, currency, onClose }: PriceChartPr
             <AreaChart data={validPrices}>
               <defs>
                 <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#81c995" stopOpacity={0.4} />
-                  <stop offset="100%" stopColor="#b1f729" stopOpacity={0} />
+                  <stop offset="0%" stopColor="#ebc07fff" stopOpacity={0.4} />
+                  <stop offset="100%" stopColor="#f79029ff" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -68,7 +68,7 @@ export function PriceChart({ itemName, prices, currency, onClose }: PriceChartPr
               <Area
                 // type="monotone"
                 dataKey="price"
-                stroke="#81c995"
+                stroke="#ee774fff"
                 strokeWidth={2}
                 fill="url(#priceGradient)"
                 dot={false}

@@ -1,11 +1,66 @@
-import axios from "axios";
-import { getAccessToken } from "@auth0/nextjs-auth0";
-const API_BASE_URL = "http://localhost:8040";
+import axios from "axios"
 
-const BACKEND_API_SECRET = process.env.BACKEND_API_SECRET;
+
+const API_BASE_URL = "https://ravinduhiran.live"
+const BACKEND_API_SECRET = process.env.NEXT_PUBLIC_BACKEND_API_SECRET || ""
+
 const backend_api_axios = axios.create({
   baseURL: API_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
+
+// Helper to get token from our route (client-only)
+async function getAuthTokenFromRoute(): Promise<string | null> {
+  try {
+    if (typeof window === "undefined") return null
+    const res = await fetch("/api/token", {
+      method: "GET",
+      credentials: "include",
+      headers: { Accept: "application/json" },
+    })
+    if (!res.ok) return null
+    const data: { token?: string; accessToken?: string } = await res.json()
+    return data.token || data.accessToken || null
+  } catch (e) {
+    console.warn("Failed to fetch /api/token:", (e as Error).message)
+    return null
+  }
+}
+
+// Add request interceptor to automatically add token
+backend_api_axios.interceptors.request.use(
+  async (config) => {
+    try {
+      // Client: get token via our Next.js route
+      const token = await getAuthTokenFromRoute()
+      console.log("Auth token:", token)
+      if (token) {
+        config.headers = config.headers ?? {}
+        config.headers.Authorization = `Bearer ${token}`
+      }
+
+      // Optional: server-side fallback header (if you need server calls)
+      if (typeof window === "undefined" && BACKEND_API_SECRET) {
+        config.headers = config.headers ?? {}
+        config.headers["x-backend-api-secret"] = BACKEND_API_SECRET
+      }
+    } catch (error) {
+      console.warn("Auth token not attached:", (error as Error).message)
+    }
+    return config
+  },
+  (error) => Promise.reject(error)
+)
+// Add response interceptor for error handling
+backend_api_axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error("API Error:", error.response?.data || error.message)
+    return Promise.reject(error)
+  }
+)
 
 // Types
 export interface Material {
@@ -261,17 +316,10 @@ export const deleteMaterial = async (id: string) => {
 
 // Types API calls
 export const getTypes = async () => {
-  try {
-    const token = await getAccessToken();
-    console.log(token);
-  } catch (err) {
-    console.log(err);
-  }
-
-  const response = await backend_api_axios.get<Category[]>("/types");
-  console.log(response.data);
-  return response.data;
-};
+  const response = await backend_api_axios.get<Category[]>("/types")
+  console.log(response.data)
+  return response.data
+}
 
 export const getTypeById = async (id: string) => {
   const response = await backend_api_axios.get<Category>(`/types/${id}`);
@@ -291,7 +339,8 @@ export const updateType = async (id: string, type: Partial<Category>) => {
 export const deleteType = async (id: string) => {
   await backend_api_axios.delete(`/types/${id}`);
 };
-//items api calls
+
+// Items API calls
 export const getItems = async () => {
   const response = await backend_api_axios.get<Item[]>("/items");
   return response.data;

@@ -16,7 +16,7 @@ export function MobileNav() {
         }`}
       >
         <List className="h-6 w-6" />
-        <span className="text-xs">Catalogue</span>
+        <span className="text-xs max-[405px]:text-[10px]">Catalogue</span>
       </Link>
       
       <Link
@@ -26,23 +26,25 @@ export function MobileNav() {
         }`}
       >
         <Users className="h-6 w-6" />
-        <span className="text-xs">Professionals</span>
+        <span className="text-xs max-[405px]:text-[10px]">People</span>
       </Link>
       
       {/* Logo in the center */}
       <Link
         href="/"
         className={`flex flex-col items-center justify-center px-4 py-2 ${
-          pathname === "/" ? "text-primary" : "text-muted-foreground"
+          pathname === "" ? "text-primary" : "text-muted-foreground"
         }`}
       >
-        <Image
+        {/* <Image
           src="/images/logo.jpeg"
           alt="BuildMarket LK"
           width={50}
           height={60}
           className="object-contain"
-        />
+        /> */}
+        <Home className="h-6 w-6" />
+                <span className="text-xs max-[405px]:text-[10px]">Home</span>
       </Link>
       
       <Link 
@@ -55,7 +57,7 @@ export function MobileNav() {
           <Group className="h-6 w-6" />
           <span className="absolute right-0 top-0 h-2 w-2 rounded-full bg-primary" />
         </div>
-        <span className="text-xs">Suppliers</span>
+        <span className="text-xs max-[405px]:text-[10px]">Suppliers</span>
       </Link>
       
       <Link 
@@ -68,7 +70,7 @@ export function MobileNav() {
           <Building2 className="h-6 w-6" />
           <span className="absolute right-0 top-0 h-2 w-2 rounded-full bg-primary" />
         </div>
-        <span className="text-xs">Projects</span>
+        <span className="text-xs max-[405px]:text-[10px]">Projects</span>
       </Link>
     </nav>
   )

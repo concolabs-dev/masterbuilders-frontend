@@ -12,3 +12,5 @@ export const auth0 = initAuth0({
     postLogoutRedirect: '/', // Redirect after logout
   },
 });
+
+// TODO (risinu) - reconsider the use of custom instance

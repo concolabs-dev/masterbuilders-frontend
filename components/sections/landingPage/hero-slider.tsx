@@ -200,131 +200,57 @@ const ListOfServices = [
 const ListOfLandingPageCards = [
   {
     title: "Looking to Buy or Build a House?",
-    body: "Get matched with builders, suppliers & live prices.",
-    points: [
-      "Track real-time material prices",
-      "Find trusted builders across Sri Lanka",
-      "Discover great deals effortlessly",
-    ],
+    body: "Get matched with builders, suppliers & live prices. Track real-time material prices, find trusted builders across Sri Lanka, and discover great deals effortlessly.",
     image: "/images/house3.webp",
     ctas: [
-      {
-        text: "Explore Prices",
-        link: "/catalogue",
-        variant: "outline"
-      },
-      {
-        text: "Find Professionals",
-        link: "/professionals/showcase",
-        variant: "outline"
-      }
+      { text: "Explore Prices", link: "/catalogue", variant: "outline" },
+      { text: "Find Professionals", link: "/professionals/showcase", variant: "outline" }
     ]
   },
   {
     title: "Are You a Supplier?",
-    body: "Sell smarter with visibility & insights.",
-    points: [
-      "List your product catalogue",
-      "Compare prices across the market",
-      "Connect with real-time demand",
-    ],
+    body: "Sell smarter with visibility & insights. List your product catalogue, compare prices across the market, and connect with real-time demand.",
     image: "/images/supplier3.webp",
     ctas: [
-      {
-        text: "Join as Supplier",
-        link: "/register",
-        variant: "outline"
-      },
-        {
-        text: "Explore Suppliers",
-        link: "/supplier",
-        variant: "outline"
-      }
+      { text: "Join as Supplier", link: "/register", variant: "outline" },
+      { text: "Explore Suppliers", link: "/supplier", variant: "outline" }
     ]
   },
   {
     title: "Construction Professional?",
-    body: "Find the right opportunities and visibility.",
-    points: [
-      "Appear in our expert directory",
-      "Access new projects & trends",
-      "Connect with key stakeholders",
-    ],
+    body: "Find the right opportunities and visibility. Appear in our expert directory, access new projects & trends, and connect with key stakeholders.",
     image: "/images/professional3.webp",
     ctas: [
-      {
-        text: "Join the Network",
-        link: "/register",
-        variant: "outline"
-      },
-      {
-        text: "View Directory",
-        link: "/professionals/showcase",
-        variant: "outline"
-      }
+      { text: "Join the Network", link: "/register", variant: "outline" },
+      { text: "View Directory", link: "/professionals/showcase", variant: "outline" }
     ]
   },
   {
     title: "Investor Interested in Sri Lanka?",
-    body: "Explore the booming construction opportunities.",
-    points: [
-      "Access high-potential projects",
-      "Compare builders, pricing & data",
-      "Make smarter investment decisions",
-    ],
+    body: "Explore the booming construction opportunities. Access high-potential projects, compare builders, pricing & data, and make smarter investment decisions.",
     image: "/images/projects3.webp",
     ctas: [
-      {
-        text: "Explore Projects",
-        link: "/projects",
-        variant: "outline"
-      },
-      {
-        text: "View Market Data",
-        link: "/catalogue",
-        variant: "outline"
-      }
+      { text: "Explore Projects", link: "/projects", variant: "outline" },
+      { text: "View Market Data", link: "/catalogue", variant: "outline" }
     ]
   },
   {
     title: "Are You a Service Provider?",
-    body: "Connect with builders and grow your business.",
-    points: [
-      "Promote legal, financial & other services",
-      "Reach a wider audience",
-      "Get discovered by project owners",
-    ],
+    body: "Connect with builders and grow your business. Promote legal, financial & other services, reach a wider audience, and get discovered by project owners.",
     image: "/images/service3.webp",
     ctas: [
-      {
-        text: "List Your Services",
-        link: "/register",
-        variant: "outline"
-      }
+      { text: "List Your Services", link: "/register", variant: "outline" }
     ]
   },
   {
     title: "Are You a Subcontractor?",
-    body: "Find projects and get hired for your skills.",
-    points: [
-      "Access construction projects",
-      "Connect with contractors & builders",
-      "Showcase your expertise",
-    ],
+    body: "Find projects and get hired for your skills. Access construction projects, connect with contractors & builders, and showcase your expertise.",
     image: "/images/subcontractor3.webp",
     ctas: [
-      {
-        text: "Find Work",
-        link: "/projects",
-        variant: "outline"
-      },
-      {
-        text: "Join Network",
-        link: "/register",
-        variant: "outline"
-      }
+      { text: "Find Work", link: "/projects", variant: "outline" },
+      { text: "Join Network", link: "/register", variant: "outline" }
     ]
-  },
+  }
 ];
 
 const CTAButton = ({ 
@@ -343,7 +269,7 @@ const CTAButton = ({
   const variantClasses = {
     primary: "bg-orange-600 hover:bg-orange-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95",
     secondary: "bg-white/20 hover:bg-white/30 text-white border border-white/30 hover:border-white/50 backdrop-blur-sm",
-    outline: "bg-transparent hover:bg-white/10 text-black border-2 border-black/60 hover:border-black/80 hover:shadow-lg"
+    outline: "bg-gray-300 hover:bg-white/10 text-black border-2 border-black/60 hover:border-black/80 hover:shadow-lg"
   };
 
   return (
@@ -582,7 +508,13 @@ useEffect(() => {
             >
 
             <div className='text-white w-full overflow-hidden'>
-
+  <div className="flex justify-center mb-4 md:hidden">
+    <img
+      src="/images/logo.jpeg"
+      alt="BuildMarket LK Logo"
+      className="w-16 h-16 rounded-lg shadow-2xl"
+    />
+  </div>
               <h1 className="text-4xl md:text-6xl font-extrabold">BuildMarketLK</h1>
               <p className="text-gray-50 md:tracking-widest uppercase text-xs md:text-sm">Your Trusted Gateway to Building in Sri Lanka</p>
               
@@ -724,7 +656,7 @@ useEffect(() => {
   animate={{ opacity: 1 }}
   transition={{ delay: 0.15 + index * 0.03, duration: 0.1 }}
 >
-  <ul 
+  {/* <ul 
     className="list-disc font-medium text-left"
     style={{ listStylePosition: 'inside' }}
   >
@@ -741,7 +673,7 @@ useEffect(() => {
         {point}
       </motion.li>
     ))}
-  </ul>
+  </ul> */}
 </motion.div>
                                 <motion.div
                                   initial={{ opacity: 0, y: 20 }}

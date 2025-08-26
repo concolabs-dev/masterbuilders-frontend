@@ -36,11 +36,11 @@ export function MainNav() {
           Home
         </Link>
         <a
-          href="#about"
-          onClick={(e) => scrollToSection(e, "about")}
+          href="/build-in-sl"
+
           className="transition-colors hover:text-foreground/80 text-muted-foreground"
         >
-          About Us
+          Build-in-SL
         </a>
   
         <a

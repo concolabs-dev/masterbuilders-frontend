@@ -50,7 +50,35 @@ export default function ProfessionalsHub() {
           </Link>
         </div>
       </div>
-
+    <div className="bg-slate-50 rounded-xl p-8 mb-12">
+        <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+          <Search className="h-6 w-6 text-primary" />
+          <span>🔍 How It Works</span>
+        </h2>
+        <div className="grid md:grid-cols-3 gap-8">
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold mb-4">
+              1
+            </div>
+            <h3 className="text-lg font-medium mb-2">Browse</h3>
+            <p className="text-muted-foreground">Explore profiles of professionals by category and expertise.</p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold mb-4">
+              2
+            </div>
+            <h3 className="text-lg font-medium mb-2">Connect</h3>
+            <p className="text-muted-foreground">Reach out directly through our platform to discuss your project.</p>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold mb-4">
+              3
+            </div>
+            <h3 className="text-lg font-medium mb-2">Collaborate</h3>
+            <p className="text-muted-foreground">Work together to bring your construction vision to life.</p>
+          </div>
+        </div>
+      </div>
       {/* Professionals Cards */}
       <div className="grid md:grid-cols-3 gap-8 mb-16">
         {/* Contractors Card */}
@@ -60,7 +88,7 @@ export default function ProfessionalsHub() {
               <HardHat className="h-6 w-6 text-primary" />
             </div>
             <CardTitle className="text-2xl flex items-center gap-2">
-              <span>👷</span> Contractors
+             Contractors
             </CardTitle>
           </CardHeader>
           <CardContent className="flex-grow">
@@ -104,7 +132,7 @@ export default function ProfessionalsHub() {
               <Building className="h-6 w-6 text-primary" />
             </div>
             <CardTitle className="text-2xl flex items-center gap-2">
-              <span>🏛️</span> Architects
+           Architects
             </CardTitle>
           </CardHeader>
           <CardContent className="flex-grow">
@@ -148,7 +176,7 @@ export default function ProfessionalsHub() {
               <Ruler className="h-6 w-6 text-primary" />
             </div>
             <CardTitle className="text-2xl flex items-center gap-2">
-              <span>📐</span> Quantity Surveyors
+              Quantity Surveyors
             </CardTitle>
           </CardHeader>
           <CardContent className="flex-grow">
@@ -187,7 +215,7 @@ export default function ProfessionalsHub() {
       </div>
 
       {/* How It Works Section */}
-      <div className="bg-slate-50 rounded-xl p-8 mb-12">
+      {/* <div className="bg-slate-50 rounded-xl p-8 mb-12">
         <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
           <Search className="h-6 w-6 text-primary" />
           <span>🔍 How It Works</span>
@@ -215,7 +243,7 @@ export default function ProfessionalsHub() {
             <p className="text-muted-foreground">Work together to bring your construction vision to life.</p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* CTA Section */}
       <div className="text-center">

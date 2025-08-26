@@ -16,7 +16,7 @@ export default function SuccessPage() {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            Thank you for joining Master Builders. Our team will review your information and get back to you shortly.
+            Thank you for BuildmarketLK. Our team will review your information and get back to you shortly.
             Once approved, your company will be listed in our professionals showcase.
           </p>
         </CardContent>
@@ -24,8 +24,8 @@ export default function SuccessPage() {
           <Link href="/">
             <Button variant="outline">Return to Home</Button>
           </Link>
-          <Link href="/professionals/showcase">
-            <Button>Browse Professionals</Button>
+          <Link href="/professionals/dashboard">
+            <Button>Go to dashboard</Button>
           </Link>
         </CardFooter>
       </Card>

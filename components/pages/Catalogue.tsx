@@ -7,7 +7,7 @@ import { PriceChart } from "@/components/price-chart"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { ChevronDown, ChevronRight, Menu } from "lucide-react"
+import { ChevronDown, ChevronRight, Menu, X } from "lucide-react"
 import { Item, getItemsByMaterialID } from "@/app/api"
 import { SupplierItemCard } from "@/components/supplier-item-card"
 import { Head } from "next/document"
@@ -201,25 +201,26 @@ export default function CataloguePage() {
   }
 
   return (
-    <>
+  <>
     {isLoading && <Loading/>}
-    <div className="container mx-auto px-4 py-8">
-      <Button className="md:hidden bg-slate-900 mb-4" onClick={() => setShowSidebar(!showSidebar)}>
-        <Menu className="h-6 w-6" />
-        Categories
-      </Button>
+    
+    {/* Floating Categories Button for Mobile */}
+    <Button 
+      className="md:hidden fixed bottom-6 right-6 z-50 bg-slate-900 hover:bg-slate-800 text-white shadow-lg px-4 py-2 flex items-center gap-2"
+      onClick={() => setShowSidebar(true)}
+    >
+      <Menu className="h-4 w-4" />
+      Categories
+    </Button>
 
+    <div className="container mx-auto px-4 py-8">
       {/* Currency selection dropdown */}
       <div className="mb-4 flex items-center gap-2">
         {/* Currency selection code remains the same */}
       </div>
 
       <div className="grid gap-6 md:grid-cols-[400px_1fr]">
-        <aside
-          className={`space-y-4 bg-slate-900 p-4 rounded-lg text-white md:block ${
-            showSidebar ? "block" : "hidden"
-          }`}
-        >
+        <aside className="hidden md:block space-y-4 bg-slate-900 p-4 rounded-lg text-white">
           <h2 className="text-lg font-semibold">Categories</h2>
           {categories.map((type) => (
             <div key={type.name}>
@@ -351,10 +352,110 @@ export default function CataloguePage() {
         </div>
       </div>
       
+      {/* Categories Modal for Mobile */}
+      <Dialog open={showSidebar} onOpenChange={setShowSidebar}>
+        <DialogContent showCloseButton={false} className="max-w-sm max-h-[80vh] overflow-hidden p-0">
+          <div className="bg-slate-900 text-white h-full">
+            <div className="flex justify-between items-center p-4 border-b border-slate-700">
+              <h2 className="text-lg font-semibold">Categories</h2>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-white hover:bg-slate-800"
+                onClick={() => setShowSidebar(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="p-4 overflow-y-auto max-h-[calc(80vh-80px)] space-y-2">
+              {categories.map((type) => (
+                <div key={type.name}>
+                  <Button
+                    variant="ghost"
+                    className={`w-full justify-start text-white hover:text-white hover:bg-slate-800 ${
+                      selectedType === type.name ? "font-bold" : ""
+                    }`}
+                    onClick={() => {
+                      setSelectedType(type.name)
+                      setExpandedTypes((prev) =>
+                        prev.includes(type.name) ? prev.filter((t) => t !== type.name) : [...prev, type.name]
+                      )
+                    }}
+                  >
+                    {expandedTypes.includes(type.name) ? (
+                      <ChevronDown className="mr-2 h-4 w-4" />
+                    ) : (
+                      <ChevronRight className="mr-2 h-4 w-4" />
+                    )}{" "}
+                    {type.name}
+                  </Button>
+                  {expandedTypes.includes(type.name) && (
+                    <div className="ml-4">
+                      {type.categories.map((category) => (
+                        <div key={category.name}>
+                          <Button
+                            variant="ghost"
+                            className={`w-full justify-start pl-6 text-slate-300 hover:text-white hover:bg-slate-800 ${
+                              selectedCategory === category.name ? "font-bold" : ""
+                            }`}
+                            onClick={() => {
+                              handleCategorySelection(category.name)
+                              setShowSidebar(false) // Close modal after selection
+                            }}
+                          >
+                            {expandedCategories.includes(category.name) ? (
+                              <ChevronDown className="mr-2 h-4 w-4" />
+                            ) : (
+                              <ChevronRight className="mr-2 h-4 w-4" />
+                            )}{" "}
+                            {category.name}
+                          </Button>
+                          {expandedCategories.includes(category.name) &&
+                            category.subcategories &&
+                            category.subcategories.map((sub) => (
+                              <div className="ml-6" key={sub.name}>
+                                <Button
+                                  variant="ghost"
+                                  className={`w-full justify-start pl-8 text-slate-400 hover:text-white hover:bg-slate-800 ${
+                                    selectedSubcategory === sub.name ? "font-bold" : ""
+                                  }`}
+                                  onClick={() => {
+                                    handleSubcategorySelection(sub.name)
+                                    setShowSidebar(false) // Close modal after selection
+                                  }}
+                                >
+                                  {sub.name}
+                                </Button>
+                              </div>
+                            ))}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Material Details Dialog */}
       <Dialog open={!!selectedMaterial} onOpenChange={() => setSelectedMaterial(null)}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent showCloseButton={false} className="max-w-4xl max-h-[90vh] overflow-y-auto">
           {selectedMaterial && (
             <div className="p-4 space-y-4 bg-white rounded-lg">
+                 <div className="sticky top-2 z-50 flex justify-end px-2">
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  aria-label="Close"
+                  className="rounded-full shadow-md bg-white/90 text-gray-700 border hover:bg-white"
+                  onClick={() => setSelectedMaterial(null)}
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
               <h2 className="text-2xl font-bold text-center mb-4">{selectedMaterial.Name}</h2>
               <div className="grid grid-cols-2 gap-4 text-center text-sm md:text-base">
                 <div className="col-span-2 text-center">
@@ -369,7 +470,7 @@ export default function CataloguePage() {
                     return (
                       <p className="text-gray-700 text-lg">
                         Latest Price:{" "}
-                        <span className="text-green-700 font-bold">
+                        <span className="text-orange-600 font-bold">
                           {selectedCurrency} {displayedPrice.toFixed(2)}
                         </span>
                       </p>
@@ -465,6 +566,6 @@ export default function CataloguePage() {
         </DialogContent>
       </Dialog>
     </div>
-    </>
-  )
+  </>
+)
 }
