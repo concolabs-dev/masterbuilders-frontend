@@ -1,7 +1,7 @@
 import axios from "axios"
 
 
-const API_BASE_URL = "https://ravinduhiran.live"
+const API_BASE_URL = "https://server.buildmarketlk.com"
 const BACKEND_API_SECRET = process.env.NEXT_PUBLIC_BACKEND_API_SECRET || ""
 
 const backend_api_axios = axios.create({
