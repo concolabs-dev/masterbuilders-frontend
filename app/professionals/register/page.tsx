@@ -272,7 +272,6 @@ function ProfessionalRegistration() {
       title: "Basic User",
       price: "LKR 3,000",
       features: [],
-      // priceId: "price_1SEsBlHb6l5GodkUfSAHUCjA",
       priceId: "price_1SEsFpHb6l5GodkUY5ifwNvu",
       highlighted: false,
       packageName: "BML_BASIC",
@@ -664,7 +663,7 @@ function ProfessionalRegistration() {
                 packageList={packageTypes}
                 stripekey={process.env.NEXT_PUBLIC_STRIPE_SECRET || ""}
                 puid={user?.sub || ""}
-                code={"BLD"}
+                code={"BML"}
               />
             )}
           </form>
@@ -688,7 +687,7 @@ function ProfessionalRegistration() {
                 "Submitting..."
               ) : (
                 <>
-                  Submitted <Check className="ml-2 h-4 w-4" />
+                  User Submitted <Check className="ml-2 h-4 w-4" />
                 </>
               )}
             </Button>
