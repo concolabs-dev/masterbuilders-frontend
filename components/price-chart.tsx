@@ -1,6 +1,6 @@
 "use client"
 
-import { Area, AreaChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { Area, AreaChart, BarChart, Bar, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle ,CardFooter} from "@/components/ui/card"
 import { X } from "lucide-react"
 
@@ -18,6 +18,7 @@ interface PriceChartProps {
 
 export function PriceChart({ itemName, prices, currency, onClose }: PriceChartProps) {
   const validPrices = prices.filter((p): p is { date: string; price: number } => p.price !== null)
+  console.log(validPrices)
 
   return (
     <Card className="w-full border ">
@@ -31,11 +32,11 @@ export function PriceChart({ itemName, prices, currency, onClose }: PriceChartPr
       <CardContent>
         <div className="h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={validPrices}>
+            <BarChart data={validPrices}>
               <defs>
-                <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#ebc07fff" stopOpacity={0.4} />
-                  <stop offset="100%" stopColor="#f79029ff" stopOpacity={0} />
+                <linearGradient id="priceGradient" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#ebc07fff" stopOpacity={1} />
+                  <stop offset="100%" stopColor="#f79029ff" stopOpacity={0.8} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -65,16 +66,15 @@ export function PriceChart({ itemName, prices, currency, onClose }: PriceChartPr
                   return null
                 }}
               />
-              <Area
+              <Bar
                 // type="monotone"
                 dataKey="price"
                 stroke="#ee774fff"
                 strokeWidth={2}
                 fill="url(#priceGradient)"
-                dot={false}
-                activeDot={{ r: 4, stroke: "var(--primary)", strokeWidth: 2, fill: "var(--background)" }}
+                activeBar={{ fill: "black", stroke: "black", r: 5 }}
               />
-            </AreaChart>
+            </BarChart>
           </ResponsiveContainer>
         </div>
       </CardContent>
