@@ -1,6 +1,6 @@
 "use client"
 
-import { Area, AreaChart, BarChart, Bar, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { BarChart, Bar, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle ,CardFooter} from "@/components/ui/card"
 import { X } from "lucide-react"
 
@@ -18,7 +18,12 @@ interface PriceChartProps {
 
 export function PriceChart({ itemName, prices, currency, onClose }: PriceChartProps) {
   const validPrices = prices.filter((p): p is { date: string; price: number } => p.price !== null)
-  console.log(validPrices)
+
+  const roundedValidPrices = validPrices.map(p => ({
+    ...p,
+    price: Math.round(p.price * 100) / 100
+  }));
+  const filteredPrices = roundedValidPrices.filter(p => p.price !== 0);
 
   return (
     <Card className="w-full border ">
@@ -32,7 +37,7 @@ export function PriceChart({ itemName, prices, currency, onClose }: PriceChartPr
       <CardContent>
         <div className="h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={validPrices}>
+            <BarChart data={filteredPrices}>
               <defs>
                 <linearGradient id="priceGradient" x1="0" y1="0" x2="1" y2="1">
                   <stop offset="0%" stopColor="#ebc07fff" stopOpacity={1} />
@@ -44,9 +49,15 @@ export function PriceChart({ itemName, prices, currency, onClose }: PriceChartPr
                 dataKey="date"
                 tickFormatter={(value) => new Date(value).toLocaleDateString()}
                 stroke="#888888"
-                fontSize={12}
+                fontSize={10}
+                interval={0} // <-- Show all labels
               />
-              <YAxis stroke="#888888" fontSize={12} tickFormatter={(value) => `${currency} ${value}`} />
+              <YAxis
+                stroke="#888888"
+                fontSize={10}
+                tickFormatter={(value) => `${currency} ${value}`}
+                domain={['dataMin - 100', 'auto']}
+              />
               <Tooltip
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
@@ -70,7 +81,7 @@ export function PriceChart({ itemName, prices, currency, onClose }: PriceChartPr
                 // type="monotone"
                 dataKey="price"
                 stroke="#ee774fff"
-                strokeWidth={2}
+                // strokeWidth={2}
                 fill="url(#priceGradient)"
                 activeBar={{ fill: "black", stroke: "black", r: 5 }}
               />
