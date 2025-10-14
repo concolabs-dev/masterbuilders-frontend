@@ -43,8 +43,11 @@ function ProfessionalRegistration() {
   const progress = ((step - 1) / totalSteps) * 100;
 
   const { user } = useUser();
-  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
+  const [alreadyRegistered, setAlreadyRegistered] = useState<boolean|undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+
+  const formRef = React.useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     if (!user?.sub) return;
@@ -63,6 +66,11 @@ function ProfessionalRegistration() {
         console.error("Failed checking professional by PID:", err)
       );
   }, [user?.sub, router]);
+
+
+  useEffect(() => {
+    if (step === totalSteps && alreadyRegistered === false) formRef.current?.requestSubmit();
+  }, [step, alreadyRegistered]);
 
   const [formData, setFormData] = useState({
     companyName: "",
@@ -132,6 +140,7 @@ function ProfessionalRegistration() {
       const response = await createProfessional(professionalPayload);
       if (response) {
         console.log("Professional created successfully");
+        setIsSubmitting(false);
       }
     } catch (err) {
       console.error("Failed to create professional", err);
@@ -272,7 +281,8 @@ function ProfessionalRegistration() {
       title: "Basic User",
       price: "LKR 3,000",
       features: [],
-      priceId: "price_1SEsFpHb6l5GodkUY5ifwNvu",
+      // priceId: "price_1SEsBlHb6l5GodkUfSAHUCjA", // test price
+      priceId: "price_1SEsFpHb6l5GodkUY5ifwNvu", 
       highlighted: false,
       packageName: "BML_BASIC",
     },
@@ -293,12 +303,6 @@ function ProfessionalRegistration() {
       packageName: "BML_ANUAL",
     },
   ];
-
-  const formRef = React.useRef<HTMLFormElement>(null);
-
-  useEffect(() => {
-    if (step === totalSteps) formRef.current?.requestSubmit();
-  }, [step]);
 
   return (
     <div className="container max-w-3xl py-10">
@@ -672,24 +676,9 @@ function ProfessionalRegistration() {
           <Button variant="outline" onClick={handleBack} disabled={step === 1}>
             Back
           </Button>
-          {step < totalSteps ? (
+          {step < totalSteps && (
             <Button onClick={handleNext}>
               Continue <ChevronRight className="ml-2 h-4 w-4" />
-            </Button>
-          ) : (
-            <Button
-              // type="submit"
-              // form="registrationForm"
-              className="bg-primary"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                "Submitting..."
-              ) : (
-                <>
-                  User Submitted <Check className="ml-2 h-4 w-4" />
-                </>
-              )}
             </Button>
           )}
         </CardFooter>
