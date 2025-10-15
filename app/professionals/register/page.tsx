@@ -65,6 +65,7 @@ function ProfessionalRegistration() {
       .catch((err) =>
         console.error("Failed checking professional by PID:", err)
       );
+      setAlreadyRegistered(false);
   }, [user?.sub, router]);
 
 
@@ -278,29 +279,29 @@ function ProfessionalRegistration() {
 
   const packageTypes: Package[] = [
     {
-      title: "Basic User",
+      title: "User Monthly",
       price: "LKR 3,000",
       features: [],
-      // priceId: "price_1SEsBlHb6l5GodkUfSAHUCjA", // test price
-      priceId: "price_1SEsFpHb6l5GodkUY5ifwNvu", 
+      priceId: "price_1SEsBlHb6l5GodkUfSAHUCjA", // test price
+      // priceId: "price_1SEsFpHb6l5GodkUY5ifwNvu", 
       highlighted: false,
-      packageName: "BML_BASIC",
+      packageName: "BML_PRF_BASIC",
     },
-    {
-      title: "Gold User",
-      price: "LKR 10,000",
-      features: [],
-      highlighted: false,
-      priceId: "price_1SEsFYHb6l5GodkUuXISMv2N",
-      packageName: "BML_GOLD",
-    },
+    // {
+    //   title: "Gold User",
+    //   price: "LKR 10,000",
+    //   features: [],
+    //   highlighted: false,
+    //   priceId: "price_1SEsFYHb6l5GodkUuXISMv2N",
+    //   packageName: "BML_GOLD",
+    // },
     {
       title: "Year at Once",
       price: "LKR 30,000",
       features: [],
-      highlighted: true,
+      highlighted: false,
       priceId: "price_1SEsIPHb6l5GodkU3hFnjLKe",
-      packageName: "BML_ANUAL",
+      packageName: "BML_PRF_ANUAL",
     },
   ];
 
@@ -335,12 +336,14 @@ function ProfessionalRegistration() {
             {step === 2 && "Contact Details"}
             {step === 3 && "Specializations & Services"}
             {step === 4 && "Company Images"}
+            {step === 5 && "Payments"}
           </CardTitle>
           <CardDescription>
             {step === 1 && "Tell us about your company"}
             {step === 2 && "How can clients reach you?"}
             {step === 3 && "What services and specialties do you offer?"}
             {step === 4 && "Upload your company logo and cover image"}
+            {step === 5 && "Upload your company logo and cover image"}
           </CardDescription>
         </CardHeader>
         <CardContent>

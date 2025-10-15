@@ -1,370 +1,435 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client"
-import { Button } from "@/components/ui/button"
+import React from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client";
+import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Progress } from "@/components/ui/progress"
-import { ImageUpload } from "@/components/image-upload"
-import { Check, ChevronRight, MapPin } from "lucide-react"
-import { createSupplier, getSupplierByPID, Supplier, getSupplierByPPID } from "../api"
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Progress } from "@/components/ui/progress";
+import { ImageUpload } from "@/components/image-upload";
+import { Check, ChevronRight, MapPin } from "lucide-react";
+import {
+	createSupplier,
+	getSupplierByPID,
+	Supplier,
+	getSupplierByPPID,
+} from "../api";
+import { Package, PaymentContainer } from "@concolabs-dev/payment";
 // import dynamic from "next/dynamic"
 
 // const DynamicMapPicker = dynamic(() => import("@/components/MapPicker"), { ssr: false })
 
 function SupplierOnboarding() {
-  const router = useRouter()
-  const [step, setStep] = useState(1)
-  const totalSteps = 5
-  const progress = (step / totalSteps) * 100
-  const { user } = useUser()
-  const [alreadyRegistered, setAlreadyRegistered] = useState(false)
-    const [isSubmitting, setIsSubmitting] = useState(false)
-  useEffect(() => {
-    if (!user?.sub) return
-    getSupplierByPPID(user.sub)
-    .then((existing: Supplier | undefined) => {
-      if (existing) setAlreadyRegistered(true)
-    })
-    .catch((err) => console.error("Failed checking supplier by PID:", err))
-    getSupplierByPID(user.sub)
-      .then((existing: Supplier | undefined) => {
-        if (existing) router.push("/supplier/dashboard")
-      })
-      .catch((err) => console.error("Failed checking supplier by PID:", err))
-  }, [user?.sub, router])
+	const router = useRouter();
+	const [step, setStep] = useState(1);
+	const totalSteps = 5;
+	const progress = ((step - 1) / totalSteps) * 100;
+	const { user } = useUser();
+	const [alreadyRegistered, setAlreadyRegistered] = useState<boolean|undefined>(undefined);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+  const formRef = React.useRef<HTMLFormElement>(null);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    telephone: "",
-    address: "",
-    location: { lat: "", lng: "" },
-    profileImage: "",
-    coverImage: "",
-    description: "",
-  })
-  const [errors, setErrors] = useState<Record<string, string>>({})
+	useEffect(() => {
+		if (!user?.sub) return;
+		getSupplierByPPID(user.sub)
+			.then((existing: Supplier | undefined) => {
+				if (existing) setAlreadyRegistered(true);
+			})
+			.catch((err) => console.error("Failed checking supplier by PID:", err));
+		getSupplierByPID(user.sub)
+			.then((existing: Supplier | undefined) => {
+				if (existing) router.push("/supplier/dashboard");
+			})
+			.catch((err) => console.error("Failed checking supplier by PID:", err));
+      setAlreadyRegistered(false);
+	}, [user?.sub, router]);
 
-  const updateFormData = (field: string, value: string) =>
-    setFormData({ ...formData, [field]: value })
+    useEffect(() => {
+      if (step === totalSteps && alreadyRegistered === false) formRef.current?.requestSubmit();
+    }, [step, alreadyRegistered]);
 
-  const validateStep = () => {
-    const newErrors: Record<string, string> = {}
-    if (step === 1) {
-      if (!formData.name) newErrors.name = "Business name is required"
-      if (!formData.description || formData.description.length < 20) {
-        newErrors.description = "Description must be at least 20 characters"
-      }
-    }
-    if (step === 2) {
-      if (!formData.email) newErrors.email = "Email is required"
-      else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-        newErrors.email = "Invalid email format"
-      }
-      if (!formData.telephone) newErrors.telephone = "Telephone is required"
-      else if (!/^(0\d{9}|\+\d{2}\d{9})$/.test(formData.telephone)) {
-        newErrors.telephone = "Invalid telephone number"}
-    }
-    if (step === 3) {
-      if (!formData.address) newErrors.address = "Address is required"
-      if (!formData.location.lat || !formData.location.lng) {
-        newErrors.location = "Coordinates are required"
-      }
-    }
-    if (step === 4) {
-      if (!formData.profileImage) newErrors.profileImage = "Profile image is required"
-      if (!formData.coverImage) newErrors.coverImage = "Cover image is required"
-    }
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+	const [formData, setFormData] = useState({
+		name: "",
+		email: "",
+		telephone: "",
+		address: "",
+		location: { lat: "", lng: "" },
+		profileImage: "",
+		coverImage: "",
+		description: "",
+	});
+	const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleNext = () => {
-    if (validateStep()) {
-      if (step < totalSteps) {
-        setStep(step + 1)
-        window.scrollTo(0, 0)
-      }
-    }
-  }
+	const updateFormData = (field: string, value: string) =>
+		setFormData({ ...formData, [field]: value });
 
-  const handleBack = () => {
-    if (step > 1) {
-      setStep(step - 1)
-      window.scrollTo(0, 0)
-    }
-  }
+	const validateStep = () => {
+		const newErrors: Record<string, string> = {};
+		if (step === 1) {
+			if (!formData.name) newErrors.name = "Business name is required";
+			if (!formData.description || formData.description.length < 20) {
+				newErrors.description = "Description must be at least 20 characters";
+			}
+		}
+		if (step === 2) {
+			if (!formData.email) newErrors.email = "Email is required";
+			else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+				newErrors.email = "Invalid email format";
+			}
+			if (!formData.telephone) newErrors.telephone = "Telephone is required";
+			else if (!/^(0\d{9}|\+\d{2}\d{9})$/.test(formData.telephone)) {
+				newErrors.telephone = "Invalid telephone number";
+			}
+		}
+		if (step === 3) {
+			if (!formData.address) newErrors.address = "Address is required";
+			if (!formData.location.lat || !formData.location.lng) {
+				newErrors.location = "Coordinates are required";
+			}
+		}
+		if (step === 4) {
+			if (!formData.profileImage)
+				newErrors.profileImage = "Profile image is required";
+			if (!formData.coverImage)
+				newErrors.coverImage = "Cover image is required";
+		}
+		setErrors(newErrors);
+		return Object.keys(newErrors).length === 0;
+	};
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    // final validation
-    if (isSubmitting) return
-    if (!validateStep()) return
-setIsSubmitting(true)
-    const supplierPayload = {
-      email: formData.email,
-      pid: user?.sub || "",
-      business_name: formData.name,
-      business_description: formData.description,
-      telephone: formData.telephone,
-      email_given: formData.email,
-      address: formData.address,
-      location: {
-        latitude: parseFloat(formData.location.lat) || 1.0,
-        longitude: parseFloat(formData.location.lng) || 1.0,
-      },
-      profile_pic_url: formData.profileImage,
-      cover_pic_url: formData.coverImage,
-    }
-    try {
-        const response = await createSupplier(supplierPayload)
-      console.log("Supplier created successfully:", response)
-      
-      if (response) {
-        router.push('/api/auth/login?prompt=none&returnTo=/onboarding/success')
-      }
-    } catch (err) {
-      console.error("Failed to create supplier", err)
-    }finally {
-      // setIsSubmitting(false)
-    }
-  }
-  if (alreadyRegistered) {
-    return (
-      <div className="container max-w-3xl py-10 text-center">
-        <h1 className="text-2xl font-bold mb-4">You’re already registered!</h1>
-        <p className="text-muted-foreground mb-8">
-          The dashboard will be available soon after approval.
-        </p>
-      </div>
-    )
-  }
-  return (
-    <div className="container max-w-3xl py-10">
-      <div className="mb-8 space-y-4">
-        <h1 className="text-3xl font-bold">Supplier Onboarding</h1>
-        <p className="text-muted-foreground">
-          Complete your profile to join our network of trusted suppliers.
-        </p>
-      </div>
+	const handleNext = () => {
+		if (validateStep()) {
+			if (step < totalSteps) {
+				setStep(step + 1);
+				window.scrollTo(0, 0);
+			}
+		}
+	};
 
-      <div className="mb-8">
-        <div className="flex justify-between mb-2">
-          <span className="text-sm font-medium">
-            Step {step} of {totalSteps}
-          </span>
-          <span className="text-sm font-medium">{Math.round(progress)}% Complete</span>
-        </div>
-        <Progress value={progress} className="h-2" />
-      </div>
+	const handleBack = () => {
+		if (step > 1) {
+			setStep(step - 1);
+			window.scrollTo(0, 0);
+		}
+	};
 
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            {step === 1 && "Basic Information"}
-            {step === 2 && "Contact Details"}
-            {step === 3 && "Location"}
-            {step === 4 && "Profile Images"}
-          </CardTitle>
-          <CardDescription>
-            {step === 1 && "Tell us about your business"}
-            {step === 2 && "How can customers reach you?"}
-            {step === 3 && "Where are you located?"}
-            {step === 4 && "Upload your profile and cover images"}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form id="onboardingForm" onSubmit={handleSubmit}>
-            {step === 1 && (
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Business Name</Label>
-                  <Input
-                    id="name"
-                    placeholder="Your business name"
-                    value={formData.name}
-                    onChange={(e) => updateFormData("name", e.target.value)}
-                  />
-                  {errors.name && <p className="text-red-500">{errors.name}</p>}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="description">Business Description</Label>
-                  <Textarea
-                    id="description"
-                    placeholder="Tell us about your business and the products"
-                    value={formData.description}
-                    onChange={(e) => updateFormData("description", e.target.value)}
-                    className="min-h-[120px]"
-                  />
-                  {errors.description && (
-                    <p className="text-red-500">{errors.description}</p>
-                  )}
-                </div>
-              </div>
-            )}
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		// final validation
+		if (isSubmitting) return;
+		if (!validateStep()) return;
+		setIsSubmitting(true);
+		const supplierPayload = {
+			email: formData.email,
+			pid: user?.sub || "",
+			business_name: formData.name,
+			business_description: formData.description,
+			telephone: formData.telephone,
+			email_given: formData.email,
+			address: formData.address,
+			location: {
+				latitude: parseFloat(formData.location.lat) || 1.0,
+				longitude: parseFloat(formData.location.lng) || 1.0,
+			},
+			profile_pic_url: formData.profileImage,
+			cover_pic_url: formData.coverImage,
+		};
+		try {
+			const response = await createSupplier(supplierPayload);
+			console.log("Supplier created successfully:", response);
+		} catch (err) {
+			console.error("Failed to create supplier", err);
+		} finally {
+			// setIsSubmitting(false)
+		}
+	};
+	if (alreadyRegistered) {
+		return (
+			<div className="container max-w-3xl py-10 text-center">
+				<h1 className="text-2xl font-bold mb-4">You’re already registered!</h1>
+				<p className="text-muted-foreground mb-8">
+					The dashboard will be available soon after approval.
+				</p>
+			</div>
+		);
+	}
+    const packageTypes: Package[] = [
+    {
+      title: "User Monthly",
+      price: "LKR 3,000",
+      features: [],
+      priceId: "price_1SEsBlHb6l5GodkUfSAHUCjA", // test price
+      // priceId: "price_1SEsFpHb6l5GodkUY5ifwNvu", 
+      highlighted: false,
+      packageName: "BML_SUP_BASIC",
+    },
+    // {
+    //   title: "Gold User",
+    //   price: "LKR 10,000",
+    //   features: [],
+    //   highlighted: false,
+    //   priceId: "price_1SEsFYHb6l5GodkUuXISMv2N",
+    //   packageName: "BML_GOLD",
+    // },
+    {
+      title: "Year at Once",
+      price: "LKR 30,000",
+      features: [],
+      highlighted: false,
+      priceId: "price_1SEsIPHb6l5GodkU3hFnjLKe",
+      packageName: "BML_SUP_ANUAL",
+    },
+  ];
+	return (
+		<div className="container max-w-3xl py-10">
+			<div className="mb-8 space-y-4">
+				<h1 className="text-3xl font-bold">Supplier Onboarding</h1>
+				<p className="text-muted-foreground">
+					Complete your profile to join our network of trusted suppliers.
+				</p>
+			</div>
 
-            {step === 2 && (
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="your@email.com"
-                    value={formData.email}
-                    onChange={(e) => updateFormData("email", e.target.value)}
-                  />
-                  {errors.email && <p className="text-red-500">{errors.email}</p>}
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="telephone">Telephone Number</Label>
-                  <Input
-                    id="telephone"
-                    type="tel"
-                    placeholder="Your contact number"
-                    value={formData.telephone}
-                    onChange={(e) => updateFormData("telephone", e.target.value)}
-                  />
-                  {errors.telephone && (
-                    <p className="text-red-500">{errors.telephone}</p>
-                  )}
-                </div>
-              </div>
-            )}
+			<div className="mb-8">
+				<div className="flex justify-between mb-2">
+					<span className="text-sm font-medium">
+						Step {step} of {totalSteps}
+					</span>
+					<span className="text-sm font-medium">
+						{Math.round(progress)}% Complete
+					</span>
+				</div>
+				<Progress value={progress} className="h-2" />
+			</div>
 
-            {step === 3 && (
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="address">Address</Label>
-                  <Textarea
-                    id="address"
-                    placeholder="Your business address"
-                    value={formData.address}
-                    onChange={(e) => updateFormData("address", e.target.value)}
-                  />
-                  {errors.address && (
-                    <p className="text-red-500">{errors.address}</p>
-                  )}
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="latitude">Latitude</Label>
-                    <Input
-                      id="latitude"
-                      placeholder="e.g. 6.9271"
-                      value={formData.location.lat}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          location: { ...prev.location, lat: e.target.value },
-                        }))
-                      }
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="longitude">Longitude</Label>
-                    <Input
-                      id="longitude"
-                      placeholder="e.g. 79.8612"
-                      value={formData.location.lng}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          location: { ...prev.location, lng: e.target.value },
-                        }))
-                      }
-                    />
-                  </div>
-                </div>
-                {errors.location && (
-                  <p className="text-red-500">{errors.location}</p>
-                )}
-                <div className="flex items-center justify-center p-4 border rounded-md border-dashed">
-                  <div className="text-center">
-                    <MapPin className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-                    <p className="text-sm text-muted-foreground">
-                      To find your coordinates: <br />
-                      1) Open Google Maps and navigate to your address.<br />
-                      2) Right-click the location and select “What’s here?”<br />
-                      3) Copy the latitude and longitude shown.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
+			<Card>
+				<CardHeader>
+					<CardTitle>
+						{step === 1 && "Basic Information"}
+						{step === 2 && "Contact Details"}
+						{step === 3 && "Location"}
+						{step === 4 && "Profile Images"}
+						{step === 4 && "Payments"}
+					</CardTitle>
+					<CardDescription>
+						{step === 1 && "Tell us about your business"}
+						{step === 2 && "How can customers reach you?"}
+						{step === 3 && "Where are you located?"}
+						{step === 4 && "Upload your profile and cover images"}
+						{step === 4 && "Select Your Package"}
+					</CardDescription>
+				</CardHeader>
+				<CardContent>
+					<form id="onboardingForm" ref={formRef} onSubmit={handleSubmit}>
+						{step === 1 && (
+							<div className="space-y-4">
+								<div className="space-y-2">
+									<Label htmlFor="name">Business Name</Label>
+									<Input
+										id="name"
+										placeholder="Your business name"
+										value={formData.name}
+										onChange={(e) => updateFormData("name", e.target.value)}
+									/>
+									{errors.name && <p className="text-red-500">{errors.name}</p>}
+								</div>
+								<div className="space-y-2">
+									<Label htmlFor="description">Business Description</Label>
+									<Textarea
+										id="description"
+										placeholder="Tell us about your business and the products"
+										value={formData.description}
+										onChange={(e) =>
+											updateFormData("description", e.target.value)
+										}
+										className="min-h-[120px]"
+									/>
+									{errors.description && (
+										<p className="text-red-500">{errors.description}</p>
+									)}
+								</div>
+							</div>
+						)}
 
-            {step === 4 && (
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <Label>Profile Picture</Label>
-               <ImageUpload
-  value={formData.profileImage}
-  onChange={(url) => updateFormData("profileImage", url)}
-  label="Profile Image"
-  description="Upload supplier profile image"
-  dimensions={{ width: 400, height: 400 }}
-  enableCrop={true}
-  maxFileSize={4}
-  quality={88}
-  allowedFormats={['image/jpeg', 'image/png', 'image/webp']}
-  imageClassName="w-32 h-32 object-cover rounded-lg"
-/>
-                        {errors.profileImage && (
-                    <p className="text-red-500">{errors.profileImage}</p>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  <Label>Cover Image</Label>
-               <ImageUpload
-  value={formData.coverImage}
-  onChange={(url) => updateFormData("coverImage", url)}
-  label="Cover Image"
-  description="Upload supplier cover/banner image"
-  dimensions={{ width: 1200, height: 400 }}
-  enableCrop={true}
-  maxFileSize={8}
-  quality={85}
-  allowedFormats={['image/jpeg', 'image/png', 'image/webp']}
-  imageClassName="w-full h-40 object-cover rounded-lg"
-/>
-                        {errors.coverImage  && (
-                    <p className="text-red-500">{errors.coverImage}</p>
-                  )}
-                </div>
-              </div>
-            )}
-          </form>
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <Button variant="outline" onClick={handleBack} disabled={step === 1}>
-            Back
-          </Button>
-          {step < totalSteps ? (
-            <Button onClick={handleNext}>
-              Continue <ChevronRight className="ml-2 h-4 w-4" />
-            </Button>
-          ) : (
-            <Button type="submit" form="onboardingForm" className="bg-primary" disabled={isSubmitting}>
-                   {isSubmitting ? "Creating..." : "Complete"} <Check className="ml-2 h-4 w-4" />
-            </Button>
-          )}
-        </CardFooter>
-      </Card>
-    </div>
-  )
+						{step === 2 && (
+							<div className="space-y-4">
+								<div className="space-y-2">
+									<Label htmlFor="email">Email Address</Label>
+									<Input
+										id="email"
+										type="email"
+										placeholder="your@email.com"
+										value={formData.email}
+										onChange={(e) => updateFormData("email", e.target.value)}
+									/>
+									{errors.email && (
+										<p className="text-red-500">{errors.email}</p>
+									)}
+								</div>
+								<div className="space-y-2">
+									<Label htmlFor="telephone">Telephone Number</Label>
+									<Input
+										id="telephone"
+										type="tel"
+										placeholder="Your contact number"
+										value={formData.telephone}
+										onChange={(e) =>
+											updateFormData("telephone", e.target.value)
+										}
+									/>
+									{errors.telephone && (
+										<p className="text-red-500">{errors.telephone}</p>
+									)}
+								</div>
+							</div>
+						)}
+
+						{step === 3 && (
+							<div className="space-y-4">
+								<div className="space-y-2">
+									<Label htmlFor="address">Address</Label>
+									<Textarea
+										id="address"
+										placeholder="Your business address"
+										value={formData.address}
+										onChange={(e) => updateFormData("address", e.target.value)}
+									/>
+									{errors.address && (
+										<p className="text-red-500">{errors.address}</p>
+									)}
+								</div>
+								<div className="grid grid-cols-2 gap-4">
+									<div className="space-y-2">
+										<Label htmlFor="latitude">Latitude</Label>
+										<Input
+											id="latitude"
+											placeholder="e.g. 6.9271"
+											value={formData.location.lat}
+											onChange={(e) =>
+												setFormData((prev) => ({
+													...prev,
+													location: { ...prev.location, lat: e.target.value },
+												}))
+											}
+										/>
+									</div>
+									<div className="space-y-2">
+										<Label htmlFor="longitude">Longitude</Label>
+										<Input
+											id="longitude"
+											placeholder="e.g. 79.8612"
+											value={formData.location.lng}
+											onChange={(e) =>
+												setFormData((prev) => ({
+													...prev,
+													location: { ...prev.location, lng: e.target.value },
+												}))
+											}
+										/>
+									</div>
+								</div>
+								{errors.location && (
+									<p className="text-red-500">{errors.location}</p>
+								)}
+								<div className="flex items-center justify-center p-4 border rounded-md border-dashed">
+									<div className="text-center">
+										<MapPin className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
+										<p className="text-sm text-muted-foreground">
+											To find your coordinates: <br />
+											1) Open Google Maps and navigate to your address.
+											<br />
+											2) Right-click the location and select “What’s here?”
+											<br />
+											3) Copy the latitude and longitude shown.
+										</p>
+									</div>
+								</div>
+							</div>
+						)}
+
+						{step === 4 && (
+							<div className="space-y-6">
+								<div className="space-y-2">
+									<Label>Profile Picture</Label>
+									<ImageUpload
+										value={formData.profileImage}
+										onChange={(url) => updateFormData("profileImage", url)}
+										label="Profile Image"
+										description="Upload supplier profile image"
+										dimensions={{ width: 400, height: 400 }}
+										enableCrop={true}
+										maxFileSize={4}
+										quality={88}
+										allowedFormats={["image/jpeg", "image/png", "image/webp"]}
+										imageClassName="w-32 h-32 object-cover rounded-lg"
+									/>
+									{errors.profileImage && (
+										<p className="text-red-500">{errors.profileImage}</p>
+									)}
+								</div>
+								<div className="space-y-2">
+									<Label>Cover Image</Label>
+									<ImageUpload
+										value={formData.coverImage}
+										onChange={(url) => updateFormData("coverImage", url)}
+										label="Cover Image"
+										description="Upload supplier cover/banner image"
+										dimensions={{ width: 1200, height: 400 }}
+										enableCrop={true}
+										maxFileSize={8}
+										quality={85}
+										allowedFormats={["image/jpeg", "image/png", "image/webp"]}
+										imageClassName="w-full h-40 object-cover rounded-lg"
+									/>
+									{errors.coverImage && (
+										<p className="text-red-500">{errors.coverImage}</p>
+									)}
+								</div>
+							</div>
+						)}
+						{step === 5 && user != undefined && (
+							<PaymentContainer
+								backendUrl={process.env.NEXT_PUBLIC_PAYMENT_API_URL || ""}
+								cancelUrl={process.env.NEXT_PUBLIC_FRONTEND_API_URL || ""}
+								successUrl={(() => {
+									const base = process.env.NEXT_PUBLIC_FRONTEND_API_URL;
+									if (!base) return "";
+									return new URL(
+										"/api/auth/login?prompt=none&returnTo=/onboarding/success",
+										base
+									).toString();
+								})()}
+								packageList={packageTypes}
+								stripekey={process.env.NEXT_PUBLIC_STRIPE_SECRET || ""}
+								puid={user?.sub || ""}
+								code={"BML"}
+							/>
+						)}
+					</form>
+				</CardContent>
+				<CardFooter className="flex justify-between">
+					<Button variant="outline" onClick={handleBack} disabled={step === 1}>
+						Back
+					</Button>
+					{step < totalSteps && (
+						<Button onClick={handleNext}>
+							Continue <ChevronRight className="ml-2 h-4 w-4" />
+						</Button>
+					)}
+				</CardFooter>
+			</Card>
+		</div>
+	);
 }
 
-export default withPageAuthRequired(SupplierOnboarding)
+export default withPageAuthRequired(SupplierOnboarding);
