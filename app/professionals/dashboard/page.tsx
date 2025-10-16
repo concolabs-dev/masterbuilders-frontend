@@ -166,17 +166,17 @@ function ProfessionalDashboardPage() {
 					setProjects([]);
 				}
 
-				getProfessionalsPaymentRecordById(user.sub)
-					.then((data: PaymentRecord) => {
-						setPaidUserApprovedStatus(data.Approved);
-						if (data.Approved === false) {
-							setIsPaymentRequireDialogOpen(true);
-						}
-					})
-					.catch((err: any) => {
-						console.error("Error fetching supplier payments:", err);
-						setError(err);
-					});
+				// getProfessionalsPaymentRecordById(user.sub)
+				// 	.then((data: PaymentRecord) => {
+				// 		setPaidUserApprovedStatus(data.Approved);
+				// 		if (data.Approved === false) {
+				// 			setIsPaymentRequireDialogOpen(true);
+				// 		}
+				// 	})
+				// 	.catch((err: any) => {
+				// 		console.error("Error fetching supplier payments:", err);
+				// 		setError(err);
+				// 	});
 
 				setError(null);
 			} catch (err) {
@@ -297,53 +297,53 @@ function ProfessionalDashboardPage() {
 		);
 	}
 
-	// // No professional profile found
-	// if (!professionalData) {
-	// 	return (
-	// 		<div className="container mx-auto py-10 text-center">
-	// 			<h1 className="text-2xl font-bold mb-4">
-	// 				No Professional Profile Found
-	// 			</h1>
-	// 			<p className="text-muted-foreground mb-6">
-	// 				It seems you don't have a professional profile yet. Please complete
-	// 				the onboarding process.
-	// 			</p>
-	// 			<Button onClick={() => (window.location.href = "/onboarding")}>
-	// 				Complete Onboarding
-	// 			</Button>
-	// 		</div>
-	// 	);
-	// }
-
 	// No professional profile found
 	if (!professionalData) {
 		return (
-			<div className="container max-w-3xl py-10 text-center">
-				<h1 className="text-2xl font-bold mb-4">You’re already registered!</h1>
-				<p className="text-muted-foreground mb-8 flex flex-col items-center gap-[10px]">
-					Your trial period has ended. Please upgrade your plan within 7 days to
-					ensure uninterrupted access to the service.
-					<Button
-						onClick={() => setIsPaymentRequireDialogOpen(true)}
-						disabled={paidUserApprovedStatus}
-					>
-						Activate Now
-					</Button>
+			<div className="container mx-auto py-10 text-center">
+				<h1 className="text-2xl font-bold mb-4">
+					No Professional Profile Found
+				</h1>
+				<p className="text-muted-foreground mb-6">
+					It seems you don't have a professional profile yet. Please complete
+					the onboarding process.
 				</p>
-				<RequirePaymentDialog
-					open={isPaymentRequireDialogOpen}
-					onOpenChange={setIsPaymentRequireDialogOpen}
-					packageTypes={packageTypes}
-					puid={user?.sub || ""}
-					successUrl={(() => {
-						const base = process.env.NEXT_PUBLIC_FRONTEND_API_URL;
-						if (!base) return "";
-						return new URL("/professionals/register/success", base).toString();
-					})()}
-				/>
+				<Button onClick={() => (window.location.href = "/onboarding")}>
+					Complete Onboarding
+				</Button>
 			</div>
 		);
 	}
+
+	// No professional profile found
+	// if (!professionalData) {
+	// 	return (
+	// 		<div className="container max-w-3xl py-10 text-center">
+	// 			<h1 className="text-2xl font-bold mb-4">You’re already registered!</h1>
+	// 			<p className="text-muted-foreground mb-8 flex flex-col items-center gap-[10px]">
+	// 				Your trial period has ended. Please upgrade your plan within 7 days to
+	// 				ensure uninterrupted access to the service.
+	// 				<Button
+	// 					onClick={() => setIsPaymentRequireDialogOpen(true)}
+	// 					disabled={paidUserApprovedStatus}
+	// 				>
+	// 					Activate Now
+	// 				</Button>
+	// 			</p>
+	// 			<RequirePaymentDialog
+	// 				open={isPaymentRequireDialogOpen}
+	// 				onOpenChange={setIsPaymentRequireDialogOpen}
+	// 				packageTypes={packageTypes}
+	// 				puid={user?.sub || ""}
+	// 				successUrl={(() => {
+	// 					const base = process.env.NEXT_PUBLIC_FRONTEND_API_URL;
+	// 					if (!base) return "";
+	// 					return new URL("/professionals/register/success", base).toString();
+	// 				})()}
+	// 			/>
+	// 		</div>
+	// 	);
+	// }
 
 	return (
 		<div className="container mx-auto py-10">
