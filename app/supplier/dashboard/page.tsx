@@ -41,6 +41,8 @@ import {
 	getMaterialsByCategory,
 	getSupplierByPID,
 	getProfessionalByPID,
+	PaymentRecord,
+	getPaymentRecordById,
 } from "@/app/api";
 import Loading from "@/components/loading";
 
@@ -103,6 +105,34 @@ const mockPaymentMethods = [
 		isDefault: false,
 	},
 ];
+
+const packageTypes: Package[] = [
+	{
+		title: "User Monthly",
+		price: "LKR 3,000",
+		features: [],
+		priceId: "price_1SEsBlHb6l5GodkUfSAHUCjA", // test price
+		// priceId: "price_1SEsFpHb6l5GodkUY5ifwNvu",
+		highlighted: false,
+		packageName: "BML_SUP_BASIC",
+	},
+	// {
+	//   title: "Gold User",
+	//   price: "LKR 10,000",
+	//   features: [],
+	//   highlighted: false,
+	//   priceId: "price_1SEsFYHb6l5GodkUuXISMv2N",
+	//   packageName: "BML_GOLD",
+	// },
+	{
+		title: "Year at Once",
+		price: "LKR 30,000",
+		features: [],
+		highlighted: false,
+		priceId: "price_1SEsIPHb6l5GodkU3hFnjLKe",
+		packageName: "BML_SUP_ANUAL",
+	},
+];
 function SupplierDashboardPage() {
 	const { user, error: userError, isLoading: userLoading } = useUser();
 	const [supplier, setSupplier] = useState<Supplier | null>(null);
@@ -132,8 +162,10 @@ function SupplierDashboardPage() {
 	const [invoices, setInvoices] = useState(mockInvoices);
 	const [paymentMethods, setPaymentMethods] = useState(mockPaymentMethods);
 	const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
-  const [isPaymentRequireDialogOpen, setIsPaymentRequireDialogOpen] = useState(false);
-  const [isPaidUser, setIsPaidUser] = useState(false);
+	const [isPaymentRequireDialogOpen, setIsPaymentRequireDialogOpen] =
+		useState(false);
+	const [paidUserApprovedStatus, setPaidUserApprovedStatus] = useState(false);
+
 	const handleDownloadInvoice = (invoiceId: string) => {
 		console.log("Downloading invoice:", invoiceId);
 		// In a real app, this would trigger a download
@@ -170,6 +202,18 @@ function SupplierDashboardPage() {
 					.catch((err) => {
 						console.error("Error fetching supplier:", err);
 						setSupplierError(err);
+						setSupplierLoading(false);
+					});
+				getPaymentRecordById(user.sub)
+					.then((data: PaymentRecord) => {
+						setPaidUserApprovedStatus(data.Approved);
+						if (data.Approved === false) {
+							setIsPaymentRequireDialogOpen(true);
+						}
+					})
+					.catch((err) => {
+						console.error("Error fetching supplier payments:", err);
+						// setSupplierError(err);
 						setSupplierLoading(false);
 					});
 				const professional = getProfessionalByPID(user.sub);
@@ -344,47 +388,38 @@ function SupplierDashboardPage() {
 		return (
 			<div className="container max-w-3xl py-10 text-center">
 				<h1 className="text-2xl font-bold mb-4">You’re already registered!</h1>
-				<p className="text-muted-foreground mb-8">
-					The dashboard will be available soon after approval.
+				<p className="text-muted-foreground mb-8 flex flex-col items-center gap-[10px]">
+					Your trial period has ended. Please upgrade your plan within 7 days to
+					ensure uninterrupted access to the service.
+					<Button
+						onClick={() => setIsPaymentRequireDialogOpen(true)}
+						disabled={paidUserApprovedStatus}
+					>
+						Activate Now
+					</Button>
 				</p>
+				<RequirePaymentDialog
+					open={isPaymentRequireDialogOpen}
+					onOpenChange={setIsPaymentRequireDialogOpen}
+					packageTypes={packageTypes}
+					puid={user?.sub || ""}
+					successUrl={(() => {
+						const base = process.env.NEXT_PUBLIC_FRONTEND_API_URL;
+						if (!base) return "";
+						return new URL("/professionals/register/success", base).toString();
+					})()}
+				/>
 			</div>
 		);
 	}
 	if (userError || supplierError) {
+		console.log("userError", userError, "supplierError", supplierError);
 		return <div>Error loading supplier data.</div>;
 	}
 
 	if (!supplier) {
 		return <div>No supplier found for {user?.email}.</div>;
 	}
-
-	const packageTypes: Package[] = [
-		{
-			title: "User Monthly",
-			price: "LKR 3,000",
-			features: [],
-			priceId: "price_1SEsBlHb6l5GodkUfSAHUCjA", // test price
-			// priceId: "price_1SEsFpHb6l5GodkUY5ifwNvu",
-			highlighted: false,
-			packageName: "BML_SUP_BASIC",
-		},
-		// {
-		//   title: "Gold User",
-		//   price: "LKR 10,000",
-		//   features: [],
-		//   highlighted: false,
-		//   priceId: "price_1SEsFYHb6l5GodkUuXISMv2N",
-		//   packageName: "BML_GOLD",
-		// },
-		{
-			title: "Year at Once",
-			price: "LKR 30,000",
-			features: [],
-			highlighted: false,
-			priceId: "price_1SEsIPHb6l5GodkU3hFnjLKe",
-			packageName: "BML_SUP_ANUAL",
-		},
-	];
 
 	return (
 		<div className="container mx-auto py-10">
@@ -687,22 +722,7 @@ function SupplierDashboardPage() {
 										"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2RlIjoiQk1MIn0.TvMGIrH9i1mtMw2He6_Fs3am_xXd5FxLtX8nhyF9fio"
 									}
 								/>
-                <Button onClick={()=>setIsPaymentRequireDialogOpen(true)}>Activate Now</Button>
 							</div>
-							<RequirePaymentDialog
-								open={isPaymentRequireDialogOpen}
-                onOpenChange={setIsPaymentRequireDialogOpen}
-								packageTypes={packageTypes}
-								puid={user?.sub || ""}
-								successUrl={(() => {
-									const base = process.env.NEXT_PUBLIC_FRONTEND_API_URL;
-									if (!base) return "";
-									return new URL(
-										"/professionals/register/success",
-										base
-									).toString();
-								})()}
-							/>
 						</CardContent>
 					</Card>
 				</TabsContent>
