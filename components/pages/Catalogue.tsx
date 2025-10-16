@@ -327,7 +327,7 @@ export default function CataloguePage() {
           <div ref={resultsRef} className="grid gap-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
             {materials.length > 0 ? (
               materials.map((material) => {
-                const priceLKR = material.Prices.find((p) => p[1])?.[1] || 0
+                const priceLKR = material.Prices.slice().reverse().find((p) => p[1])?.[1] || 0
                 const conversionRate = getConversionRate()
                 const displayedPrice = priceLKR * conversionRate
                 return (
