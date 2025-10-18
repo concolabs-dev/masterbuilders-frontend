@@ -16,6 +16,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Check, ChevronRight, MapPin } from "lucide-react"
 import { createProfessional, getProfessionalByPID, Professional} from "@/app/api"
 import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client"
+import { Package, PaymentContainer } from "@concolabs-dev/payment";
+
  
 function ProfessionalRegistration() {
   const router = useRouter()
