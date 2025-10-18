@@ -1,7 +1,8 @@
 import axios from "axios";
 
 // const API_BASE_URL = "https://server.buildmarketlk.com"
-const API_BASE_URL = "http://localhost:8040";
+// const API_BASE_URL = "http://localhost:8040";
+const API_BASE_URL = "http://51.21.98.176:8040";
 
 const BACKEND_API_SECRET = process.env.NEXT_PUBLIC_BACKEND_API_SECRET || "";
 
