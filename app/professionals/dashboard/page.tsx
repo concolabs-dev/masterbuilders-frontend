@@ -20,6 +20,8 @@ import {
 	createProject,
 	updateProfessional,
 	PaymentRecord,
+	getProfessionalsPaymentRecordById,
+	getPaymentRecordById,
 } from "@/app/api";
 import Loading from "../loading";
 import { AlertCircle } from "lucide-react";
@@ -166,17 +168,17 @@ function ProfessionalDashboardPage() {
 					setProjects([]);
 				}
 
-				// getProfessionalsPaymentRecordById(user.sub)
-				// 	.then((data: PaymentRecord) => {
-				// 		setPaidUserApprovedStatus(data.Approved);
-				// 		if (data.Approved === false) {
-				// 			setIsPaymentRequireDialogOpen(true);
-				// 		}
-				// 	})
-				// 	.catch((err: any) => {
-				// 		console.error("Error fetching supplier payments:", err);
-				// 		setError(err);
-				// 	});
+				getPaymentRecordById(user.sub, "professional")
+					.then((data: PaymentRecord) => {
+						setPaidUserApprovedStatus(data.Approved);
+						if (data.Approved === false) {
+							setIsPaymentRequireDialogOpen(true);
+						}
+					})
+					.catch((err: any) => {
+						console.error("Error fetching professional payments:", err);
+						setError(err);
+					});
 
 				setError(null);
 			} catch (err) {
@@ -545,7 +547,7 @@ function ProfessionalDashboardPage() {
 										"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2RlIjoiQk1MIn0.TvMGIrH9i1mtMw2He6_Fs3am_xXd5FxLtX8nhyF9fio"
 									}
 								/>
-								<Button onClick={() => setIsPaymentRequireDialogOpen(true)}>
+								<Button onClick={() => setIsPaymentRequireDialogOpen(true)} disabled={paidUserApprovedStatus}>
 									Activate Now
 								</Button>
 							</div>

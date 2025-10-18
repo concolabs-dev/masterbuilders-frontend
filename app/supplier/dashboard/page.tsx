@@ -112,7 +112,7 @@ const packageTypes: Package[] = [
 		price: "LKR 3,000",
 		features: [],
 		priceId: "price_1SEsBlHb6l5GodkUfSAHUCjA", // test price
-		// priceId: "price_1SEsFpHb6l5GodkUY5ifwNvu",
+		// priceId: "price_1SIvnjHb6l5GodkUvagW6im5",
 		highlighted: false,
 		packageName: "BML_SUP_BASIC",
 	},
@@ -129,7 +129,7 @@ const packageTypes: Package[] = [
 		price: "LKR 30,000",
 		features: [],
 		highlighted: false,
-		priceId: "price_1SEsIPHb6l5GodkU3hFnjLKe",
+		priceId: "price_1SIvoOHb6l5GodkUC67C3BYj",
 		packageName: "BML_SUP_ANUAL",
 	},
 ];
@@ -204,7 +204,7 @@ function SupplierDashboardPage() {
 						setSupplierError(err);
 						setSupplierLoading(false);
 					});
-				getPaymentRecordById(user.sub)
+				getPaymentRecordById(user.sub, "supplier")
 					.then((data: PaymentRecord) => {
 						setPaidUserApprovedStatus(data.Approved);
 						if (data.Approved === false) {

@@ -1,7 +1,6 @@
 import axios from "axios"
 
-
-const API_BASE_URL = "https://server.buildmarketlk.com"
+const API_BASE_URL = process.env.BACKEND_API_URL
 const BACKEND_API_SECRET = process.env.NEXT_PUBLIC_BACKEND_API_SECRET || ""
 
 const backend_api_axios = axios.create({
@@ -160,7 +159,7 @@ export interface Payment {
 // PaymentRecord model
 export interface PaymentRecord {
   id: string
-  Supplierpid: string
+  Pid: string
   Approved: boolean
   Payments: Payment[]
   Deleted: boolean
@@ -351,8 +350,8 @@ export const getPaymentRecords = async () => {
   return response.data
 }
 
-export const getPaymentRecordById = async (id: string) => {
-  const response = await backend_api_axios.get<PaymentRecord>(`/paymentRecords/${id}`)
+export const getPaymentRecordById = async (pid: string, type:string) => {
+  const response = await backend_api_axios.get<PaymentRecord>(`/paymentRecords/${pid}/${type}`)
   return response.data
 }
 
@@ -407,6 +406,11 @@ export const updateProfessional = async (id: string, professional: Professional)
 
 export const deleteProfessional = async (id: string) => {
   await backend_api_axios.delete(`/professionals/${id}`)
+}
+
+export const getProfessionalsPaymentRecordById = async (pid: string) => {
+  const response = await backend_api_axios.get<PaymentRecord>(`/professionals/paymentRecords/${pid}`)
+  return response.data
 }
 // Project API calls
 
