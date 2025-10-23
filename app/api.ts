@@ -4,7 +4,7 @@ import axios, { AxiosError } from "axios";
 // const API_BASE_URL = "http://localhost:8040";
 // const API_BASE_URL = "https://test-server.buildmarketlk.com";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 const BACKEND_API_SECRET = process.env.NEXT_PUBLIC_BACKEND_API_SECRET || "";
 
 const backend_api_axios = axios.create({
@@ -217,33 +217,34 @@ export const getSupplierByPID = async (pid: string) => {
 	);
 	return response.data;
 };
-export const getSupplierByPPID = async (pid: string) => {
-	const response = await backend_api_axios.get<Supplier>(
-		`/suppliers/pid/napproved/${pid}`
-	);
-	return response.data;
-};
 
-export const getSupplierByPPID_new = async (
-  pid: string
+// export const getSupplierByPPID = async (pid: string) => {
+// 	const response = await backend_api_axios.get<Supplier>(
+// 		`/suppliers/pid/napproved/${pid}`
+// 	);
+// 	return response.data;
+// };
+
+export const getSupplierByPPID = async (
+	pid: string
 ): Promise<Supplier | undefined> => {
-  try {
-	const response = await backend_api_axios.get<Supplier>(
-		`/suppliers/pid/napproved/${pid}`
-	);
-	return response.data;
-  } catch (error) {
-    const err = error as AxiosError;
+	try {
+		const response = await backend_api_axios.get<Supplier>(
+			`/suppliers/pid/napproved/${pid}`
+		);
+		return response.data;
+	} catch (error) {
+		const err = error as AxiosError;
 
-    // Handle "not found" (HTTP 404) as "no supplier exists"
-    if (err.response?.status === 404) {
-      return undefined;
-    }
+		// Handle "not found" (HTTP 404) as "no supplier exists"
+		if (err.response?.status === 404) {
+			return undefined;
+		}
 
-    // Throw other errors (network, 500s, etc.)
-    console.error("Error fetching professional by PID:", err);
-    throw err;
-  }
+		// Throw other errors (network, 500s, etc.)
+		console.error("Error fetching Suppliers by PID:", err);
+		throw err;
+	}
 };
 
 export const getSupplierByEmail = async (email: string) => {
@@ -464,14 +465,14 @@ export const getProfessionalById = async (id: string) => {
 	return response.data;
 };
 
-export const getProfessionalByPID = async (pid: string) => {
-	const response = await backend_api_axios.get<Professional>(
-		`/professionals/pid/${pid}`
-	);
-	return response.data;
-};
+// export const getProfessionalByPID = async (pid: string) => {
+// 	const response = await backend_api_axios.get<Professional>(
+// 		`/professionals/pid/${pid}`
+// 	);
+// 	return response.data;
+// };
 
-export const getProfessionalByPID_new = async (
+export const getProfessionalByPID = async (
 	pid: string
 ): Promise<Professional | undefined> => {
 	try {

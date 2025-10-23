@@ -30,7 +30,6 @@ import { Check, ChevronRight, MapPin } from "lucide-react";
 import {
 	createProfessional,
 	getProfessionalByPID,
-	getProfessionalByPID_new,
 	Professional,
 } from "@/app/api";
 import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client";
@@ -208,7 +207,7 @@ function ProfessionalRegistration() {
 
 	useEffect(() => {
 		if (!user?.sub) return;
-		getProfessionalByPID_new(user.sub)
+		getProfessionalByPID(user.sub)
 			.then((existing: Professional | undefined) => {
 				if (existing) {
 					router.push("/professionals/dashboard");

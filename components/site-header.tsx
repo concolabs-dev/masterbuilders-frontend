@@ -11,8 +11,8 @@ import { useState, KeyboardEvent, useEffect } from "react";
 import { Menu } from "@headlessui/react";
 import {
 	getPaymentRecordById,
-	getProfessionalByPID_new,
-  getSupplierByPPID_new,
+	getProfessionalByPID,
+	getSupplierByPPID,
 } from "@/app/api"; // Import your API functions
 import { TopBanner } from "./top-banner";
 
@@ -36,12 +36,12 @@ export function SiteHeader() {
 			let userRole: "professional" | "supplier" | null = null;
 
 			try {
-				const professional = await getProfessionalByPID_new(user.sub);
+				const professional = await getProfessionalByPID(user.sub);
 				if (professional) {
 					setUserType("professional");
 					userRole = "professional";
 				} else {
-					const supplier = await getSupplierByPPID_new(user.sub as string);
+					const supplier = await getSupplierByPPID(user.sub as string);
 					if (supplier && userType !== "professional") {
 						setUserType("supplier");
 						userRole = "supplier";
@@ -50,7 +50,7 @@ export function SiteHeader() {
 
 				if (userRole) {
 					const paymentRecord = await getPaymentRecordById(user.sub, userRole);
-          console.log("Payment Record:", paymentRecord);
+					console.log("Payment Record:", paymentRecord);
 					if (paymentRecord.approved === false) {
 						setIsBannerVisible(true);
 					}
@@ -89,11 +89,6 @@ export function SiteHeader() {
 			// Fallback to supplier dashboard if type is unknown
 			router.push("/supplier/dashboard");
 		}
-	};
-
-	const handleActivate = () => {
-		setIsBannerVisible(false);
-		handleDashboardClick();
 	};
 
 	return (
@@ -171,8 +166,7 @@ export function SiteHeader() {
 				backgroundColor="#FFC107"
 				textColor="#1F1F1F"
 				isVisible={isBannerVisible}
-				onClose={() => setIsBannerVisible(false)}
-				onActivate={handleActivate}
+				onActivate={handleDashboardClick}
 			/>
 		</>
 	);
