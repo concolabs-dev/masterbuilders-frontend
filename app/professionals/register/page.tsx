@@ -30,6 +30,7 @@ import { Check, ChevronRight, MapPin } from "lucide-react";
 import {
 	createProfessional,
 	getProfessionalByPID,
+	getProfessionalByPID_new,
 	Professional,
 } from "@/app/api";
 import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client";
@@ -207,7 +208,7 @@ function ProfessionalRegistration() {
 
 	useEffect(() => {
 		if (!user?.sub) return;
-		getProfessionalByPID(user.sub)
+		getProfessionalByPID_new(user.sub)
 			.then((existing: Professional | undefined) => {
 				if (existing) {
 					router.push("/professionals/dashboard");
@@ -678,11 +679,11 @@ function ProfessionalRegistration() {
 					<Button variant="outline" onClick={handleBack} disabled={step === 1}>
 						Back
 					</Button>
-          {step < totalSteps && (
-            <Button onClick={handleNext}>
-              Continue <ChevronRight className="ml-2 h-4 w-4" />
-            </Button>
-          )}
+					{step < totalSteps && (
+						<Button onClick={handleNext}>
+							Continue <ChevronRight className="ml-2 h-4 w-4" />
+						</Button>
+					)}
 				</CardFooter>
 			</Card>
 		</div>

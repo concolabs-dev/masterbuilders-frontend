@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 // const API_BASE_URL = "https://server.buildmarketlk.com"
 // const API_BASE_URL = "http://localhost:8040";
@@ -221,6 +221,28 @@ export const getSupplierByPPID = async (pid: string) => {
 		`/suppliers/pid/napproved/${pid}`
 	);
 	return response.data;
+};
+
+export const getSupplierByPPID_new = async (
+  pid: string
+): Promise<Supplier | undefined> => {
+  try {
+	const response = await backend_api_axios.get<Supplier>(
+		`/suppliers/pid/napproved/${pid}`
+	);
+	return response.data;
+  } catch (error) {
+    const err = error as AxiosError;
+
+    // Handle "not found" (HTTP 404) as "no supplier exists"
+    if (err.response?.status === 404) {
+      return undefined;
+    }
+
+    // Throw other errors (network, 500s, etc.)
+    console.error("Error fetching professional by PID:", err);
+    throw err;
+  }
 };
 
 export const getSupplierByEmail = async (email: string) => {
@@ -446,6 +468,28 @@ export const getProfessionalByPID = async (pid: string) => {
 		`/professionals/pid/${pid}`
 	);
 	return response.data;
+};
+
+export const getProfessionalByPID_new = async (
+	pid: string
+): Promise<Professional | undefined> => {
+	try {
+		const response = await backend_api_axios.get<Professional>(
+			`/professionals/pid/${pid}`
+		);
+		return response.data;
+	} catch (error) {
+		const err = error as AxiosError;
+
+		// Handle "not found" (HTTP 404) as "no professional exists"
+		if (err.response?.status === 404) {
+			return undefined;
+		}
+
+		// Throw other errors (network, 500s, etc.)
+		console.error("Error fetching professional by PID:", err);
+		throw err;
+	}
 };
 
 export const getProfessionalByEmail = async (email: string) => {

@@ -24,6 +24,7 @@ import {
 	getSupplierByPID,
 	Supplier,
 	getSupplierByPPID,
+	getSupplierByPPID_new,
 } from "../api";
 import { Package, PaymentContainer } from "@concolabs-dev/payment";
 // import dynamic from "next/dynamic"
@@ -73,7 +74,7 @@ function SupplierOnboarding() {
 
 	useEffect(() => {
 		if (!user?.sub) return;
-		getSupplierByPPID(user.sub)
+		getSupplierByPPID_new(user.sub)
 			.then((existing: Supplier | undefined) => {
 				if (existing) {
 					setAlreadyRegistered(true);
@@ -83,12 +84,6 @@ function SupplierOnboarding() {
 				} else {
 					setAlreadyRegistered(false);
 				}
-			})
-			.catch((err) => console.error("Failed checking supplier by PID:", err));
-
-		getSupplierByPID(user.sub)
-			.then((existing: Supplier | undefined) => {
-				if (existing) router.push("/supplier/dashboard");
 			})
 			.catch((err) => console.error("Failed checking supplier by PID:", err));
 	}, [user?.sub, router]);
