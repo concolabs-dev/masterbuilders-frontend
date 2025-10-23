@@ -35,7 +35,7 @@ jobs:
             npm run build
 
             echo "Reloading PM2 process..."
-            pm2 reload build-m-f || pm2 start npm --name "build-m-f" -- start
+            pm2 reload frontend || pm2 start npm --name "frontend" -- start
             pm2 save
 
             echo "✅ Deploy complete!"
