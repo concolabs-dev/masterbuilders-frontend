@@ -2,9 +2,9 @@ import axios, { AxiosError } from "axios";
 
 // const API_BASE_URL = "https://server.buildmarketlk.com"
 // const API_BASE_URL = "http://localhost:8040";
-//const API_BASE_URL = "https://test-server.buildmarketlk.com";
+// const API_BASE_URL = "https://test-server.buildmarketlk.com";
 
-const API_BASE_URL = process.env.BACKEND_API_URL
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL
 const BACKEND_API_SECRET = process.env.NEXT_PUBLIC_BACKEND_API_SECRET || "";
 
 const backend_api_axios = axios.create({
