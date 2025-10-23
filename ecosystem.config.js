@@ -3,11 +3,9 @@ module.exports = {
     {
       name: "frontend",
       script: "npm",
-      args: "start",
+      args: "start", // The script command for npm
       cwd: "/home/ubuntu/masterbuilders-frontend",
-      node_args: "-r dotenv/config",
-      args: "--dotenv_config_path=/home/ubuntu/masterbuilders-frontend/.env.test",
-      env_file: ".env.test",
+      env_file: ".env.test", // The correct PM2 way to load this file
     }
   ]
-}
+};
