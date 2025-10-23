@@ -24,7 +24,6 @@ import {
 	getSupplierByPID,
 	Supplier,
 	getSupplierByPPID,
-	getSupplierByPPID_new,
 } from "../api";
 import { Package, PaymentContainer } from "@concolabs-dev/payment";
 // import dynamic from "next/dynamic"
@@ -74,7 +73,7 @@ function SupplierOnboarding() {
 
 	useEffect(() => {
 		if (!user?.sub) return;
-		getSupplierByPPID_new(user.sub)
+		getSupplierByPPID(user.sub)
 			.then((existing: Supplier | undefined) => {
 				if (existing) {
 					setAlreadyRegistered(true);

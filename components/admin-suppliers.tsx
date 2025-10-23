@@ -37,13 +37,9 @@ function AdminSuppliersTab() {
 			const notApproved: SupplierWithRecord[] = [];
 
 			for (const record of paymentRecords) {
-				let supplier: Supplier;
-
-				try {
-					supplier = await getSupplierByPPID(record.pid);
-				} catch (error) {
-					console.error("Error fetching supplier by PPID:", error);
-					continue;
+				let supplier = await getSupplierByPPID(record.pid);
+				if (!supplier) {
+					throw new Error("Supplier not found");
 				}
 
 				if (record.approved) {

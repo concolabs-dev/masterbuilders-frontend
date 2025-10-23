@@ -151,7 +151,12 @@ function ProfessionalDashboardPage() {
 
 				// Fetch professional data
 				const professional = await getProfessionalByPID(user.sub);
-				console.log(professional);
+				
+				if (!professional) {
+					setError("Professional profile not found.");
+					throw new Error("Professional profile not found.");
+				}
+
 				setProfessionalData(professional);
 
 				// Fetch projects associated with the professional's PID
