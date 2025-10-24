@@ -321,7 +321,7 @@ function ProfessionalDashboardPage() {
 		);
 	}
 
-    if (professionalData && !paidUserApprovedStatus) {
+    if (professionalData && !paidUserApprovedStatus && !isLoading) {
       return (
         <div className="container max-w-3xl py-10 text-center">
           <h1 className="text-2xl font-bold mb-4">You’re already registered!</h1>
