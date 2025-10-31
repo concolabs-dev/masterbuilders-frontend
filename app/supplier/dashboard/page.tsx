@@ -112,7 +112,6 @@ const packageTypes: Package[] = [
 		title: "User Monthly",
 		price: "LKR 3,000",
 		features: [],
-		// priceId: "price_1SEsBlHb6l5GodkUfSAHUCjA", // test price
 		priceId: process.env.NEXT_PUBLIC_PRICE_ID_SUPPLIER_BASIC || "",
 		highlighted: false,
 		packageName: "BML_SUP_BASIC",
