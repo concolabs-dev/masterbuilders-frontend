@@ -112,8 +112,8 @@ const packageTypes: Package[] = [
 		title: "User Monthly",
 		price: "LKR 3,000",
 		features: [],
-		priceId: "price_1SEsBlHb6l5GodkUfSAHUCjA", // test price
-		// priceId: "price_1SIvnjHb6l5GodkUvagW6im5",
+		// priceId: "price_1SEsBlHb6l5GodkUfSAHUCjA", // test price
+		priceId: process.env.NEXT_PUBLIC_PRICE_ID_SUPPLIER_BASIC || "",
 		highlighted: false,
 		packageName: "BML_SUP_BASIC",
 	},
@@ -130,7 +130,7 @@ const packageTypes: Package[] = [
 		price: "LKR 30,000",
 		features: [],
 		highlighted: false,
-		priceId: "price_1SIvoOHb6l5GodkUC67C3BYj",
+		priceId: process.env.NEXT_PUBLIC_PRICE_ID_SUPPLIER_ANNUAL || "",
 		packageName: "BML_SUP_ANUAL",
 	},
 ];
@@ -731,9 +731,7 @@ function SupplierDashboardPage() {
 									backendUrl={process.env.NEXT_PUBLIC_PAYMENT_API_URL || ""}
 									returnUrl={process.env.NEXT_PUBLIC_FRONTEND_API_URL || ""}
 									puid={user?.sub || ""}
-									token={
-										"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2RlIjoiQk1MIn0.TvMGIrH9i1mtMw2He6_Fs3am_xXd5FxLtX8nhyF9fio"
-									}
+									token={process.env.NEXT_PUBLIC_PAYMENT_TOKEN || ""}
 								/>
 							</div>
 						</CardContent>

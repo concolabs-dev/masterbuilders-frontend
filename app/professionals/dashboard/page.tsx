@@ -97,10 +97,11 @@ const packageTypes: Package[] = [
 		title: "User Monthly",
 		price: "LKR 3,000",
 		features: [],
-		priceId: "price_1SEsBlHb6l5GodkUfSAHUCjA", // test price
+		// priceId: "price_1SEsBlHb6l5GodkUfSAHUCjA", // test price
 		// priceId: "price_1SEsFpHb6l5GodkUY5ifwNvu",
+		priceId: process.env.NEXT_PUBLIC_PRICE_ID_PROFESSIONAL_BASIC || "",
 		highlighted: false,
-		packageName: "BML_SUP_BASIC",
+		packageName: "BML_PRF_BASIC",
 	},
 	// {
 	//   title: "Gold User",
@@ -115,8 +116,8 @@ const packageTypes: Package[] = [
 		price: "LKR 30,000",
 		features: [],
 		highlighted: false,
-		priceId: "price_1SEsIPHb6l5GodkU3hFnjLKe",
-		packageName: "BML_SUP_ANUAL",
+		priceId: process.env.NEXT_PUBLIC_PRICE_ID_PROFESSIONAL_ANNUAL || "",
+		packageName: "BML_PRF_ANUAL",
 	},
 ];
 
@@ -151,7 +152,7 @@ function ProfessionalDashboardPage() {
 
 				// Fetch professional data
 				const professional = await getProfessionalByPID(user.sub);
-				
+
 				if (!professional) {
 					setError("Professional profile not found.");
 					throw new Error("Professional profile not found.");
@@ -321,34 +322,34 @@ function ProfessionalDashboardPage() {
 		);
 	}
 
-    if (professionalData && !paidUserApprovedStatus && !isLoading) {
-      return (
-        <div className="container max-w-3xl py-10 text-center">
-          <h1 className="text-2xl font-bold mb-4">You’re already registered!</h1>
-          <p className="text-muted-foreground mb-8 flex flex-col items-center gap-[10px]">
-            Your trial period has ended. Please upgrade your plan within 7 days to
-            ensure uninterrupted access to the service.
-            <Button
-              onClick={() => setIsPaymentRequireDialogOpen(true)}
-              disabled={paidUserApprovedStatus}
-            >
-              Activate Now
-            </Button>
-          </p>
-          <RequirePaymentDialog
-            open={isPaymentRequireDialogOpen}
-            onOpenChange={setIsPaymentRequireDialogOpen}
-            packageTypes={packageTypes}
-            puid={user?.sub || ""}
-            successUrl={(() => {
-              const base = process.env.NEXT_PUBLIC_FRONTEND_API_URL;
-              if (!base) return "";
-              return new URL("/professionals/register/success", base).toString();
-            })()}
-          />
-        </div>
-      );
-    }
+	if (professionalData && !paidUserApprovedStatus && !isLoading) {
+		return (
+			<div className="container max-w-3xl py-10 text-center">
+				<h1 className="text-2xl font-bold mb-4">You’re already registered!</h1>
+				<p className="text-muted-foreground mb-8 flex flex-col items-center gap-[10px]">
+					Your trial period has ended. Please upgrade your plan within 7 days to
+					ensure uninterrupted access to the service.
+					<Button
+						onClick={() => setIsPaymentRequireDialogOpen(true)}
+						disabled={paidUserApprovedStatus}
+					>
+						Activate Now
+					</Button>
+				</p>
+				<RequirePaymentDialog
+					open={isPaymentRequireDialogOpen}
+					onOpenChange={setIsPaymentRequireDialogOpen}
+					packageTypes={packageTypes}
+					puid={user?.sub || ""}
+					successUrl={(() => {
+						const base = process.env.NEXT_PUBLIC_FRONTEND_API_URL;
+						if (!base) return "";
+						return new URL("/professionals/register/success", base).toString();
+					})()}
+				/>
+			</div>
+		);
+	}
 
 	return (
 		<div className="container mx-auto py-10">
@@ -546,9 +547,7 @@ function ProfessionalDashboardPage() {
 									backendUrl={process.env.NEXT_PUBLIC_PAYMENT_API_URL || ""}
 									returnUrl={process.env.NEXT_PUBLIC_FRONTEND_API_URL || ""}
 									puid={user?.sub || ""}
-									token={
-										"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2RlIjoiQk1MIn0.TvMGIrH9i1mtMw2He6_Fs3am_xXd5FxLtX8nhyF9fio"
-									}
+									token={process.env.NEXT_PUBLIC_PAYMENT_TOKEN || ""}
 								/>
 								<Button
 									onClick={() => setIsPaymentRequireDialogOpen(true)}

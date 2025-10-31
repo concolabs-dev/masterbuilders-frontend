@@ -168,8 +168,9 @@ const packageTypes: Package[] = [
 		title: "User Monthly",
 		price: "LKR 3,000",
 		features: [],
-		priceId: "price_1SEsBlHb6l5GodkUfSAHUCjA", // test price
+		// priceId: "price_1SEsBlHb6l5GodkUfSAHUCjA", // test price
 		// priceId: "price_1SEsFpHb6l5GodkUY5ifwNvu",
+		priceId: process.env.NEXT_PUBLIC_PRICE_ID_PROFESSIONAL_BASIC || "",
 		highlighted: false,
 		packageName: "BML_PRF_BASIC",
 	},
@@ -186,7 +187,7 @@ const packageTypes: Package[] = [
 		price: "LKR 30,000",
 		features: [],
 		highlighted: false,
-		priceId: "price_1SEsIPHb6l5GodkU3hFnjLKe",
+		priceId: process.env.NEXT_PUBLIC_PRICE_ID_PROFESSIONAL_ANNUAL || "",
 		packageName: "BML_PRF_ANUAL",
 	},
 ];
