@@ -1,0 +1,42 @@
+name: Deploy EC2 Test
+
+on:
+  push:
+    branches: [ "test" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST_TEST }}
+          username: ${{ secrets.SSH_USER_TEST }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_TEST }}
+          port: 22
+          script: |
+            set -e
+            cd /home/ubuntu/masterbuilders-frontend   # path to your app folder
+            
+            echo "Pulling latest code from test branch..."
+            git fetch origin test
+            git checkout test
+            git pull origin test
+
+            echo "Installing dependencies..."
+            npm ci
+
+            echo "Building project..."
+            npm run build
+
+            echo "Reloading PM2 process..."
+            pm2 startOrReload ecosystem.config.js
+            pm2 save
+
+            echo "✅ Deploy complete!"
+
