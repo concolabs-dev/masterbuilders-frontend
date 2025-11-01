@@ -28,6 +28,10 @@ export default function ProfessionalCompanyPage({ params }: { params: { pid: str
 
         // Fetch professional data
         const professional = await getProfessionalByPID(params.pid)
+        if(!professional){
+          setError("Professional not found.")
+          throw new Error("Professional not found.")
+        }
         console.log(professional)
         setProfessionalData(professional)
 
