@@ -1,7 +1,8 @@
 node_modules/
 .vercel
 .next/
-.env
+.env.local
+.env.test
 .npmrc
 .env.production
 
