@@ -8,10 +8,11 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Building, MapPin, Phone, Mail, Globe, Star, Calendar, CheckCircle } from "lucide-react"
-import { getProfessionalByPID, getProjectsByPID, Professional, Project } from "@/app/api"
+import { getProfessionalByPID, getProjectsByPID} from "@/app/api"
 import Loading from "@/components/loading"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
+import { Professional, Project } from "@/types"
 
 export default function ProfessionalCompanyPage({ params }: { params: { pid: string } }) {
   const [professionalData, setProfessionalData] = useState<Professional | null>(null)
