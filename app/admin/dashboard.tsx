@@ -46,10 +46,7 @@ import {
 	createType,
 	updateType,
 	deleteType,
-	type Material,
 	searchMaterials,
-	Professional,
-	Supplier,
 } from "../api";
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0/client";
 import { withRoleGuard } from "../hoc/withRoleGuard";
@@ -72,21 +69,8 @@ import {
 	updateProfessional,
 	deleteSupplier,
 } from "../api";
-interface SubSubcategory {
-	name: string;
-	sub_subcategories: string[];
-}
-
-interface Subcategory {
-	name: string;
-	subcategories: SubSubcategory[];
-}
-
-interface Category {
-	id: string;
-	name: string;
-	categories: Subcategory[];
-}
+import EditCategoryDialog from "./components/editCategoryDialog";
+import { Category, Material, Professional, Supplier } from "@/types";
 
 const mockSuppliers = [
 	{
@@ -281,6 +265,25 @@ function AdminDashboard() {
 
 	const handleUpdateCategory = (id: string, updatedCategory: any) => {
 		updateCategoryMutation.mutate({ id, category: updatedCategory });
+	};
+
+	const handleUpdateSupplier = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		if (selectedSupplier) {
+			const formData = new FormData(e.currentTarget);
+			const updatedSupplier: Partial<Supplier> = {
+				business_name: formData.get("business_name") as string,
+				email: formData.get("email") as string,
+				telephone: formData.get("telephone") as string,
+				address: formData.get("address") as string,
+				business_description: formData.get("business_description") as string,
+			};
+			updateSupplierMutation.mutate({
+				id: selectedSupplier.id,
+				supplier: updatedSupplier,
+			});
+			setSelectedSupplier(null);
+		}
 	};
 
 	const handleDeleteCategory = (id: string) => {
@@ -715,102 +718,12 @@ function AdminDashboard() {
 			</Tabs>
 
 			{/* Edit Category Dialog */}
-			<Dialog
-				open={!!selectedCategory}
-				onOpenChange={() => setSelectedCategory(null)}
-			>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>Edit Type</DialogTitle>
-						<DialogDescription>
-							Update the details of your type.
-						</DialogDescription>
-					</DialogHeader>
-					<form
-						onSubmit={(e) => {
-							e.preventDefault();
-							if (selectedCategory) {
-								const formData = new FormData(e.currentTarget);
-								const updatedCategory = {
-									name: formData.get("name") as string,
-									categories: selectedCategory.categories.map((subcat) => ({
-										...subcat,
-										name: formData.get(`subcat-${subcat.name}`) as string,
-									})),
-								};
-								// Pass selectedCategory.id here, not the name
-								handleUpdateCategory(selectedCategory.id!, updatedCategory);
-								setSelectedCategory(null);
-							}
-						}}
-					>
-						<div className="grid gap-4 py-4">
-							<div className="grid gap-2">
-								<Label htmlFor="edit-category-name">Type Name</Label>
-								<Input
-									id="edit-category-name"
-									name="name"
-									defaultValue={selectedCategory?.name}
-								/>
-							</div>
-							<div className="grid gap-2">
-								<Label>Categories</Label>
-								{selectedCategory?.categories.map((subcat, index) => (
-									<div key={index} className="flex items-center gap-2">
-										<Input
-											name={`subcat-${subcat.name}`}
-											defaultValue={subcat.name}
-										/>
-										<Button
-											type="button"
-											variant="ghost"
-											size="icon"
-											className="text-destructive"
-											onClick={() => {
-												if (selectedCategory) {
-													const updatedCategory = {
-														...selectedCategory,
-														categories: selectedCategory.categories.filter(
-															(_, i) => i !== index
-														) as Subcategory[],
-													};
-													setSelectedCategory(updatedCategory as Category);
-												}
-											}}
-										>
-											<Trash2 className="h-4 w-4" />
-										</Button>
-									</div>
-								))}
-								<Button
-									type="button"
-									variant="outline"
-									className="mt-2"
-									onClick={() => {
-										if (selectedCategory) {
-											// Initialize new subcategory with empty sub_subcategories
-											const updatedCategory = {
-												...selectedCategory,
-												categories: [
-													...selectedCategory.categories,
-													{ name: "", sub_subcategories: [] },
-												],
-											};
-											setSelectedCategory(updatedCategory as Category);
-										}
-									}}
-								>
-									<Plus className="w-4 h-4 mr-2" />
-									Add Category
-								</Button>
-							</div>
-						</div>
-						<DialogFooter>
-							<Button type="submit">Save Changes</Button>
-						</DialogFooter>
-					</form>
-				</DialogContent>
-			</Dialog>
+			<EditCategoryDialog
+				selectedCategory={selectedCategory}
+				setSelectedCategory={setSelectedCategory}
+				handleUpdateCategory={handleUpdateCategory}
+			/>
+
 			{/* Edit Supplier Dialog */}
 			<Dialog
 				open={!!selectedSupplier}
@@ -1059,6 +972,12 @@ function MaterialsUI() {
 	const [createCat, setCreateCat] = useState("");
 	const [createSubcat, setCreateSubcat] = useState("");
 	const [createSubSubcat, setCreateSubSubcat] = useState("");
+	const [expandedSubcategories, setExpandedSubcategories] = useState<string[]>(
+		[]
+	);
+	const [selectedSubSubcategory, setSelectedSubSubcategory] = useState<
+		string | null
+	>(null);
 
 	const handleButtonClick = () => {
 		setSearchQuery(tempsearchQuery);
@@ -1293,6 +1212,45 @@ function MaterialsUI() {
 	const currentSub = currentCat?.subcategories?.find(
 		(s) => s.name === editSubcategory
 	);
+	const handleCategorySelection = (category: string) => {
+		setSelectedCategory(category);
+		setSelectedSubcategory(null);
+		setExpandedCategories((prev) =>
+			prev.includes(category)
+				? prev.filter((c) => c !== category)
+				: [...prev, category]
+		);
+		// Close sidebar on mobile after selection
+		if (window.innerWidth < 768) {
+			setShowSidebar(false);
+		}
+	};
+
+	const handleSubcategorySelection = (subcategory: string) => {
+		setSelectedSubcategory(subcategory);
+		setSelectedSubSubcategory(null); // <-- Reset L3 state
+
+		// Toggle L3 expansion
+		setExpandedSubcategories((prev) =>
+			prev.includes(subcategory)
+				? prev.filter((s) => s !== subcategory)
+				: [...prev, subcategory]
+		);
+
+		// Close sidebar on mobile after selection
+		if (window.innerWidth < 768) {
+			setShowSidebar(false);
+		}
+	};
+
+	const handleSubSubcategorySelection = (subSubcategory: string) => {
+		setSelectedSubSubcategory(subSubcategory);
+
+		// Close sidebar on mobile after selection
+		if (window.innerWidth < 768) {
+			setShowSidebar(false);
+		}
+	};
 
 	return (
 		<div className="container mx-auto px-4 py-8">
@@ -1335,51 +1293,80 @@ function MaterialsUI() {
 							</Button>
 							{expandedTypes.includes(type.name) && (
 								<div className="ml-4">
-									{type.categories.map((cat) => (
-										<div key={cat.name}>
+									{type.categories.map((category) => (
+										<div key={category.name}>
 											<Button
 												variant="ghost"
 												className={`w-full justify-start pl-6 text-slate-300 hover:text-white hover:bg-slate-800 ${
-													selectedCategory === cat.name ? "font-bold" : ""
+													selectedCategory === category.name ? "font-bold" : ""
 												}`}
-												onClick={() => {
-													setSelectedCategory(cat.name);
-													setSelectedSubcategory(null);
-													setExpandedCategories((prev) =>
-														prev.includes(cat.name)
-															? prev.filter((c) => c !== cat.name)
-															: [...prev, cat.name]
-													);
-												}}
+												onClick={() => handleCategorySelection(category.name)}
 											>
-												{expandedCategories.includes(cat.name) ? (
+												{expandedCategories.includes(category.name) ? (
 													<ChevronDown className="mr-2 h-4 w-4" />
 												) : (
 													<ChevronRight className="mr-2 h-4 w-4" />
 												)}
-												{cat.name}
+												{category.name}
 											</Button>
-											{expandedCategories.includes(cat.name) &&
-												cat.subcategories && (
-													<div className="ml-6">
-														{cat.subcategories.map((sub) => (
-															<Button
-																key={sub.name}
-																variant="ghost"
-																className={`w-full justify-start pl-8 text-slate-400 hover:text-white hover:bg-slate-800 ${
-																	selectedSubcategory === sub.name
-																		? "font-bold"
-																		: ""
-																}`}
-																onClick={() => {
-																	setSelectedSubcategory(sub.name);
-																}}
-															>
-																{sub.name}
-															</Button>
-														))}
+											{/* L2 - Subcategory */}
+											{expandedCategories.includes(category.name) &&
+												category.subcategories &&
+												category.subcategories.map((sub) => (
+													<div className="ml-6" key={sub.name}>
+														<Button
+															variant="ghost"
+															className={`w-full justify-start pl-8 text-slate-400 hover:text-white hover:bg-slate-800 ${
+																selectedSubcategory === sub.name
+																	? "font-bold"
+																	: ""
+															}`}
+															// --- MODIFIED CLICK HANDLER ---
+															// This now needs to expand L3
+															onClick={() =>
+																handleSubcategorySelection(sub.name)
+															}
+														>
+															{/* --- ADDED CHEVRONS --- */}
+															{expandedSubcategories.includes(sub.name) ? (
+																<ChevronDown className="mr-2 h-4 w-4" />
+															) : (
+																<ChevronRight className="mr-2 h-4 w-4" />
+															)}
+															{sub.name}
+														</Button>
+
+														{/* --- NEW L3 (Sub-Subcategory) LOOP --- */}
+														{expandedSubcategories.includes(sub.name) &&
+															sub.sub_subcategories && (
+																<div className="ml-8">
+																	{sub.sub_subcategories.map(
+																		(subSub, index) => (
+																			<Button
+																				// Use index for key as strings may not be unique
+																				key={index}
+																				variant="ghost"
+																				className={`w-full justify-start pl-10 text-slate-500 hover:text-white hover:bg-slate-800 ${
+																					selectedSubSubcategory === subSub.name
+																						? "font-bold"
+																						: ""
+																				}`}
+																				onClick={() =>
+																					handleSubSubcategorySelection(
+																						subSub.name
+																					)
+																				}
+																			>
+																				{/* The L3 item is just a string */}
+																				{subSub.name}
+																			</Button>
+																		)
+																	)}
+																</div>
+															)}
+														{/* --- END OF NEW L3 LOOP --- */}
 													</div>
-												)}
+												))}
 										</div>
 									))}
 								</div>

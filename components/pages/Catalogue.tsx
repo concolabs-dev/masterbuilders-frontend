@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ChevronDown, ChevronRight, Menu, X } from "lucide-react";
-import { Item, getItemsByMaterialID } from "@/app/api";
+import { getItemsByMaterialID } from "@/app/api";
 import { SupplierItemCard } from "@/components/supplier-item-card";
 import { Head } from "next/document";
 import {
@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/select";
 import Loading from "@/components/loading";
 import Link from "next/link";
+import { Category, Item } from "@/types";
 
 interface Material {
 	id: string;
@@ -40,17 +41,6 @@ interface Material {
 	Prices: [string, number | null][];
 }
 
-interface Category {
-	name: string;
-	categories: {
-		name: string;
-		subcategories: {
-			name: string;
-			sub_subcategories: string[];
-		}[];
-	}[];
-}
-
 export default function CataloguePage() {
 	const [materials, setMaterials] = useState<Material[]>([]);
 	const [categories, setCategories] = useState<Category[]>([]);
@@ -59,11 +49,17 @@ export default function CataloguePage() {
 	);
 	const [expandedTypes, setExpandedTypes] = useState<string[]>([]);
 	const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
+	const [expandedSubcategories, setExpandedSubcategories] = useState<string[]>(
+		[]
+	);
 	const [selectedType, setSelectedType] = useState<string | null>(null);
 	const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 	const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(
 		null
 	);
+	const [selectedSubSubcategory, setSelectedSubSubcategory] = useState<
+		string | null
+	>(null);
 	const [searchQuery, setSearchQuery] = useState<string>("");
 	const [tempsearchQuery, setTempSearchQuery] = useState<string>("");
 	const [showSidebar, setShowSidebar] = useState<boolean>(false);
@@ -213,8 +209,34 @@ export default function CataloguePage() {
 	};
 
 	// Handle subcategory selection with scroll
+	// const handleSubcategorySelection = (subcategory: string) => {
+	// 	setSelectedSubcategory(subcategory);
+	// 	// Close sidebar on mobile after selection
+	// 	if (window.innerWidth < 768) {
+	// 		setShowSidebar(false);
+	// 	}
+	// };
+
 	const handleSubcategorySelection = (subcategory: string) => {
 		setSelectedSubcategory(subcategory);
+		setSelectedSubSubcategory(null); // <-- Reset L3 state
+
+		// Toggle L3 expansion
+		setExpandedSubcategories((prev) =>
+			prev.includes(subcategory)
+				? prev.filter((s) => s !== subcategory)
+				: [...prev, subcategory]
+		);
+
+		// Close sidebar on mobile after selection
+		if (window.innerWidth < 768) {
+			setShowSidebar(false);
+		}
+	};
+
+	const handleSubSubcategorySelection = (subSubcategory: string) => {
+		setSelectedSubSubcategory(subSubcategory);
+
 		// Close sidebar on mobile after selection
 		if (window.innerWidth < 768) {
 			setShowSidebar(false);
@@ -263,7 +285,7 @@ export default function CataloguePage() {
 										<ChevronDown className="mr-2 h-4 w-4" />
 									) : (
 										<ChevronRight className="mr-2 h-4 w-4" />
-									)}{" "}
+									)}
 									{type.name}
 								</Button>
 								{expandedTypes.includes(type.name) && (
@@ -283,9 +305,10 @@ export default function CataloguePage() {
 														<ChevronDown className="mr-2 h-4 w-4" />
 													) : (
 														<ChevronRight className="mr-2 h-4 w-4" />
-													)}{" "}
+													)}
 													{category.name}
 												</Button>
+												{/* L2 - Subcategory */}
 												{expandedCategories.includes(category.name) &&
 													category.subcategories &&
 													category.subcategories.map((sub) => (
@@ -297,12 +320,51 @@ export default function CataloguePage() {
 																		? "font-bold"
 																		: ""
 																}`}
+																// --- MODIFIED CLICK HANDLER ---
+																// This now needs to expand L3
 																onClick={() =>
 																	handleSubcategorySelection(sub.name)
 																}
 															>
+																{/* --- ADDED CHEVRONS --- */}
+																{expandedSubcategories.includes(sub.name) ? (
+																	<ChevronDown className="mr-2 h-4 w-4" />
+																) : (
+																	<ChevronRight className="mr-2 h-4 w-4" />
+																)}
 																{sub.name}
 															</Button>
+
+															{/* --- NEW L3 (Sub-Subcategory) LOOP --- */}
+															{expandedSubcategories.includes(sub.name) &&
+																sub.sub_subcategories && (
+																	<div className="ml-8">
+																		{sub.sub_subcategories.map(
+																			(subSub, index) => (
+																				<Button
+																					// Use index for key as strings may not be unique
+																					key={index}
+																					variant="ghost"
+																					className={`w-full justify-start pl-10 text-slate-500 hover:text-white hover:bg-slate-800 ${
+																						selectedSubSubcategory ===
+																						subSub.name
+																							? "font-bold"
+																							: ""
+																					}`}
+																					onClick={() =>
+																						handleSubSubcategorySelection(
+																							subSub.name
+																						)
+																					}
+																				>
+																					{/* The L3 item is just a string */}
+																					{subSub.name}
+																				</Button>
+																			)
+																		)}
+																	</div>
+																)}
+															{/* --- END OF NEW L3 LOOP --- */}
 														</div>
 													))}
 											</div>

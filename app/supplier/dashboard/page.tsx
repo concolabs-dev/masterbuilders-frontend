@@ -42,11 +42,8 @@ import {
 	getSupplierByPID,
 	getProfessionalByPID,
 	getPaymentRecordById,
-	PaymentRecord,
 } from "@/app/api";
 import Loading from "@/components/loading";
-
-import { Supplier, Item, Material, Category } from "@/app/api";
 import { ImageUpload } from "@/components/image-upload"; // adjust path as needed
 import {
 	Select,
@@ -62,6 +59,7 @@ import { PaymentMethods } from "@/components/payment-methods";
 import { PaymentDialog } from "@/components/payment-dialog";
 import { Package, PaymentManagePortal } from "@concolabs-dev/payment";
 import { RequirePaymentDialog } from "@/components/payment-require";
+import { Category, Item, Material, PaymentRecord, Supplier } from "@/types";
 
 const mockInvoices = [
 	{

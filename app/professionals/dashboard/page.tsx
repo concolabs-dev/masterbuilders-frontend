@@ -13,13 +13,10 @@ import { AddProjectDialog } from "@/components/add-project-dialog";
 import { EditProjectDialog } from "@/components/edit-project-dialog";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import {
-	Professional,
-	Project,
 	getProfessionalByPID,
 	getProjectsByPID,
 	createProject,
 	updateProfessional,
-	PaymentRecord,
 	getPaymentRecordById,
 } from "@/app/api";
 import Loading from "../loading";
@@ -28,6 +25,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { withRoleGuard } from "@/app/hoc/withRoleGuard";
 import { Package, PaymentManagePortal } from "@concolabs-dev/payment";
 import { RequirePaymentDialog } from "@/components/payment-require";
+import { PaymentRecord, Professional, Project } from "@/types";
 // Mock projects data - keeping this for now
 const initialProjects = [
 	{

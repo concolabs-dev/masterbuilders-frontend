@@ -31,12 +31,11 @@ import {
 	createProfessional,
 	getProfessionalByPID,
 	getSupplierByPPID,
-	Professional,
-	Supplier,
 } from "@/app/api";
 import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client";
 import { Package, PaymentContainer } from "@concolabs-dev/payment";
 import Loading from "@/components/loading";
+import { Professional, Supplier } from "@/types";
 
 const professionalTypes = [
 	"Architect",
