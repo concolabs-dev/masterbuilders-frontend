@@ -16,7 +16,7 @@ const features = [
       icon: TrendingUp,
       title: "Prices",
       description:
-        "Track monthly price fluctuations, view prices in multiple currencies, and compare suppliers with our comprehensive catalog.",
+        "Track monthly price fluctuations, view prices in multiple currencies, and compare suppliers with our comprehensive catalogue.",
       color: "bg-blue-500",
       link: "/catalogue",
     },

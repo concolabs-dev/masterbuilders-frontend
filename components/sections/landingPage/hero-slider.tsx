@@ -75,7 +75,7 @@ const ListOfServices = [
     label: "Products",
     link: "/catalogue",
     title: "Explore Catalogue to Find Best Deals",
-    body:"Access an extensive catalog of building materials at competitive prices.",
+    body:"Access an extensive catalogue of building materials at competitive prices.",
     list:
       <div className="py-8 px-4 flex flex-wrap gap-x-4 gap-y-6 items-start justify-center mx-auto">
         <div className="flex  items-center justify-center">

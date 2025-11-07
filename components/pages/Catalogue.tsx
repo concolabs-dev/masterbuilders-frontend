@@ -315,7 +315,12 @@ export default function CataloguePage() {
 
 					{/* Main content area with results ref */}
 					<div className="space-y-6">
-						<h1 className="text-3xl font-bold">Cost Catalogue</h1>
+						<h1 className="text-3xl font-bold">
+							Prices
+							<span className="ml-2 text-xl font-normal text-gray-400">
+								(Excluding VAT)
+							</span>
+						</h1>
 						<div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
 							<Input
 								placeholder="Search materials..."

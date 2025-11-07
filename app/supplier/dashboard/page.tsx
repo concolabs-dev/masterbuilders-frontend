@@ -485,7 +485,7 @@ function SupplierDashboardPage() {
 							<div className="flex justify-between items-center">
 								<div className="flex-1 max-w-sm mb-3">
 									<Input
-										placeholder="Search your catalogue..."
+										placeholder="Search your catalogue"
 										value={searchQuery}
 										onChange={(e) => setSearchQuery(e.target.value)}
 									/>
@@ -507,7 +507,7 @@ function SupplierDashboardPage() {
 										<form onSubmit={handleAddItem}>
 											<div className="grid gap-4 py-4">
 												<div className="grid gap-2">
-													<Label htmlFor="name">Name</Label>
+													<Label htmlFor="name">Title</Label>
 													<Input id="name" name="name" required />
 												</div>
 												<div className="grid gap-2">
