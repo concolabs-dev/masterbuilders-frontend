@@ -24,10 +24,9 @@ import {
   searchProjects,
   getProjectsWithFilters,
   getProfessionals,
-  type ProjectWithProfessional,
-  type Professional
 } from "@/app/api"
 import { ImageWithFallback } from "../ui/ImageWithFallback"
+import { Professional, ProjectWithProfessional } from "@/types"
 
 const projectTypes = [
   "All Types",

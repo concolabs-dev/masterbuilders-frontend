@@ -10,8 +10,9 @@ import { EditCoverImageDialog } from "./edit-cover-image-dialog"
 import { EditProfessionalDetailsDialog } from "./edit-professional-details-dialog"
 import { EditServicesDialog } from "./edit-services-dialog"
 import { Badge } from "./ui/badge"
-import { updateProfessional, Professional } from "@/app/api"
+import { updateProfessional } from "@/app/api"
 import { ImageWithFallback } from "./ui/ImageWithFallback"
+import { Professional } from "@/types"
 interface ProfessionalProfileProps {
   professional: Professional
   onUpdate?: (updatedProfessional: ProfessionalProfileProps["professional"]) => void

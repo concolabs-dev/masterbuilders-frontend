@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { getMaterials, Material, updateMaterial } from "@/app/api";
+import { getMaterials, updateMaterial } from "@/app/api";
+import { Material } from "@/types";
 
 function MonthManager({ materials, setMaterials }: { materials: Material[]; setMaterials: (materials: Material[]) => void }) {
   const [selectedMonth, setSelectedMonth] = useState<string>("")

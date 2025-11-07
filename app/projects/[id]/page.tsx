@@ -9,10 +9,9 @@ import { Button } from "@/components/ui/button"
 import { MapPin, Calendar, Phone, Mail, Globe, Star, Loader2, Building2, AlertCircle } from "lucide-react"
 import { 
   getProjectById, 
-  getProfessionalByPID,
-  type Project,
-  type Professional 
+  getProfessionalByPID, 
 } from "@/app/api"
+import { Professional, Project } from "@/types"
 
 interface ProjectWithProfessional extends Project {
   professional?: Professional;

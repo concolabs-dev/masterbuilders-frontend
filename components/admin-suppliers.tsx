@@ -4,15 +4,13 @@ import {
 	getSupplierByPPID,
 	getItemsBySupplier,
 	updatePaymentRecord,
-	type PaymentRecord,
-	type Supplier,
-	type Item,
 } from "@/app/api";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { SupplierProfile } from "@/components/supplier-profile";
 import { SupplierItemList } from "@/components/supplier-item-list";
+import { Item, PaymentRecord, Supplier } from "@/types";
 
 interface SupplierWithRecord {
 	supplier: Supplier;

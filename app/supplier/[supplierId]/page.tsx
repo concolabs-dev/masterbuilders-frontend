@@ -106,9 +106,7 @@ import { useParams } from "next/navigation";
 import { SupplierProfile } from "@/components/supplier-profile";
 import { SupplierItemCard } from "@/components/supplier-item-card";
 import { SupplierItemList } from "@/components/supplier-item-list";
-import { getSupplierByPID, getItemsBySupplier, getTypes } from "@/app/api";
-import type { Supplier, Item, Category } from "@/app/api";
-import { getExchangeRates } from "@/app/api";
+import { getSupplierByPID, getItemsBySupplier, getTypes, getExchangeRates } from "@/app/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Grid, List, Plus } from "lucide-react";
@@ -122,6 +120,7 @@ import {
 import CategorySidebar from "@/components/categorySidebar"
 import { Suspense } from "react"
 import Loading from "@/components/loading"
+import { Category, Item, Supplier } from "@/types";
 
 function PublicSupplierPage() {
   const { supplierId } = useParams<{ supplierId: string }>()
