@@ -5,55 +5,37 @@ on:
     branches: [ "test" ]
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: read
-      packages: read
-
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-
-      - name: Authenticate with GitHub Packages
-        run: |
-          echo "@concolabs-dev:registry=https://npm.pkg.github.com/" > .npmrc
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > .npmrc
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build Next.js app
-        run: npm run build
-
-      - name: Archive production build
-        run: tar -czf next-app.tar.gz .next package.json next.config.js ecosystem.config.js public
-
-      - name: Deploy to server via SSH
-        uses: appleboy/scp-action@v0.1.7
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST_TEST }}
           username: ${{ secrets.SSH_USER_TEST }}
-          key: ${{ secrets.SSH_PRIVATE_KEY_TEST}}
-          source: "next-app.tar.gz"
-          target: "/var/www/bml-frontend"
-
-      - name: Run deployment commands on server
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.SSH_HOST_TEST }}
-          username: ${{ secrets.SSH_USER_TEST }}
-          key: ${{ secrets.SSH_PRIVATE_KEY_TEST}}
+          key: ${{ secrets.SSH_PRIVATE_KEY_TEST }}
+          port: 22
           script: |
-            cd /var/www/bml-frontend
-            tar -xzf next-app.tar.gz
-            rm next-app.tar.gz
-            npm ci --omit=dev
-            npx pm2 startOrReload ecosystem.config.js
-            npx pm2 save
+            set -e
+            cd /home/ubuntu/masterbuilders-frontend   # path to your app folder
+            
+            echo "Pulling latest code from test branch..."
+            git fetch origin test
+            git checkout test
+            git pull origin test
+
+            echo "Installing dependencies..."
+            npm ci
+
+            echo "Building project..."
+            npm run build
+
+            echo "Reloading PM2 process..."
+            pm2 startOrReload ecosystem.config.js
+            pm2 save
+
+            echo "✅ Deploy complete!"
