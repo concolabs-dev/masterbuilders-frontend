@@ -22,12 +22,11 @@ import { Check, ChevronRight, MapPin } from "lucide-react";
 import {
 	createSupplier,
 	getSupplierByPID,
-	Supplier,
 	getSupplierByPPID,
 	getProfessionalByPID,
-	Professional,
 } from "../api";
 import { Package, PaymentContainer } from "@concolabs-dev/payment";
+import { Professional, Supplier } from "@/types";
 // import dynamic from "next/dynamic"
 
 // const DynamicMapPicker = dynamic(() => import("@/components/MapPicker"), { ssr: false })
