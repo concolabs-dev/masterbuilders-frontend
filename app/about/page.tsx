@@ -36,7 +36,7 @@ export default function AboutPage() {
         <h2 className="text-2xl font-semibold mb-4">Our Mission</h2>
         <p>
           At Master Space Builders, our mission is to empower construction projects worldwide by offering a reliable,
-          detailed pricing catalog that makes resource allocation simple and efficient. We believe in building a future
+          detailed pricing catalogue that makes resource allocation simple and efficient. We believe in building a future
           where quality construction resources are accessible, transparent, and economically feasible for all.
         </p>
       </div>

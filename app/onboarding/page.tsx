@@ -24,6 +24,8 @@ import {
 	getSupplierByPID,
 	Supplier,
 	getSupplierByPPID,
+	getProfessionalByPID,
+	Professional,
 } from "../api";
 import { Package, PaymentContainer } from "@concolabs-dev/payment";
 // import dynamic from "next/dynamic"
@@ -84,6 +86,18 @@ function SupplierOnboarding() {
 				}
 			})
 			.catch((err) => console.error("Failed checking supplier by PID:", err));
+		getProfessionalByPID(user.sub)
+			.then((existing: Professional | undefined) => {
+				if (existing) {
+					router.push("/professionals/dashboard");
+					setAlreadyRegistered(true);
+				} else {
+					setAlreadyRegistered(false);
+				}
+			})
+			.catch((err) =>
+				console.error("Failed checking professional by PID:", err)
+			);
 	}, [user?.sub, router]);
 
 	useEffect(() => {
@@ -129,12 +143,6 @@ function SupplierOnboarding() {
 			if (!formData.location.lat || !formData.location.lng) {
 				newErrors.location = "Coordinates are required";
 			}
-		}
-		if (step === 4) {
-			if (!formData.profileImage)
-				newErrors.profileImage = "Profile image is required";
-			if (!formData.coverImage)
-				newErrors.coverImage = "Cover image is required";
 		}
 		setErrors(newErrors);
 		return Object.keys(newErrors).length === 0;
