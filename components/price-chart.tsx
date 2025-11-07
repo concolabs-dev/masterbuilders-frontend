@@ -68,21 +68,18 @@ export function PriceChart({
 							<CartesianGrid strokeDasharray="3 3" vertical={false} />
 							<XAxis
 								dataKey="date"
-								tickFormatter={(value) =>
-									new Date(value).toLocaleDateString("en-US", {
-										month: "short", // or "long" / "2-digit"
-										day: "2-digit",
-									})
-								}
+								tick={CustomAxisTick}
 								stroke="#888888"
 								fontSize={10}
 								interval={0} // <-- Show all labels
+								height={40}
 							/>
 							<YAxis
 								stroke="#888888"
 								fontSize={10}
 								tickFormatter={(value) => `${currency} ${value}`}
-								domain={["dataMin - 100", "auto"]}
+								domain={[0, "auto"]}
+								tick={{ fontWeight: "bold" }}
 							/>
 							<Tooltip
 								content={({ active, payload }) => {
@@ -135,3 +132,51 @@ export function PriceChart({
 		</Card>
 	);
 }
+
+interface CustomAxisTickProps {
+	x?: number;
+	y?: number;
+	payload?: {
+		value: string | number;
+	};
+}
+
+const CustomAxisTick = ({
+	x,
+	y,
+	payload,
+}: CustomAxisTickProps): JSX.Element => {
+	if (!payload || typeof payload.value === "undefined") {
+		return <g />;
+	}
+
+	const date = new Date(payload.value);
+	const day = date.getDate();
+	const month = date.toLocaleDateString("en-US", { month: "short" });
+	const year = date.toLocaleDateString("en-US", { year: "2-digit" });
+
+	return (
+		<g transform={`translate(${x},${y})`}>
+			<text
+				x={0}
+				y={0}
+				dy={10}
+				textAnchor="middle"
+				fill="#888888"
+				fontSize={10}
+			>
+				<tspan x={0} dy="1em">
+					{day}
+				</tspan>
+
+				<tspan x={0} dy="1.2em">
+					{month}
+				</tspan>
+
+				<tspan x={0} dy="1.2em">
+					{year}
+				</tspan>
+			</text>
+		</g>
+	);
+};
