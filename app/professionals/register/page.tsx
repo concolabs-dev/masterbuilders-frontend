@@ -36,161 +36,7 @@ import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client";
 import { Package, PaymentContainer } from "@concolabs-dev/payment";
 import Loading from "@/components/loading";
 import { Professional, Supplier } from "@/types";
-
-const professionalTypes = [
-	"Architect",
-	"Contractor",
-	"Quantity Surveyor",
-	"Interior Designer",
-	"Structural Engineer",
-];
-const specialtyOptions = [
-	"Residential",
-	"Commercial",
-	"Industrial",
-	"Institutional",
-	"Sustainable Design",
-	"Urban Planning",
-	"Interior Design",
-	"Landscape Design",
-	"Renovation",
-	"High-rise Buildings",
-	"Infrastructure",
-	"Healthcare",
-	"Educational",
-	"Hospitality",
-	"Mixed-Use Development",
-	"Affordable Housing",
-	"Luxury Residential",
-	"Retail & Shopping Centers",
-	"Office Buildings",
-	"Warehouses & Logistics",
-	"Manufacturing Facilities",
-	"Religious Buildings",
-	"Sports & Recreation",
-	"Transportation Infrastructure",
-	"Water & Wastewater Treatment",
-	"Power & Energy Projects",
-	"Telecommunications Infrastructure",
-	"Agricultural Buildings",
-	"Government Buildings",
-	"Cultural & Heritage Buildings",
-	"Resort & Tourism",
-	"Residential Complexes",
-	"Gated Communities",
-	"Condominiums",
-	"Villa Projects",
-	"Beach & Coastal Properties",
-	"Hill Country Properties",
-	"Eco-Friendly Construction",
-	"Smart Buildings",
-	"Prefabricated Construction",
-	"Modular Construction",
-	"Heritage Restoration",
-	"Seismic Design",
-	"Tropical Architecture",
-	"Green Roofs & Walls",
-	"Solar Integration",
-	"Rainwater Harvesting",
-	"Disaster-Resistant Construction",
-	"Low-Cost Housing",
-	"Social Housing",
-	"Student Housing",
-	"Senior Living",
-	"Co-working Spaces",
-	"Data Centers",
-	"Laboratories",
-	"Clean Rooms",
-	"Cold Storage",
-	"Food Processing Facilities",
-];
-const serviceOptions = [
-	"Architectural Design",
-	"Construction Management",
-	"Cost Estimation",
-	"Interior Design",
-	"Landscape Design",
-	"Project Management",
-	"Structural Engineering",
-	"MEP Engineering",
-	"Urban Planning",
-	"Feasibility Studies",
-	"Building Information Modeling (BIM)",
-	"Sustainable Design Consulting",
-	"Construction Supervision",
-	"Cost Management",
-	"Dispute Management",
-	"Contracts Management",
-	"Technical Auditing",
-	"Building Surveying",
-	"Environmental Impact Assessment",
-	"Geotechnical Engineering",
-	"Fire Safety Consulting",
-	"Energy Auditing",
-	"Property Valuation",
-	"Building Maintenance",
-	"Renovation & Restoration",
-	"3D Modeling & Visualization",
-	"Permit & Approval Services",
-	"Material Testing & Quality Control",
-	"Site Investigation",
-	"Construction Procurement",
-	"Value Engineering",
-	"Risk Management",
-	"Health & Safety Consulting",
-	"Building Code Compliance",
-	"LEED Certification Consulting",
-	"Demolition Services",
-	"Waterproofing Consultation",
-	"Acoustics Consulting",
-	"Lighting Design",
-	"HVAC Design",
-	"Plumbing Design",
-	"Electrical Design",
-	"Security Systems Design",
-	"Smart Building Integration",
-	"Post-Construction Services",
-	"Warranty & Defects Management",
-	"Building Performance Analysis",
-	"Construction Documentation",
-	"As-Built Documentation",
-	"Facility Management Consulting",
-	"Space Planning",
-	"Building Automation Systems",
-	"Renewable Energy Systems Design",
-	"Solar Panel Installation Design",
-	"Green Building Certification",
-	"Construction Scheduling",
-	"Resource Planning",
-	"Subcontractor Management",
-];
-
-const packageTypes: Package[] = [
-	{
-		title: "User Monthly",
-		price: "LKR 3,000",
-		features: [],
-		priceId: process.env.NEXT_PUBLIC_PRICE_ID_PROFESSIONAL_BASIC || "",
-		highlighted: false,
-		packageName: "BML_PRF_BASIC",
-	},
-	// {
-	//   title: "Gold User",
-	//   price: "LKR 10,000",
-	//   features: [],
-	//   highlighted: false,
-	//   priceId: "price_1SEsFYHb6l5GodkUuXISMv2N",
-	//   packageName: "BML_GOLD",
-	// },
-	{
-		title: "Year at Once",
-		price: "LKR 30,000",
-		features: [],
-		highlighted: false,
-		priceId: process.env.NEXT_PUBLIC_PRICE_ID_PROFESSIONAL_ANNUAL || "",
-		packageName: "BML_PRF_ANUAL",
-	},
-];
+import { PROFESSIONAL_PACKAGE, PROFESSIONAL_TYPES, SERVICE_OPTIONS, SPECIALTY_OPTIONS } from "@/lib/constants";
 
 function ProfessionalRegistration() {
 	const router = useRouter();
@@ -390,7 +236,7 @@ function ProfessionalRegistration() {
 													<SelectValue placeholder="Select company type" />
 												</SelectTrigger>
 												<SelectContent>
-													{professionalTypes.map((type) => (
+													{PROFESSIONAL_TYPES.map((type) => (
 														<SelectItem key={type} value={type}>
 															{type}
 														</SelectItem>
@@ -547,7 +393,7 @@ function ProfessionalRegistration() {
 												Select the areas your company specializes in
 											</p>
 											<div className="grid grid-cols-2 gap-2">
-												{specialtyOptions.map((specialty) => (
+												{SPECIALTY_OPTIONS.map((specialty) => (
 													<div
 														key={specialty}
 														className="flex items-center space-x-2"
@@ -588,7 +434,7 @@ function ProfessionalRegistration() {
 												Select the services your company provides
 											</p>
 											<div className="grid grid-cols-2 gap-2">
-												{serviceOptions.map((service) => (
+												{SERVICE_OPTIONS.map((service) => (
 													<div
 														key={service}
 														className="flex items-center space-x-2"
@@ -701,7 +547,7 @@ function ProfessionalRegistration() {
 												base
 											).toString();
 										})()}
-										packageList={packageTypes}
+										packageList={PROFESSIONAL_PACKAGE}
 										stripekey={process.env.NEXT_PUBLIC_STRIPE_SECRET || ""}
 										puid={user?.sub || ""}
 										code={"BML"}

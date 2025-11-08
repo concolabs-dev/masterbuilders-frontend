@@ -60,6 +60,7 @@ import { PaymentDialog } from "@/components/payment-dialog";
 import { Package, PaymentManagePortal } from "@concolabs-dev/payment";
 import { RequirePaymentDialog } from "@/components/payment-require";
 import { Category, Item, Material, PaymentRecord, Supplier } from "@/types";
+import { SUPPLIER_PACKAGE } from "@/lib/constants";
 
 const mockInvoices = [
 	{
@@ -102,33 +103,6 @@ const mockPaymentMethods = [
 		type: "bank_account" as const,
 		last4: "1234",
 		isDefault: false,
-	},
-];
-
-const packageTypes: Package[] = [
-	{
-		title: "User Monthly",
-		price: "LKR 3,000",
-		features: [],
-		priceId: process.env.NEXT_PUBLIC_PRICE_ID_SUPPLIER_BASIC || "",
-		highlighted: false,
-		packageName: "BML_SUP_BASIC",
-	},
-	// {
-	//   title: "Gold User",
-	//   price: "LKR 10,000",
-	//   features: [],
-	//   highlighted: false,
-	//   priceId: "price_1SEsFYHb6l5GodkUuXISMv2N",
-	//   packageName: "BML_GOLD",
-	// },
-	{
-		title: "Year at Once",
-		price: "LKR 30,000",
-		features: [],
-		highlighted: false,
-		priceId: process.env.NEXT_PUBLIC_PRICE_ID_SUPPLIER_ANNUAL || "",
-		packageName: "BML_SUP_ANUAL",
 	},
 ];
 
@@ -412,7 +386,7 @@ function SupplierDashboardPage() {
 				<RequirePaymentDialog
 					open={isPaymentRequireDialogOpen}
 					onOpenChange={setIsPaymentRequireDialogOpen}
-					packageTypes={packageTypes}
+					packageTypes={SUPPLIER_PACKAGE}
 					puid={user?.sub || ""}
 					successUrl={(() => {
 						const base = process.env.NEXT_PUBLIC_FRONTEND_API_URL;

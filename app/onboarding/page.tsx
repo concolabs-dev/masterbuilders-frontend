@@ -27,36 +27,8 @@ import {
 } from "../api";
 import { Package, PaymentContainer } from "@concolabs-dev/payment";
 import { Professional, Supplier } from "@/types";
+import { SUPPLIER_PACKAGE } from "@/lib/constants";
 // import dynamic from "next/dynamic"
-
-// const DynamicMapPicker = dynamic(() => import("@/components/MapPicker"), { ssr: false })
-
-const packageTypes: Package[] = [
-	{
-		title: "User Monthly",
-		price: "LKR 3,000",
-		features: [],
-		priceId: process.env.NEXT_PUBLIC_PRICE_ID_SUPPLIER_BASIC || "",
-		highlighted: false,
-		packageName: "BML_SUP_BASIC",
-	},
-	// {
-	//   title: "Gold User",
-	//   price: "LKR 10,000",
-	//   features: [],
-	//   highlighted: false,
-	//   priceId: "price_1SEsFYHb6l5GodkUuXISMv2N",
-	//   packageName: "BML_GOLD",
-	// },
-	{
-		title: "Year at Once",
-		price: "LKR 30,000",
-		features: [],
-		highlighted: false,
-		priceId: process.env.NEXT_PUBLIC_PRICE_ID_SUPPLIER_ANNUAL || "",
-		packageName: "BML_SUP_ANUAL",
-	},
-];
 
 function SupplierOnboarding() {
 	const router = useRouter();
@@ -412,7 +384,7 @@ function SupplierOnboarding() {
 										base
 									).toString();
 								})()}
-								packageList={packageTypes}
+								packageList={SUPPLIER_PACKAGE}
 								stripekey={process.env.NEXT_PUBLIC_STRIPE_SECRET || ""}
 								puid={user?.sub || ""}
 								code={"BML"}
