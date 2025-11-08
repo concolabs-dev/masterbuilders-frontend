@@ -285,7 +285,7 @@ function ProfessionalDashboardPage() {
 					It seems you don't have a professional profile yet. Please complete
 					the onboarding process.
 				</p>
-				<Button onClick={() => (window.location.href = "/onboarding")}>
+				<Button onClick={() => (window.location.href = "/professionals/register")}>
 					Complete Onboarding
 				</Button>
 			</div>
@@ -535,7 +535,7 @@ function ProfessionalDashboardPage() {
 									const base = process.env.NEXT_PUBLIC_FRONTEND_API_URL;
 									if (!base) return "";
 									return new URL(
-										"/api/auth/login?prompt=none&returnTo=/onboarding/success",
+										"/api/auth/login?prompt=none&returnTo=/supplier/onboarding/success",
 										base
 									).toString();
 								})()}

@@ -24,7 +24,7 @@ import {
 	getSupplierByPID,
 	getSupplierByPPID,
 	getProfessionalByPID,
-} from "../api";
+} from "@/app/api";
 import { Package, PaymentContainer } from "@concolabs-dev/payment";
 import { Professional, Supplier } from "@/types";
 import { SUPPLIER_PACKAGE } from "@/lib/constants";

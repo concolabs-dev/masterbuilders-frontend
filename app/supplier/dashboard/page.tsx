@@ -391,7 +391,7 @@ function SupplierDashboardPage() {
 					successUrl={(() => {
 						const base = process.env.NEXT_PUBLIC_FRONTEND_API_URL;
 						if (!base) return "";
-						return new URL("/onboarding/success", base).toString();
+						return new URL("/supplier/onboarding/success", base).toString();
 					})()}
 				/>
 			</div>
