@@ -45,12 +45,12 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/suppliers" className="text-muted-foreground hover:text-foreground">
+                <Link href="/supplier" className="text-muted-foreground hover:text-foreground">
                   Suppliers
                 </Link>
               </li>
               <li>
-                <Link href="/onboarding/supplier" className="text-muted-foreground hover:text-foreground">
+                <Link href="/supplier/onboarding" className="text-muted-foreground hover:text-foreground">
                   Become a Supplier
                 </Link>
               </li>

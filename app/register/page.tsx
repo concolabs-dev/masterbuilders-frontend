@@ -80,7 +80,7 @@ export default function RegisterSelectionPage() {
             </ul>
           </CardContent>
           <CardFooter className="pt-6">
-            <Link href="/onboarding" className="w-full">
+            <Link href="/supplier/onboarding" className="w-full">
               <Button className="w-full group">
                 Register as a Supplier
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -187,7 +187,7 @@ export default function RegisterSelectionPage() {
           industry.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Link href="/onboarding/supplier">
+          <Link href="/supplier/onboarding">
             <Button size="lg" variant="outline">Register as a Supplier</Button>
           </Link>
           <Link href="/professionals/register">

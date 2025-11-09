@@ -36,161 +36,13 @@ import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0/client";
 import { Package, PaymentContainer } from "@concolabs-dev/payment";
 import Loading from "@/components/loading";
 import { Professional, Supplier } from "@/types";
-
-const professionalTypes = [
-	"Architect",
-	"Contractor",
-	"Quantity Surveyor",
-	"Interior Designer",
-	"Structural Engineer",
-];
-const specialtyOptions = [
-	"Residential",
-	"Commercial",
-	"Industrial",
-	"Institutional",
-	"Sustainable Design",
-	"Urban Planning",
-	"Interior Design",
-	"Landscape Design",
-	"Renovation",
-	"High-rise Buildings",
-	"Infrastructure",
-	"Healthcare",
-	"Educational",
-	"Hospitality",
-	"Mixed-Use Development",
-	"Affordable Housing",
-	"Luxury Residential",
-	"Retail & Shopping Centers",
-	"Office Buildings",
-	"Warehouses & Logistics",
-	"Manufacturing Facilities",
-	"Religious Buildings",
-	"Sports & Recreation",
-	"Transportation Infrastructure",
-	"Water & Wastewater Treatment",
-	"Power & Energy Projects",
-	"Telecommunications Infrastructure",
-	"Agricultural Buildings",
-	"Government Buildings",
-	"Cultural & Heritage Buildings",
-	"Resort & Tourism",
-	"Residential Complexes",
-	"Gated Communities",
-	"Condominiums",
-	"Villa Projects",
-	"Beach & Coastal Properties",
-	"Hill Country Properties",
-	"Eco-Friendly Construction",
-	"Smart Buildings",
-	"Prefabricated Construction",
-	"Modular Construction",
-	"Heritage Restoration",
-	"Seismic Design",
-	"Tropical Architecture",
-	"Green Roofs & Walls",
-	"Solar Integration",
-	"Rainwater Harvesting",
-	"Disaster-Resistant Construction",
-	"Low-Cost Housing",
-	"Social Housing",
-	"Student Housing",
-	"Senior Living",
-	"Co-working Spaces",
-	"Data Centers",
-	"Laboratories",
-	"Clean Rooms",
-	"Cold Storage",
-	"Food Processing Facilities",
-];
-const serviceOptions = [
-	"Architectural Design",
-	"Construction Management",
-	"Cost Estimation",
-	"Interior Design",
-	"Landscape Design",
-	"Project Management",
-	"Structural Engineering",
-	"MEP Engineering",
-	"Urban Planning",
-	"Feasibility Studies",
-	"Building Information Modeling (BIM)",
-	"Sustainable Design Consulting",
-	"Construction Supervision",
-	"Cost Management",
-	"Dispute Management",
-	"Contracts Management",
-	"Technical Auditing",
-	"Building Surveying",
-	"Environmental Impact Assessment",
-	"Geotechnical Engineering",
-	"Fire Safety Consulting",
-	"Energy Auditing",
-	"Property Valuation",
-	"Building Maintenance",
-	"Renovation & Restoration",
-	"3D Modeling & Visualization",
-	"Permit & Approval Services",
-	"Material Testing & Quality Control",
-	"Site Investigation",
-	"Construction Procurement",
-	"Value Engineering",
-	"Risk Management",
-	"Health & Safety Consulting",
-	"Building Code Compliance",
-	"LEED Certification Consulting",
-	"Demolition Services",
-	"Waterproofing Consultation",
-	"Acoustics Consulting",
-	"Lighting Design",
-	"HVAC Design",
-	"Plumbing Design",
-	"Electrical Design",
-	"Security Systems Design",
-	"Smart Building Integration",
-	"Post-Construction Services",
-	"Warranty & Defects Management",
-	"Building Performance Analysis",
-	"Construction Documentation",
-	"As-Built Documentation",
-	"Facility Management Consulting",
-	"Space Planning",
-	"Building Automation Systems",
-	"Renewable Energy Systems Design",
-	"Solar Panel Installation Design",
-	"Green Building Certification",
-	"Construction Scheduling",
-	"Resource Planning",
-	"Subcontractor Management",
-];
-
-const packageTypes: Package[] = [
-	{
-		title: "User Monthly",
-		price: "LKR 3,000",
-		features: [],
-		priceId: process.env.NEXT_PUBLIC_PRICE_ID_PROFESSIONAL_BASIC || "",
-		highlighted: false,
-		packageName: "BML_PRF_BASIC",
-	},
-	// {
-	//   title: "Gold User",
-	//   price: "LKR 10,000",
-	//   features: [],
-	//   highlighted: false,
-	//   priceId: "price_1SEsFYHb6l5GodkUuXISMv2N",
-	//   packageName: "BML_GOLD",
-	// },
-	{
-		title: "Year at Once",
-		price: "LKR 30,000",
-		features: [],
-		highlighted: false,
-		priceId: process.env.NEXT_PUBLIC_PRICE_ID_PROFESSIONAL_ANNUAL || "",
-		packageName: "BML_PRF_ANUAL",
-	},
-];
+import {
+	PROFESSIONAL_PACKAGE,
+	PROFESSIONAL_TYPES,
+	SERVICE_OPTIONS,
+	SPECIALTY_OPTIONS,
+} from "@/lib/constants";
+import { z } from "zod";
 
 function ProfessionalRegistration() {
 	const router = useRouter();
@@ -203,6 +55,24 @@ function ProfessionalRegistration() {
 		boolean | undefined
 	>(undefined);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [errors, setErrors] = useState<Record<string, string>>({});
+	const [formData, setFormData] = useState({
+		companyName: "",
+		type: "",
+		email: "",
+		telephone: "",
+		website: "",
+		address: "",
+		location: { lat: "", lng: "" },
+		description: "",
+		founded: "",
+		employees: "",
+		specialties: [] as string[],
+		services: [] as string[],
+		certifications: [] as string[],
+		logo: "",
+		coverImage: "",
+	});
 
 	const formRef = React.useRef<HTMLFormElement>(null);
 
@@ -239,32 +109,103 @@ function ProfessionalRegistration() {
 			formRef.current?.requestSubmit();
 	}, [step, alreadyRegistered]);
 
-	const [formData, setFormData] = useState({
-		companyName: "",
-		type: "",
-		email: "",
-		telephone: "",
-		website: "",
-		address: "",
-		location: { lat: "", lng: "" },
-		description: "",
-		founded: "",
-		employees: "",
-		specialties: [] as string[],
-		services: [] as string[],
-		certifications: [] as string[],
-		logo: "",
-		coverImage: "",
+	const registrationSchema = z.object({
+		// Step 1
+		companyName: z.string().min(1, "Company name is required"),
+		type: z.string().min(1, "Please select a company type"),
+		description: z.string().optional(),
+		founded: z
+			.string()
+			.regex(/^\d{4}$/, { message: "Must be a 4-digit year" })
+			.refine((year) => parseInt(year) <= new Date().getFullYear(), {
+				message: "Year cannot be in the future",
+			})
+			.optional()
+			.or(z.literal("")),
+		employees: z.string().optional(),
+
+		// Step 2
+		email: z.email({ message: "Invalid email address" }),
+		telephone: z
+			.string()
+			.min(1, { message: "Telephone number is required" })
+			.regex(/^\d{10}$/, { message: "Must be a 10-digit telephone number" }),
+		website: z.url("Must be a valid URL").optional().or(z.literal("")),
+		address: z.string().min(1, "Address is required"),
+
+		// Step 3
+		specialties: z.array(z.string()).min(1, "Select at least one specialty"),
+		services: z.array(z.string()).min(1, "Select at least one service"),
+		certifications: z.array(z.string()).optional(),
+	});
+
+	// Create separate schemas for each step
+	const step1Schema = registrationSchema.pick({
+		companyName: true,
+		type: true,
+		description: true,
+		founded: true,
+		employees: true,
+	});
+
+	const step2Schema = registrationSchema.pick({
+		email: true,
+		telephone: true,
+		website: true,
+		address: true,
+	});
+
+	const step3Schema = registrationSchema.pick({
+		specialties: true,
+		services: true,
+		certifications: true,
 	});
 
 	const updateFormData = (field: string, value: string | string[]) => {
 		setFormData({ ...formData, [field]: value });
 	};
 
+	// const handleNext = () => {
+	// 	if (step < totalSteps) {
+	// 		setStep(step + 1);
+	// 		window.scrollTo(0, 0);
+	// 	}
+	// };
+
 	const handleNext = () => {
-		if (step < totalSteps) {
+		// 1. Clear any previous errors
+		setErrors({});
+
+		// 2. Select the schema for the current step
+		let currentSchema;
+		if (step === 1) currentSchema = step1Schema;
+		else if (step === 2) currentSchema = step2Schema;
+		else if (step === 3) currentSchema = step3Schema;
+		else {
+			// For steps without validation (like step 5), just proceed
 			setStep(step + 1);
-			window.scrollTo(0, 0);
+			return;
+		}
+
+		// 3. Validate the current formData
+		const validationResult = currentSchema.safeParse(formData);
+
+		// 4. Handle success or failure
+		if (validationResult.success) {
+			// On success, clear errors and go to the next step
+			setErrors({});
+			if (step < totalSteps) {
+				setStep(step + 1);
+				window.scrollTo(0, 0);
+			}
+		} else {
+			// On failure, format and set errors
+			const newErrors: Record<string, string> = {};
+			for (const issue of validationResult.error.issues) {
+				const fieldName = String(issue.path[0]);
+				newErrors[fieldName] = issue.message;
+			}
+			setErrors(newErrors);
 		}
 	};
 
@@ -319,9 +260,9 @@ function ProfessionalRegistration() {
 	return (
 		<>
 			{alreadyRegistered == undefined ? (
-				 <Loading />
+				<Loading />
 			) : alreadyRegistered ? (
-				 <Loading text="Redirecting Dashboard" />
+				<Loading text="Redirecting Dashboard" />
 			) : (
 				<div className="container max-w-3xl py-10">
 					<div className="mb-8 space-y-4">
@@ -377,8 +318,15 @@ function ProfessionalRegistration() {
 												onChange={(e) =>
 													updateFormData("companyName", e.target.value)
 												}
-												required
+												className={
+													errors.companyName ? "border-destructive" : ""
+												}
 											/>
+											{errors.companyName && (
+												<p className="text-sm text-destructive">
+													{errors.companyName}
+												</p>
+											)}
 										</div>
 										<div className="space-y-2">
 											<Label htmlFor="type">Company Type</Label>
@@ -386,17 +334,24 @@ function ProfessionalRegistration() {
 												value={formData.type}
 												onValueChange={(value) => updateFormData("type", value)}
 											>
-												<SelectTrigger>
+												<SelectTrigger
+													className={errors.type ? "border-destructive" : ""}
+												>
 													<SelectValue placeholder="Select company type" />
 												</SelectTrigger>
 												<SelectContent>
-													{professionalTypes.map((type) => (
+													{PROFESSIONAL_TYPES.map((type) => (
 														<SelectItem key={type} value={type}>
 															{type}
 														</SelectItem>
 													))}
 												</SelectContent>
 											</Select>
+											{errors.type && (
+												<p className="text-sm text-destructive">
+													{errors.type}
+												</p>
+											)}
 										</div>
 										<div className="space-y-2">
 											<Label htmlFor="description">Company Description</Label>
@@ -420,7 +375,13 @@ function ProfessionalRegistration() {
 													onChange={(e) =>
 														updateFormData("founded", e.target.value)
 													}
+													className={errors.founded ? "border-destructive" : ""}
 												/>
+												{errors.founded && (
+													<p className="text-sm text-destructive">
+														{errors.founded}
+													</p>
+												)}
 											</div>
 											<div className="space-y-2">
 												<Label htmlFor="employees">Number of Employees</Label>
@@ -458,8 +419,13 @@ function ProfessionalRegistration() {
 												onChange={(e) =>
 													updateFormData("email", e.target.value)
 												}
-												required
+												className={errors.email ? "border-destructive" : ""}
 											/>
+											{errors.email && (
+												<p className="text-sm text-destructive">
+													{errors.email}
+												</p>
+											)}
 										</div>
 										<div className="space-y-2">
 											<Label htmlFor="telephone">Telephone Number</Label>
@@ -471,8 +437,13 @@ function ProfessionalRegistration() {
 												onChange={(e) =>
 													updateFormData("telephone", e.target.value)
 												}
-												required
+												className={errors.telephone ? "border-destructive" : ""}
 											/>
+											{errors.telephone && (
+												<p className="text-sm text-destructive">
+													{errors.telephone}
+												</p>
+											)}
 										</div>
 										<div className="space-y-2">
 											<Label htmlFor="website">Website (Optional)</Label>
@@ -484,7 +455,13 @@ function ProfessionalRegistration() {
 												onChange={(e) =>
 													updateFormData("website", e.target.value)
 												}
+												className={errors.website ? "border-destructive" : ""}
 											/>
+											{errors.website && (
+												<p className="text-sm text-destructive">
+													{errors.website}
+												</p>
+											)}
 										</div>
 										<div className="space-y-2">
 											<Label htmlFor="address">Address</Label>
@@ -495,8 +472,13 @@ function ProfessionalRegistration() {
 												onChange={(e) =>
 													updateFormData("address", e.target.value)
 												}
-												required
+												className={errors.address ? "border-destructive" : ""}
 											/>
+											{errors.address && (
+												<p className="text-sm text-destructive">
+													{errors.address}
+												</p>
+											)}
 										</div>
 										{/* <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -546,8 +528,13 @@ function ProfessionalRegistration() {
 											<p className="text-sm text-muted-foreground mb-3">
 												Select the areas your company specializes in
 											</p>
+											{errors.specialties && (
+												<p className="text-sm text-destructive -mt-2 mb-3">
+													{errors.specialties}
+												</p>
+											)}
 											<div className="grid grid-cols-2 gap-2">
-												{specialtyOptions.map((specialty) => (
+												{SPECIALTY_OPTIONS.map((specialty) => (
 													<div
 														key={specialty}
 														className="flex items-center space-x-2"
@@ -587,8 +574,13 @@ function ProfessionalRegistration() {
 											<p className="text-sm text-muted-foreground mb-3">
 												Select the services your company provides
 											</p>
+											{errors.services && (
+												<p className="text-sm text-destructive -mt-2 mb-3">
+													{errors.services}
+												</p>
+											)}
 											<div className="grid grid-cols-2 gap-2">
-												{serviceOptions.map((service) => (
+												{SERVICE_OPTIONS.map((service) => (
 													<div
 														key={service}
 														className="flex items-center space-x-2"
@@ -701,7 +693,7 @@ function ProfessionalRegistration() {
 												base
 											).toString();
 										})()}
-										packageList={packageTypes}
+										packageList={PROFESSIONAL_PACKAGE}
 										stripekey={process.env.NEXT_PUBLIC_STRIPE_SECRET || ""}
 										puid={user?.sub || ""}
 										code={"BML"}

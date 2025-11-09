@@ -26,6 +26,7 @@ import { withRoleGuard } from "@/app/hoc/withRoleGuard";
 import { Package, PaymentManagePortal } from "@concolabs-dev/payment";
 import { RequirePaymentDialog } from "@/components/payment-require";
 import { PaymentRecord, Professional, Project } from "@/types";
+import { PROFESSIONAL_PACKAGE } from "@/lib/constants";
 // Mock projects data - keeping this for now
 const initialProjects = [
 	{
@@ -89,33 +90,6 @@ const initialProjects = [
 	},
 ];
 
-// TODO: check price ids
-const packageTypes: Package[] = [
-	{
-		title: "User Monthly",
-		price: "LKR 3,000",
-		features: [],
-		priceId: process.env.NEXT_PUBLIC_PRICE_ID_PROFESSIONAL_BASIC || "",
-		highlighted: false,
-		packageName: "BML_PRF_BASIC",
-	},
-	// {
-	//   title: "Gold User",
-	//   price: "LKR 10,000",
-	//   features: [],
-	//   highlighted: false,
-	//   priceId: "price_1SEsFYHb6l5GodkUuXISMv2N",
-	//   packageName: "BML_GOLD",
-	// },
-	{
-		title: "Year at Once",
-		price: "LKR 30,000",
-		features: [],
-		highlighted: false,
-		priceId: process.env.NEXT_PUBLIC_PRICE_ID_PROFESSIONAL_ANNUAL || "",
-		packageName: "BML_PRF_ANUAL",
-	},
-];
 
 function ProfessionalDashboardPage() {
 	const { user, isLoading: isUserLoading, error: userError } = useUser();
@@ -311,7 +285,7 @@ function ProfessionalDashboardPage() {
 					It seems you don't have a professional profile yet. Please complete
 					the onboarding process.
 				</p>
-				<Button onClick={() => (window.location.href = "/onboarding")}>
+				<Button onClick={() => (window.location.href = "/professionals/register")}>
 					Complete Onboarding
 				</Button>
 			</div>
@@ -335,7 +309,7 @@ function ProfessionalDashboardPage() {
 				<RequirePaymentDialog
 					open={isPaymentRequireDialogOpen}
 					onOpenChange={setIsPaymentRequireDialogOpen}
-					packageTypes={packageTypes}
+					packageTypes={PROFESSIONAL_PACKAGE}
 					puid={user?.sub || ""}
 					successUrl={(() => {
 						const base = process.env.NEXT_PUBLIC_FRONTEND_API_URL;
@@ -555,13 +529,13 @@ function ProfessionalDashboardPage() {
 							<RequirePaymentDialog
 								open={isPaymentRequireDialogOpen}
 								onOpenChange={setIsPaymentRequireDialogOpen}
-								packageTypes={packageTypes}
+								packageTypes={PROFESSIONAL_PACKAGE}
 								puid={user?.sub || ""}
 								successUrl={(() => {
 									const base = process.env.NEXT_PUBLIC_FRONTEND_API_URL;
 									if (!base) return "";
 									return new URL(
-										"/api/auth/login?prompt=none&returnTo=/onboarding/success",
+										"/api/auth/login?prompt=none&returnTo=/supplier/onboarding/success",
 										base
 									).toString();
 								})()}
