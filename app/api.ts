@@ -137,6 +137,15 @@ export const deleteSupplier = async (id: string) => {
 	await backend_api_axios.delete(`/suppliers/${id}`);
 };
 
+export const updateSupplierStatus = async (
+	id: string
+) => {
+	const response = await backend_api_axios.put<Supplier>(
+		`/suppliers/approved/${id}`
+	);
+	return response.data;
+};
+
 // Materials API calls
 export const getExchangeRates = async () => {
 	const response = await backend_api_axios.get("/forex");
