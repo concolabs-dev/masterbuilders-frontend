@@ -165,13 +165,8 @@ function AdminDashboard() {
 	);
 	const [selectedProfessional, setSelectedProfessional] =
 		useState<Professional | null>(null);
-	const [supplierSearch, setSupplierSearch] = useState("");
 	const [professionalSearch, setProfessionalSearch] = useState("");
 	const { user, error, isLoading } = useUser();
-	const { data: suppliers = [], isLoading: suppliersLoading } = useQuery({
-		queryKey: ["suppliers"],
-		queryFn: getSuppliers,
-	});
 
 	const { data: professionals = [], isLoading: professionalsLoading } =
 		useQuery({
@@ -306,13 +301,6 @@ function AdminDashboard() {
 		},
 	});
 
-	const deleteSupplierMutation = useMutation({
-		mutationFn: deleteSupplier,
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["suppliers"] });
-		},
-	});
-
 	// Add mutations for professionals
 	const updateProfessionalMutation = useMutation({
 		mutationFn: ({
@@ -334,13 +322,6 @@ function AdminDashboard() {
 		},
 	});
 
-	// Update the delete handlers
-	const handleDeleteSupplier = (id: string) => {
-		if (window.confirm("Are you sure you want to delete this supplier?")) {
-			deleteSupplierMutation.mutate(id);
-		}
-	};
-
 	const handleDeleteProfessional = (id: string) => {
 		if (window.confirm("Are you sure you want to delete this professional?")) {
 			deleteProfessionalMutation.mutate(id);
@@ -358,15 +339,6 @@ function AdminDashboard() {
 	};
 
 	// Update the filter functions with null checks
-
-	const filteredSuppliers = (suppliers || []).filter(
-		(supplier) =>
-			supplier?.business_name
-				?.toLowerCase()
-				.includes(supplierSearch.toLowerCase()) ||
-			supplier?.email?.toLowerCase().includes(supplierSearch.toLowerCase()) ||
-			supplier?.address?.toLowerCase().includes(supplierSearch.toLowerCase())
-	);
 
 	const filteredProfessionals = (professionals || []).filter(
 		(professional) =>
@@ -520,102 +492,11 @@ function AdminDashboard() {
 						</CardContent>
 					</Card>
 				</TabsContent>
-				<TabsContent value="suppliers" className="space-y-4">
-					<AdminSuppliersTab />
-				</TabsContent>
 				<TabsContent value="payments" className="space-y-4">
 					<p>payments</p>
 				</TabsContent>
 				<TabsContent value="suppliers" className="space-y-4">
-					<Card>
-						<CardHeader>
-							<div className="flex justify-between items-center">
-								<div>
-									<CardTitle>Suppliers</CardTitle>
-									<CardDescription>
-										Manage registered suppliers and their accounts.
-									</CardDescription>
-								</div>
-								<div className="flex items-center space-x-2">
-									<div className="relative">
-										<Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-										<Input
-											placeholder="Search suppliers..."
-											value={supplierSearch}
-											onChange={(e) => setSupplierSearch(e.target.value)}
-											className="pl-8 w-64"
-										/>
-									</div>
-								</div>
-							</div>
-						</CardHeader>
-						<CardContent>
-							<div className="rounded-md border">
-								<Table>
-									<TableHeader>
-										<TableRow>
-											<TableHead>Company Name</TableHead>
-											<TableHead>Contact</TableHead>
-											<TableHead>Location</TableHead>
-											<TableHead>Category</TableHead>
-											<TableHead>Products</TableHead>
-											<TableHead>Status</TableHead>
-											<TableHead>Rating</TableHead>
-											<TableHead className="text-right">Actions</TableHead>
-										</TableRow>
-									</TableHeader>
-									<TableBody>
-										{filteredSuppliers.map((supplier) => (
-											<TableRow key={supplier.id}>
-												<TableCell className="font-medium">
-													{supplier.business_name}
-												</TableCell>
-												<TableCell>
-													<div className="text-sm">
-														<div>{supplier.email}</div>
-														<div className="text-muted-foreground">
-															{supplier.telephone}
-														</div>
-													</div>
-												</TableCell>
-												<TableCell>{supplier.address}</TableCell>
-												<TableCell>
-													<Badge variant="outline">Business</Badge>
-												</TableCell>
-												<TableCell>
-													<Badge variant="outline">PID: {supplier.pid}</Badge>
-												</TableCell>
-												<TableCell>
-													<Badge variant="default">Active</Badge>
-												</TableCell>
-												<TableCell>⭐ 4.0</TableCell>
-												<TableCell className="text-right space-x-2">
-													<Button variant="ghost" size="icon">
-														<Eye className="h-4 w-4" />
-													</Button>
-													<Button
-														variant="ghost"
-														size="icon"
-														onClick={() => setSelectedSupplier(supplier)}
-													>
-														<Pencil className="h-4 w-4" />
-													</Button>
-													<Button
-														variant="ghost"
-														size="icon"
-														className="text-destructive"
-														onClick={() => handleDeleteSupplier(supplier.id)}
-													>
-														<Trash2 className="h-4 w-4" />
-													</Button>
-												</TableCell>
-											</TableRow>
-										))}
-									</TableBody>
-								</Table>
-							</div>
-						</CardContent>
-					</Card>
+					<AdminSuppliersTab />
 				</TabsContent>
 
 				<TabsContent value="professionals" className="space-y-4">

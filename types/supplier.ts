@@ -1,4 +1,5 @@
 import { Location } from "./common";
+import { PaymentRecord } from "./payment";
 
 export interface Supplier {
 	id: string;
@@ -12,4 +13,9 @@ export interface Supplier {
 	location: Location;
 	profile_pic_url: string;
 	cover_pic_url: string;
+}
+
+export interface SupplierWithRecord {
+	supplier: Supplier;
+	record: PaymentRecord;
 }

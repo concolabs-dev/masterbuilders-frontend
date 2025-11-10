@@ -4,20 +4,40 @@ import {
 	getSupplierByPPID,
 	getItemsBySupplier,
 	updatePaymentRecord,
+	getSuppliers,
+	deleteSupplier,
+	updateSupplierStatus,
 } from "@/app/api";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { SupplierProfile } from "@/components/supplier-profile";
 import { SupplierItemList } from "@/components/supplier-item-list";
-import { Item, PaymentRecord, Supplier } from "@/types";
+import { Item, SupplierWithRecord, Supplier } from "@/types";
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { Pencil, Trash2, Search, Eye } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-interface SupplierWithRecord {
-	supplier: Supplier;
-	record: PaymentRecord;
-}
+interface AdminSuppliersTabProps {}
 
-function AdminSuppliersTab() {
+function AdminSuppliersTab(props: AdminSuppliersTabProps) {
+	const [supplierSearch, setSupplierSearch] = useState("");
 	const [approvedList, setApprovedList] = useState<SupplierWithRecord[]>([]);
 	const [notApprovedList, setNotApprovedList] = useState<SupplierWithRecord[]>(
 		[]
@@ -27,6 +47,38 @@ function AdminSuppliersTab() {
 		null
 	);
 	const [supplierItems, setSupplierItems] = useState<Item[]>([]);
+
+	const { data: suppliers = [], isLoading: suppliersLoading } = useQuery({
+		queryKey: ["suppliers"],
+		queryFn: getSuppliers,
+	});
+
+	const queryClient = useQueryClient();
+
+	const deleteSupplierMutation = useMutation({
+		mutationFn: deleteSupplier,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["suppliers"] });
+		},
+	});
+
+	const statusChnageSupplierMutation = useMutation({
+		mutationFn: updateSupplierStatus,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["suppliers"] });
+		},
+	});
+
+	// Update the delete handlers
+	const handleDeleteSupplier = (id: string) => {
+		if (window.confirm("Are you sure you want to delete this supplier?")) {
+			deleteSupplierMutation.mutate(id);
+		}
+	};
+
+	const handleInactiveSupplier = (id: string) => {
+		statusChnageSupplierMutation.mutate(id);
+	};
 
 	const fetchSuppliers = async () => {
 		try {
@@ -78,6 +130,15 @@ function AdminSuppliersTab() {
 		}
 		setDialogOpen(true);
 	};
+
+	const filteredSuppliers = (suppliers || []).filter(
+		(supplier) =>
+			supplier?.business_name
+				?.toLowerCase()
+				.includes(supplierSearch.toLowerCase()) ||
+			supplier?.email?.toLowerCase().includes(supplierSearch.toLowerCase()) ||
+			supplier?.address?.toLowerCase().includes(supplierSearch.toLowerCase())
+	);
 
 	const renderTable = (list: SupplierWithRecord[], approved: boolean) => (
 		<table className="min-w-full">
@@ -131,6 +192,103 @@ function AdminSuppliersTab() {
 					{renderTable(notApprovedList, false)}
 				</TabsContent>
 			</Tabs>
+
+			<Card>
+				<CardHeader>
+					<div className="flex justify-between items-center">
+						<div>
+							<CardTitle>Suppliers</CardTitle>
+							<CardDescription>
+								Manage registered suppliers and their accounts.
+							</CardDescription>
+						</div>
+						<div className="flex items-center space-x-2">
+							<div className="relative">
+								<Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+								<Input
+									placeholder="Search suppliers..."
+									value={supplierSearch}
+									onChange={(e) => setSupplierSearch(e.target.value)}
+									className="pl-8 w-64"
+								/>
+							</div>
+						</div>
+					</div>
+				</CardHeader>
+				<CardContent>
+					<div className="rounded-md border">
+						<Table>
+							<TableHeader>
+								<TableRow>
+									<TableHead>Company Name</TableHead>
+									<TableHead>Contact</TableHead>
+									<TableHead>Location</TableHead>
+									<TableHead>Category</TableHead>
+									<TableHead>Products</TableHead>
+									<TableHead>Status</TableHead>
+									<TableHead>Rating</TableHead>
+									<TableHead className="text-right">Actions</TableHead>
+								</TableRow>
+							</TableHeader>
+							<TableBody>
+								{filteredSuppliers.map((supplier: Supplier) => (
+									<TableRow key={supplier.id}>
+										<TableCell className="font-medium">
+											{supplier.business_name}
+										</TableCell>
+										<TableCell>
+											<div className="text-sm">
+												<div>{supplier.email}</div>
+												<div className="text-muted-foreground">
+													{supplier.telephone}
+												</div>
+											</div>
+										</TableCell>
+										<TableCell>{supplier.address}</TableCell>
+										<TableCell>
+											<Badge variant="outline">Business</Badge>
+										</TableCell>
+										<TableCell>
+											<Badge variant="outline">PID: {supplier.pid}</Badge>
+										</TableCell>
+										<TableCell>
+											{<Badge variant="default">Active</Badge>}
+										</TableCell>
+										<TableCell>⭐ 4.0</TableCell>
+										<TableCell className="text-right space-x-2">
+											<Button
+												variant="ghost"
+												size="icon"
+												onClick={(event) => {
+													console.log("Clicked:", selectedSupplier);
+													handleInactiveSupplier(supplier.pid);
+												}}
+											>
+												<Eye className="h-4 w-4" />
+											</Button>
+											<Button
+												variant="ghost"
+												size="icon"
+												onClick={() => setSelectedSupplier(supplier)}
+											>
+												<Pencil className="h-4 w-4" />
+											</Button>
+											<Button
+												variant="ghost"
+												size="icon"
+												className="text-destructive"
+												onClick={() => handleDeleteSupplier(supplier.id)}
+											>
+												<Trash2 className="h-4 w-4" />
+											</Button>
+										</TableCell>
+									</TableRow>
+								))}
+							</TableBody>
+						</Table>
+					</div>
+				</CardContent>
+			</Card>
 
 			<Dialog open={dialogOpen} onOpenChange={() => setDialogOpen(false)}>
 				<DialogContent>
