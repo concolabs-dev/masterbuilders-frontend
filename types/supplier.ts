@@ -13,6 +13,7 @@ export interface Supplier {
 	location: Location;
 	profile_pic_url: string;
 	cover_pic_url: string;
+	status:string
 }
 
 export interface SupplierWithRecord {

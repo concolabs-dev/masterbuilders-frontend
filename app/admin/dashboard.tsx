@@ -62,12 +62,10 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import {
 	// ... existing imports
-	getSuppliers,
 	getProfessionals,
 	updateSupplier,
 	deleteProfessional,
 	updateProfessional,
-	deleteSupplier,
 } from "../api";
 import EditCategoryDialog from "./components/editCategoryDialog";
 import { Category, Material, Professional, Supplier } from "@/types";
@@ -606,92 +604,7 @@ function AdminDashboard() {
 			/>
 
 			{/* Edit Supplier Dialog */}
-			<Dialog
-				open={!!selectedSupplier}
-				onOpenChange={() => setSelectedSupplier(null)}
-			>
-				<DialogContent className="max-w-2xl">
-					<DialogHeader>
-						<DialogTitle>Edit Supplier</DialogTitle>
-						<DialogDescription>
-							Update supplier information and account status.
-						</DialogDescription>
-					</DialogHeader>
-					<form
-						onSubmit={(e) => {
-							e.preventDefault();
-							if (selectedSupplier) {
-								const formData = new FormData(e.currentTarget);
-								const updatedSupplier: Partial<Supplier> = {
-									business_name: formData.get("business_name") as string,
-									email: formData.get("email") as string,
-									telephone: formData.get("telephone") as string,
-									address: formData.get("address") as string,
-									business_description: formData.get(
-										"business_description"
-									) as string,
-								};
-								updateSupplierMutation.mutate({
-									id: selectedSupplier.id,
-									supplier: updatedSupplier,
-								});
-								setSelectedSupplier(null);
-							}
-						}}
-					>
-						<div className="grid gap-4 py-4">
-							<div className="grid grid-cols-2 gap-4">
-								<div className="grid gap-2">
-									<Label htmlFor="supplier-business-name">Business Name</Label>
-									<Input
-										id="supplier-business-name"
-										name="business_name"
-										defaultValue={selectedSupplier?.business_name}
-									/>
-								</div>
-								<div className="grid gap-2">
-									<Label htmlFor="supplier-email">Email</Label>
-									<Input
-										id="supplier-email"
-										name="email"
-										type="email"
-										defaultValue={selectedSupplier?.email}
-									/>
-								</div>
-							</div>
-							<div className="grid grid-cols-2 gap-4">
-								<div className="grid gap-2">
-									<Label htmlFor="supplier-telephone">Phone</Label>
-									<Input
-										id="supplier-telephone"
-										name="telephone"
-										defaultValue={selectedSupplier?.telephone}
-									/>
-								</div>
-								<div className="grid gap-2">
-									<Label htmlFor="supplier-address">Address</Label>
-									<Input
-										id="supplier-address"
-										name="address"
-										defaultValue={selectedSupplier?.address}
-									/>
-								</div>
-							</div>
-							<div className="grid gap-2">
-								<Label htmlFor="supplier-description">
-									Business Description
-								</Label>
-								<Textarea
-									id="supplier-description"
-									name="business_description"
-									defaultValue={selectedSupplier?.business_description}
-									placeholder="Business description..."
-								/>
-							</div>
-						</div>
-					</form>
-				</DialogContent>
-			</Dialog>
+
 
 			{/* Edit Professional Dialog */}
 			<Dialog

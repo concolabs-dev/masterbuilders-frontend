@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { Category, Item, Material, PaymentRecord, Professional, ProfessionalFilters, ProfessionalSearchResult, ProfessionalTypesResponse, Project, ProjectWithProfessional, Supplier } from "@/types";
+import { Category, Item, Material, PaymentRecord, Professional, ProfessionalFilters, ProfessionalSearchResult, ProfessionalTypesResponse, Project, ProjectWithProfessional, Supplier, SupplierWithRecord } from "@/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 const BACKEND_API_SECRET = process.env.NEXT_PUBLIC_BACKEND_API_SECRET || "";
@@ -64,6 +64,11 @@ backend_api_axios.interceptors.response.use(
 
 export const getSuppliers = async () => {
 	const response = await backend_api_axios.get<Supplier[]>("/suppliers");
+	return response.data;
+};
+
+export const getAllSuppliers = async () => {
+	const response = await backend_api_axios.get<SupplierWithRecord[]>("/suppliers-all");
 	return response.data;
 };
 
