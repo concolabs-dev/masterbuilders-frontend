@@ -228,7 +228,6 @@ export default function AdminManageTable(props: AdminManageTableProps) {
 				)}
 			{selectedSupplier &&
 				viewDialogOpen &&
-				supplierItems &&
 				setViewDialogOpen && (
 					<ViewSupplierDialog
 						selectedSupplier={selectedSupplier}

@@ -10,7 +10,7 @@ interface ViewSupplierDialogProps {
 	dialogOpen: boolean;
 	setDialogOpen: Dispatch<SetStateAction<boolean>>;
 	selectedSupplier: Supplier;
-	supplierItems: Item[];
+	supplierItems: Item[] | undefined;
 }
 
 export default function ViewSupplierDialog(props: ViewSupplierDialogProps) {
