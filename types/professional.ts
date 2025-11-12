@@ -1,4 +1,5 @@
 import { Location } from "./common";
+import { PaymentRecord } from "./payment";
 
 export interface Professional {
 	id: string;
@@ -18,6 +19,7 @@ export interface Professional {
 	company_logo_url: string;
 	cover_image_url: string;
 	pid: string;
+	status:string;
 }
 
 export interface ProfessionalSearchResult {
@@ -40,4 +42,9 @@ export interface ProfessionalFilters {
     employees_max?: string;
     specialization?: string;
     service?: string;
+}
+
+export interface ProfessionalWithRecord {
+	professional: Professional;
+	record: PaymentRecord;
 }

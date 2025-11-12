@@ -5,7 +5,7 @@ export interface Category {
 		name: string;
 		subcategories: {
 			name: string;
-			sub_subcategories: { name: string }[];
+			["Sub subcategories"]: { name: string }[];
 		}[];
 	}[];
 }

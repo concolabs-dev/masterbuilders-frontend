@@ -15,7 +15,6 @@ import { Category } from "@/types";
 interface EditCategoryDialogProps {
 	selectedCategory: Category | null;
 	setSelectedCategory: (status: Category | null) => void;
-
 	handleUpdateCategory: (id: string, updatedCategory: Category) => void;
 }
 
@@ -67,7 +66,7 @@ export default function EditCategoryDialog(props: EditCategoryDialogProps) {
 			const updatedSubcats = (cat.subcategories || []).map((subcat, j) =>
 				j === subCatIndex ? { ...subcat, name: newName } : subcat
 			);
-			return { ...cat, subcategories: updatedSubcats };
+			return { ...cat, subcategory: updatedSubcats };
 		});
 		setSelectedCategory({ ...selectedCategory, categories: updatedCategories });
 	};
@@ -75,9 +74,9 @@ export default function EditCategoryDialog(props: EditCategoryDialogProps) {
 	const handleAddSubCategory = (catIndex: number) => {
 		const updatedCategories = selectedCategory.categories.map((cat, i) => {
 			if (i !== catIndex) return cat;
-			const newSubcat = { name: "", sub_subcategories: [] };
+			const newSubcat = { name: "", subSubcategory: [] };
 			const updatedSubcats = [...(cat.subcategories || []), newSubcat];
-			return { ...cat, subcategories: updatedSubcats };
+			return { ...cat, subcategory: updatedSubcats };
 		});
 		setSelectedCategory({ ...selectedCategory, categories: updatedCategories });
 	};
@@ -88,7 +87,7 @@ export default function EditCategoryDialog(props: EditCategoryDialogProps) {
 			const updatedSubcats = (cat.subcategories || []).filter(
 				(_, j) => j !== subCatIndex
 			);
-			return { ...cat, subcategories: updatedSubcats };
+			return { ...cat, subcategory: updatedSubcats };
 		});
 		setSelectedCategory({ ...selectedCategory, categories: updatedCategories });
 	};
@@ -103,13 +102,13 @@ export default function EditCategoryDialog(props: EditCategoryDialogProps) {
 			if (i !== catIndex) return cat;
 			const updatedSubcats = (cat.subcategories || []).map((subcat, j) => {
 				if (j !== subCatIndex) return subcat;
-				const updatedSubSubCats = (subcat.sub_subcategories || []).map(
+				const updatedSubSubCats = (subcat["Sub subcategories"]|| []).map(
 					(subsubcat, k) =>
 						k === subSubCatIndex ? { ...subsubcat, name: newName } : subsubcat
 				);
-				return { ...subcat, sub_subcategories: updatedSubSubCats };
+				return { ...subcat, subSubcategory: updatedSubSubCats };
 			});
-			return { ...cat, subcategories: updatedSubcats };
+			return { ...cat, subcategory: updatedSubcats };
 		});
 		setSelectedCategory({ ...selectedCategory, categories: updatedCategories });
 	};
@@ -121,12 +120,12 @@ export default function EditCategoryDialog(props: EditCategoryDialogProps) {
 				if (j !== subCatIndex) return subcat;
 				const newSubSubCat = { name: "" };
 				const updatedSubSubCats = [
-					...(subcat.sub_subcategories || []),
+					...(subcat["Sub subcategories"]|| []),
 					newSubSubCat,
 				];
-				return { ...subcat, sub_subcategories: updatedSubSubCats };
+				return { ...subcat, subSubcategory: updatedSubSubCats };
 			});
-			return { ...cat, subcategories: updatedSubcats };
+			return { ...cat, subcategory: updatedSubcats };
 		});
 		setSelectedCategory({ ...selectedCategory, categories: updatedCategories });
 	};
@@ -140,12 +139,12 @@ export default function EditCategoryDialog(props: EditCategoryDialogProps) {
 			if (i !== catIndex) return cat;
 			const updatedSubcats = (cat.subcategories || []).map((subcat, j) => {
 				if (j !== subCatIndex) return subcat;
-				const updatedSubSubCats = (subcat.sub_subcategories || []).filter(
+				const updatedSubSubCats = (subcat["Sub subcategories"] || []).filter(
 					(_, k) => k !== subSubCatIndex
 				);
-				return { ...subcat, sub_subcategories: updatedSubSubCats };
+				return { ...subcat, subSubcategory: updatedSubSubCats };
 			});
-			return { ...cat, subcategories: updatedSubcats };
+			return { ...cat, subcategory: updatedSubcats };
 		});
 		setSelectedCategory({ ...selectedCategory, categories: updatedCategories });
 	};
@@ -246,7 +245,7 @@ export default function EditCategoryDialog(props: EditCategoryDialogProps) {
 													<Label className="text-xs font-medium text-gray-400">
 														Sub-Sub-Categories (L3)
 													</Label>
-													{subcat.sub_subcategories?.map(
+													{subcat["Sub subcategories"]?.map(
 														(subsubcat, subSubCatIndex) => (
 															<div
 																key={subSubCatIndex}

@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { Category, Item, Material, PaymentRecord, Professional, ProfessionalFilters, ProfessionalSearchResult, ProfessionalTypesResponse, Project, ProjectWithProfessional, Supplier, SupplierWithRecord } from "@/types";
+import { Category, Item, Material, PaymentRecord, Professional, ProfessionalFilters, ProfessionalSearchResult, ProfessionalTypesResponse, ProfessionalWithRecord, Project, ProjectWithProfessional, Supplier, SupplierWithRecord } from "@/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
 const BACKEND_API_SECRET = process.env.NEXT_PUBLIC_BACKEND_API_SECRET || "";
@@ -327,6 +327,15 @@ export const deletePaymentRecord = async (id: string) => {
 export const getProfessionals = async () => {
 	const response = await backend_api_axios.get<Professional[]>(
 		"/professionals"
+	);
+	console.log(response.data);
+	return response.data;
+};
+
+// Professionals API calls
+export const getAllProfessionals = async () => {
+	const response = await backend_api_axios.get<ProfessionalWithRecord[]>(
+		"/professionals-all"
 	);
 	console.log(response.data);
 	return response.data;

@@ -3,7 +3,7 @@ import { getItemsBySupplier, getAllSuppliers, updateSupplier } from "@/app/api";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Item, Supplier } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import AdminManageTable from "./admin-manage-table";
+import AdminSupplierManageTable from "./admin-supplier-manage-table";
 
 interface AdminSuppliersTabProps {}
 
@@ -173,7 +173,7 @@ function AdminSuppliersTab(props: AdminSuppliersTabProps) {
 					<h2 className="text-xl font-semibold mb-4">
 						Approved & Hiddden Suppliers
 					</h2>
-					<AdminManageTable
+					<AdminSupplierManageTable
 						title="Suppliers & Hidden"
 						description="Manage approved & hidden suppliers and their accounts."
 						filteredSuppliers={filteredSuppliers}
@@ -190,7 +190,7 @@ function AdminSuppliersTab(props: AdminSuppliersTabProps) {
 				</TabsContent>
 				<TabsContent value="pending">
 					<h2 className="text-xl font-semibold mb-4">Pending Suppliers</h2>
-					<AdminManageTable
+					<AdminSupplierManageTable
 						title="Suppliers"
 						description="Manage pending suppliers and their accounts."
 						filteredSuppliers={filteredSuppliers}
@@ -211,7 +211,7 @@ function AdminSuppliersTab(props: AdminSuppliersTabProps) {
 				</TabsContent>
 				<TabsContent value="suspended">
 					<h2 className="text-xl font-semibold mb-4">Suspended Suppliers</h2>
-					<AdminManageTable
+					<AdminSupplierManageTable
 						title="Suppliers"
 						description="Manage suspended suppliers and their accounts."
 						filteredSuppliers={filteredSuppliers}

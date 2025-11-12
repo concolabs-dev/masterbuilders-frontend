@@ -34,7 +34,7 @@ import { Label } from "@/components/ui/label";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { MaterialCard } from "@/components/material-card";
 import { PriceChart } from "@/components/price-chart";
-import AdminSuppliersTab from "@/components/admin-suppliers";
+import AdminSuppliersTab from "@/components/admin/admin-suppliers";
 import Modal from "@/components/ui/Modal";
 import {
 	getMaterialsByCategory,
@@ -53,22 +53,16 @@ import { withRoleGuard } from "../hoc/withRoleGuard";
 import MonthManager from "@/components/MonthManager";
 import { Badge } from "@/components/ui/badge";
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import {
 	// ... existing imports
-	getProfessionals,
+	// getProfessionals,
 	updateSupplier,
 	deleteProfessional,
 	updateProfessional,
 } from "../api";
-import EditCategoryDialog from "./components/editCategoryDialog";
+import EditCategoryDialog from "../../components/admin/edit-category-dialog";
 import { Category, Material, Professional, Supplier } from "@/types";
+import AdminProfessionalTab from "@/components/admin/admin-professional";
+import EditMaterialDialog from "@/components/admin/edit-material-dialog";
 
 const mockSuppliers = [
 	{
@@ -166,11 +160,11 @@ function AdminDashboard() {
 	const [professionalSearch, setProfessionalSearch] = useState("");
 	const { user, error, isLoading } = useUser();
 
-	const { data: professionals = [], isLoading: professionalsLoading } =
-		useQuery({
-			queryKey: ["professionals"],
-			queryFn: getProfessionals,
-		});
+	// const { data: professionals = [], isLoading: professionalsLoading } =
+	// 	useQuery({
+	// 		queryKey: ["professionals"],
+	// 		queryFn: getProfessionals,
+	// 	});
 	console.log(user);
 	const queryClient = useQueryClient();
 
@@ -336,20 +330,6 @@ function AdminDashboard() {
 		return <Badge variant={variants[status] || "outline"}>{status}</Badge>;
 	};
 
-	// Update the filter functions with null checks
-
-	const filteredProfessionals = (professionals || []).filter(
-		(professional) =>
-			professional?.company_name
-				?.toLowerCase()
-				.includes(professionalSearch.toLowerCase()) ||
-			professional?.email
-				?.toLowerCase()
-				.includes(professionalSearch.toLowerCase()) ||
-			professional?.company_type
-				?.toLowerCase()
-				.includes(professionalSearch.toLowerCase())
-	);
 
 	return (
 		<div className="container mx-auto py-10">
@@ -498,101 +478,7 @@ function AdminDashboard() {
 				</TabsContent>
 
 				<TabsContent value="professionals" className="space-y-4">
-					<Card>
-						<CardHeader>
-							<div className="flex justify-between items-center">
-								<div>
-									<CardTitle>Professionals</CardTitle>
-									<CardDescription>
-										Manage registered professionals and their accounts.
-									</CardDescription>
-								</div>
-								<div className="flex items-center space-x-2">
-									<div className="relative">
-										<Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-										<Input
-											placeholder="Search professionals..."
-											value={professionalSearch}
-											onChange={(e) => setProfessionalSearch(e.target.value)}
-											className="pl-8 w-64"
-										/>
-									</div>
-								</div>
-							</div>
-						</CardHeader>
-						<CardContent>
-							<div className="rounded-md border">
-								<Table>
-									<TableHeader>
-										<TableRow>
-											<TableHead>Company Name</TableHead>
-											<TableHead>Contact</TableHead>
-											<TableHead>Location</TableHead>
-											<TableHead>Category</TableHead>
-											<TableHead>Projects</TableHead>
-											<TableHead>CIOB Verified</TableHead>
-											<TableHead>Status</TableHead>
-											<TableHead>Rating</TableHead>
-											<TableHead className="text-right">Actions</TableHead>
-										</TableRow>
-									</TableHeader>
-									<TableBody>
-										{filteredProfessionals.map((professional) => (
-											<TableRow key={professional.id}>
-												<TableCell className="font-medium">
-													{professional.company_name}
-												</TableCell>
-												<TableCell>
-													<div className="text-sm">
-														<div>{professional.email}</div>
-														<div className="text-muted-foreground">
-															{professional.telephone_number}
-														</div>
-													</div>
-												</TableCell>
-												<TableCell>{professional.address}</TableCell>
-												<TableCell>{professional.company_type}</TableCell>
-												<TableCell>
-													{professional.specializations?.length || 0}
-												</TableCell>
-												<TableCell>
-													<Badge variant="secondary">Pending</Badge>
-												</TableCell>
-												<TableCell>
-													<Badge variant="default">Active</Badge>
-												</TableCell>
-												<TableCell>⭐ 4.0</TableCell>
-												<TableCell className="text-right space-x-2">
-													<Button variant="ghost" size="icon">
-														<Eye className="h-4 w-4" />
-													</Button>
-													<Button
-														variant="ghost"
-														size="icon"
-														onClick={() =>
-															setSelectedProfessional(professional)
-														}
-													>
-														<Pencil className="h-4 w-4" />
-													</Button>
-													<Button
-														variant="ghost"
-														size="icon"
-														className="text-destructive"
-														onClick={() =>
-															handleDeleteProfessional(professional.id)
-														}
-													>
-														<Trash2 className="h-4 w-4" />
-													</Button>
-												</TableCell>
-											</TableRow>
-										))}
-									</TableBody>
-								</Table>
-							</div>
-						</CardContent>
-					</Card>
+					<AdminProfessionalTab />
 				</TabsContent>
 			</Tabs>
 
@@ -602,126 +488,6 @@ function AdminDashboard() {
 				setSelectedCategory={setSelectedCategory}
 				handleUpdateCategory={handleUpdateCategory}
 			/>
-
-			{/* Edit Supplier Dialog */}
-
-
-			{/* Edit Professional Dialog */}
-			<Dialog
-				open={!!selectedProfessional}
-				onOpenChange={() => setSelectedProfessional(null)}
-			>
-				<DialogContent className="max-w-2xl">
-					<DialogHeader>
-						<DialogTitle>Edit Professional</DialogTitle>
-						<DialogDescription>
-							Update professional information and account status.
-						</DialogDescription>
-					</DialogHeader>
-					<form
-						onSubmit={(e) => {
-							e.preventDefault();
-							if (selectedProfessional) {
-								const formData = new FormData(e.currentTarget);
-								const updatedProfessional: Partial<Professional> = {
-									company_name: formData.get("company_name") as string,
-									email: formData.get("email") as string,
-									telephone_number: formData.get("telephone_number") as string,
-									address: formData.get("address") as string,
-									company_type: formData.get("company_type") as string,
-									company_description: formData.get(
-										"company_description"
-									) as string,
-								};
-								updateProfessionalMutation.mutate({
-									id: selectedProfessional.id,
-									professional: updatedProfessional,
-								});
-								setSelectedProfessional(null);
-							}
-						}}
-					>
-						<div className="grid gap-4 py-4">
-							<div className="grid grid-cols-2 gap-4">
-								<div className="grid gap-2">
-									<Label htmlFor="professional-company-name">
-										Company Name
-									</Label>
-									<Input
-										id="professional-company-name"
-										name="company_name"
-										defaultValue={selectedProfessional?.company_name}
-									/>
-								</div>
-								<div className="grid gap-2">
-									<Label htmlFor="professional-email">Email</Label>
-									<Input
-										id="professional-email"
-										name="email"
-										type="email"
-										defaultValue={selectedProfessional?.email}
-									/>
-								</div>
-							</div>
-							<div className="grid grid-cols-2 gap-4">
-								<div className="grid gap-2">
-									<Label htmlFor="professional-telephone">Phone</Label>
-									<Input
-										id="professional-telephone"
-										name="telephone_number"
-										defaultValue={selectedProfessional?.telephone_number}
-									/>
-								</div>
-								<div className="grid gap-2">
-									<Label htmlFor="professional-address">Address</Label>
-									<Input
-										id="professional-address"
-										name="address"
-										defaultValue={selectedProfessional?.address}
-									/>
-								</div>
-							</div>
-							<div className="grid grid-cols-2 gap-4">
-								<div className="grid gap-2">
-									<Label htmlFor="professional-company-type">
-										Company Type
-									</Label>
-									<Select defaultValue={selectedProfessional?.company_type}>
-										<SelectTrigger>
-											<SelectValue />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value="Architecture">Architecture</SelectItem>
-											<SelectItem value="Engineering">Engineering</SelectItem>
-											<SelectItem value="Construction">Construction</SelectItem>
-											<SelectItem value="Consulting">Consulting</SelectItem>
-										</SelectContent>
-									</Select>
-								</div>
-								<div className="grid gap-2">
-									<Label htmlFor="professional-website">Website</Label>
-									<Input
-										id="professional-website"
-										name="website"
-										defaultValue={selectedProfessional?.website}
-									/>
-								</div>
-							</div>
-							<div className="grid gap-2">
-								<Label htmlFor="professional-description">
-									Company Description
-								</Label>
-								<Textarea
-									id="professional-description"
-									name="company_description"
-									defaultValue={selectedProfessional?.company_description}
-									placeholder="Company description..."
-								/>
-							</div>
-						</div>
-					</form>
-				</DialogContent>
-			</Dialog>
 		</div>
 	);
 }
@@ -748,15 +514,9 @@ function MaterialsUI() {
 	const [showSidebar, setShowSidebar] = useState(false);
 
 	// Admin edit state
-	const [editingMaterial, setEditingMaterial] = useState<Material | null>(null);
-	const [editDialogOpen, setEditDialogOpen] = useState(false);
-	const [editName, setEditName] = useState("");
-	const [editUnit, setEditUnit] = useState("");
-	const [editType, setEditType] = useState("");
-	const [editCategory, setEditCategory] = useState("");
-	const [editSubcategory, setEditSubcategory] = useState("");
-	const [editSubSubcategory, setEditSubSubcategory] = useState("");
-	const [editPrices, setEditPrices] = useState<[string, number | null][]>([]);
+
+	const [editMaterialDialogOpen, setEditMaterialDialogOpen] = useState(false);
+	const [viewMaterialDialogOpen, setViewMaterialDialogOpen] = useState(false);
 
 	// Create material dialog state
 	const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -812,7 +572,8 @@ function MaterialsUI() {
 				} else if (selectedCategory) {
 					const data = await getMaterialsByCategory(
 						selectedCategory,
-						selectedSubcategory || undefined
+						selectedSubcategory || undefined,
+						selectedSubSubcategory || undefined
 					);
 					setMaterials(data);
 				}
@@ -821,24 +582,12 @@ function MaterialsUI() {
 			}
 		};
 		fetchMaterials();
-	}, [selectedCategory, selectedSubcategory, searchQuery]);
-
-	const openEditDialog = (material: Material) => {
-		setEditingMaterial(material);
-		setEditName(material.Name);
-		setEditUnit(material.Unit);
-		setEditType(material.Type || "");
-		setEditCategory(material.Category.Category || "");
-		setEditSubcategory(material.Category.Subcategory || "");
-		setEditSubSubcategory(material.Category["Sub subcategory"] || "");
-		setEditPrices(material.Prices);
-		setEditDialogOpen(true);
-	};
-
-	const closeEditDialog = () => {
-		setEditDialogOpen(false);
-		setEditingMaterial(null);
-	};
+	}, [
+		selectedCategory,
+		selectedSubcategory,
+		searchQuery,
+		selectedSubSubcategory,
+	]);
 
 	// Create
 	const openCreateDialog = () => {
@@ -895,22 +644,6 @@ function MaterialsUI() {
 		closeCreateDialog();
 	};
 
-	// Edits
-	const handleTypeChange = (value: string) => {
-		setEditType(value);
-		setEditCategory("");
-		setEditSubcategory("");
-		setEditSubSubcategory("");
-	};
-	const handleCategoryChange = (value: string) => {
-		setEditCategory(value);
-		setEditSubcategory("");
-		setEditSubSubcategory("");
-	};
-	const handleSubcategoryChange = (value: string) => {
-		setEditSubcategory(value);
-		setEditSubSubcategory("");
-	};
 	const handleDeleteMaterial = async (materialId: string) => {
 		if (window.confirm("Are you sure you want to delete this material?")) {
 			try {
@@ -920,7 +653,8 @@ function MaterialsUI() {
 				if (selectedCategory) {
 					const data = await getMaterialsByCategory(
 						selectedCategory,
-						selectedSubcategory || undefined
+						selectedSubcategory || undefined,
+						selectedSubSubcategory || undefined
 					);
 					setMaterials(data);
 				}
@@ -929,38 +663,6 @@ function MaterialsUI() {
 				alert("Failed to delete material. Please try again.");
 			}
 		}
-	};
-	const handleEditSave = async () => {
-		if (!editingMaterial) return;
-		try {
-			await updateMaterial(editingMaterial.Number, {
-				Name: editName,
-				Unit: editUnit,
-				Type: editType,
-				Category: {
-					Category: editCategory,
-					Subcategory: editSubcategory,
-					"Sub subcategory": editSubSubcategory,
-				},
-				Prices: editPrices,
-			});
-			if (createCat) {
-				const data = await getMaterialsByCategory(
-					createCat,
-					selectedSubcategory || undefined
-				);
-				setMaterials(data);
-			} else if (selectedCategory) {
-				const data = await getMaterialsByCategory(
-					selectedCategory,
-					selectedSubcategory || undefined
-				);
-				setMaterials(data);
-			}
-		} catch (error) {
-			console.error("Error updating material:", error);
-		}
-		closeEditDialog();
 	};
 
 	const addNewMonthToAllMaterials = async () => {
@@ -999,13 +701,6 @@ function MaterialsUI() {
 		}
 	};
 
-	const currentType = categories.find((t) => t.name === editType);
-	const currentCat = currentType?.categories?.find(
-		(c) => c.name === editCategory
-	);
-	const currentSub = currentCat?.subcategories?.find(
-		(s) => s.name === editSubcategory
-	);
 	const handleCategorySelection = (category: string) => {
 		setSelectedCategory(category);
 		setSelectedSubcategory(null);
@@ -1044,6 +739,11 @@ function MaterialsUI() {
 		if (window.innerWidth < 768) {
 			setShowSidebar(false);
 		}
+	};
+
+	const handleEditDialog = (material: Material) => {
+		setEditMaterialDialogOpen(true);
+		setSelectedMaterial(material);
 	};
 
 	return (
@@ -1132,30 +832,28 @@ function MaterialsUI() {
 
 														{/* --- NEW L3 (Sub-Subcategory) LOOP --- */}
 														{expandedSubcategories.includes(sub.name) &&
-															sub.sub_subcategories && (
+															sub["Sub subcategories"] && (
 																<div className="ml-8">
-																	{sub.sub_subcategories.map(
-																		(subSub, index) => (
-																			<Button
-																				// Use index for key as strings may not be unique
-																				key={index}
-																				variant="ghost"
-																				className={`w-full justify-start pl-10 text-slate-500 hover:text-white hover:bg-slate-800 ${
-																					selectedSubSubcategory === subSub.name
-																						? "font-bold"
-																						: ""
-																				}`}
-																				onClick={() =>
-																					handleSubSubcategorySelection(
-																						subSub.name
-																					)
-																				}
-																			>
-																				{/* The L3 item is just a string */}
-																				{subSub.name}
-																			</Button>
-																		)
-																	)}
+																	{sub["Sub subcategories"].map((subSub, index) => (
+																		<Button
+																			// Use index for key as strings may not be unique
+																			key={index}
+																			variant="ghost"
+																			className={`w-full justify-start pl-10 text-slate-500 hover:text-white hover:bg-slate-800 ${
+																				selectedSubSubcategory === subSub.name
+																					? "font-bold"
+																					: ""
+																			}`}
+																			onClick={() =>
+																				handleSubSubcategorySelection(
+																					subSub.name
+																				)
+																			}
+																		>
+																			{/* The L3 item is just a string */}
+																			{subSub.name}
+																		</Button>
+																	))}
 																</div>
 															)}
 														{/* --- END OF NEW L3 LOOP --- */}
@@ -1224,13 +922,16 @@ function MaterialsUI() {
 										rating={4}
 										price={material.Prices.find((p) => p[1])?.[1] || 0}
 										currency_t="LKR"
-										onClick={() => setSelectedMaterial(material)}
+										onClick={() => {
+											setSelectedMaterial(material),
+												setViewMaterialDialogOpen(true);
+										}}
 									/>
 									<div className="absolute top-2 right-2 flex gap-1">
 										<Button
 											variant="outline"
 											size="sm"
-											onClick={() => openEditDialog(material)}
+											onClick={() => handleEditDialog(material)}
 										>
 											Edit
 										</Button>
@@ -1253,8 +954,8 @@ function MaterialsUI() {
 
 			{/* View Material Dialog */}
 			<Dialog
-				open={!!selectedMaterial}
-				onOpenChange={() => setSelectedMaterial(null)}
+				open={viewMaterialDialogOpen}
+				onOpenChange={() => setViewMaterialDialogOpen(false)}
 			>
 				<DialogContent className="max-w-2xl">
 					{selectedMaterial && (
@@ -1310,7 +1011,7 @@ function MaterialsUI() {
 									price,
 								}))}
 								currency="LKR"
-								onClose={() => setSelectedMaterial(null)}
+								onClose={() => setViewMaterialDialogOpen(false)}
 							/>
 						</div>
 					)}
@@ -1318,122 +1019,17 @@ function MaterialsUI() {
 			</Dialog>
 
 			{/* Edit Material Dialog */}
-			<Dialog open={editDialogOpen} onOpenChange={closeEditDialog}>
-				<DialogContent className="max-w-xl">
-					<DialogHeader>
-						<DialogTitle>Edit Material</DialogTitle>
-					</DialogHeader>
-					<div className="space-y-4 mt-4">
-						<Input
-							placeholder="Material Name"
-							value={editName}
-							onChange={(e) => setEditName(e.target.value)}
-						/>
-						<Input
-							placeholder="Unit"
-							value={editUnit}
-							onChange={(e) => setEditUnit(e.target.value)}
-						/>
-						<div>
-							<label className="block text-sm font-medium">Type</label>
-							<select
-								className="w-full border p-2 mt-1"
-								value={editType}
-								onChange={(e) => handleTypeChange(e.target.value)}
-							>
-								<option value="">-- Select Type --</option>
-								{categories.map((t) => (
-									<option key={t.name} value={t.name}>
-										{t.name}
-									</option>
-								))}
-							</select>
-						</div>
-						<div>
-							<label className="block text-sm font-medium">Category</label>
-							<select
-								className="w-full border p-2 mt-1"
-								value={editCategory}
-								onChange={(e) => handleCategoryChange(e.target.value)}
-								disabled={!editType}
-							>
-								<option value="">-- Select Category --</option>
-								{currentType?.categories &&
-									currentType.categories.map((cat) => (
-										<option key={cat.name} value={cat.name}>
-											{cat.name}
-										</option>
-									))}
-							</select>
-						</div>
-						<div>
-							<label className="block text-sm font-medium">Subcategory</label>
-							<select
-								className="w-full border p-2 mt-1"
-								value={editSubcategory}
-								onChange={(e) => handleSubcategoryChange(e.target.value)}
-								disabled={!editCategory}
-							>
-								<option value="">-- Select Subcategory --</option>
-								{currentCat?.subcategories &&
-									currentCat.subcategories.map((sub) => (
-										<option key={sub.name} value={sub.name}>
-											{sub.name}
-										</option>
-									))}
-							</select>
-						</div>
-						{/* <div>
-              <label className="block text-sm font-medium">Sub-Subcategory</label>
-              <select
-                className="w-full border p-2 mt-1"
-                value={editSubSubcategory}
-                onChange={(e) => setEditSubSubcategory(e.target.value)}
-                disabled={!editSubcategory}
-              >
-                <option value="">-- Select Sub-Subcategory --</option>
-                {currentSub?.sub_subcategories &&
-                  currentSub.sub_subcategories.map((item) => (
-                    <option key={item} value={item}>
-                      {item}
-                    </option>
-                  ))}
-              </select>
-            </div> */}
-						<div className="max-h-64 overflow-y-auto">
-							<label className="block text-sm font-medium">Prices</label>
-							{editPrices.map((price, index) => (
-								<div key={index} className="flex gap-2 mt-2">
-									<Input
-										type="text"
-										value={price[0]}
-										readOnly
-										className="w-1/2"
-									/>
-									<Input
-										type="number"
-										value={price[1] ?? ""}
-										onChange={(e) => {
-											const newPrices = [...editPrices];
-											newPrices[index][1] = e.target.value
-												? parseFloat(e.target.value)
-												: null;
-											setEditPrices(newPrices);
-										}}
-										className="w-1/2"
-									/>
-								</div>
-							))}
-						</div>
-					</div>
-					<DialogFooter>
-						<Button variant="outline" onClick={closeEditDialog}>
-							Cancel
-						</Button>
-						<Button onClick={handleEditSave}>Save</Button>
-					</DialogFooter>
-				</DialogContent>
-			</Dialog>
+			<EditMaterialDialog
+				dialogOpen={editMaterialDialogOpen}
+				setDialogOpen={setEditMaterialDialogOpen}
+				selectedMaterial={selectedMaterial}
+				categories={categories}
+				setMaterials={setMaterials}
+				createCat={createCat}
+				selectedCategory={selectedCategory}
+				selectedSubcategory={selectedSubcategory}
+				selectedSubSubcategory={selectedSubSubcategory}
+			/>
 
 			{/* Create Material Dialog */}
 			<Dialog open={createDialogOpen} onOpenChange={closeCreateDialog}>
@@ -1546,27 +1142,26 @@ function MaterialsUI() {
 											const foundCategory = foundType?.categories.find(
 												(c) => c.name === createCat
 											);
-											const foundSubcategory =
-												foundCategory?.subcategories?.find(
-													(s) => s.name === createSubcat
-												);
+											const foundSubcategory = foundCategory?.subcategories?.find(
+												(s) => s.name === createSubcat
+											);
 
-											// Quick fix: Check if sub_subcategories exists and is an array
+											// Quick fix: Check if subSubcategories exists and is an array
 											const subSubcategories = (foundSubcategory as any)
-												?.sub_subcategories;
+												?.subSubcategories;
 
 											if (Array.isArray(subSubcategories)) {
 												return subSubcategories.map(
-													(subsub: any, index: number) => {
+													(subSub: any, index: number) => {
 														// Handle both string and object cases
 														const value =
-															typeof subsub === "string"
-																? subsub
-																: subsub?.name || subsub;
+															typeof subSub === "string"
+																? subSub
+																: subSub?.name || subSub;
 														const displayName =
-															typeof subsub === "string"
-																? subsub
-																: subsub?.name || subsub;
+															typeof subSub === "string"
+																? subSub
+																: subSub?.name || subSub;
 
 														return (
 															<option key={index} value={value}>

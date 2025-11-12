@@ -1,5 +1,5 @@
 import { Dispatch, FormEvent, SetStateAction } from "react";
-import { Item, Supplier, SupplierWithRecord } from "@/types";
+import { Professional, ProfessionalWithRecord } from "@/types";
 import {
 	Table,
 	TableBody,
@@ -15,57 +15,67 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Pencil, Search, Eye, EyeClosed, User, Check, Ban, RotateCcw } from "lucide-react";
+import {
+	Pencil,
+	Search,
+	Eye,
+	EyeClosed,
+	User,
+	Check,
+	Ban,
+	RotateCcw,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import EditSupplierDialog from "./edit-supplier-dialog";
-import ViewSupplierDialog from "./view-supplier-dialog";
-import { TooltipButton } from "./common/TooltipButton";
+import EditProfessionalDialog from "./edit-professional-dialog";
+import ViewProfessionalDialog from "./view-professional-dialog";
+import { TooltipButton } from "../common/TooltipButton";
 
-interface AdminManageTableProps {
+interface AdminProfessionalManageTableProps {
 	title: string;
 	description: string;
-	filteredSuppliers: SupplierWithRecord[];
-	selectedSupplier: Supplier | null;
-	setSelectedSupplier: Dispatch<SetStateAction<Supplier | null>>;
-	supplierSearch: string;
-	setSupplierSearch: Dispatch<SetStateAction<string>>;
-	handleSupplierVisibility?: (id: string, currentStatus: string) => void;
-	handleSupplierEdit?: (e: FormEvent<HTMLFormElement>) => void;
-	handleSupplierSuspend?: (id: string) => void;
-	handleSupplierApprove?: (id: string) => void;
-	handleSupplierView?: (supplier: Supplier) => Promise<void>;
-	handleSupplierRecovery?:(id: string) => void;
-	supplierItems?: Item[];
+	filteredProfessionals: ProfessionalWithRecord[];
+	selectedProfessional: Professional | null;
+	setSelectedProfessional: Dispatch<SetStateAction<Professional | null>>;
+	professionalSearch: string;
+	setProfessionalSearch: Dispatch<SetStateAction<string>>;
+	handleProfessionalVisibility?: (id: string, currentStatus: string) => void;
+	handleProfessionalEdit?: (e: FormEvent<HTMLFormElement>) => void;
+	handleProfessionalSuspend?: (id: string) => void;
+	handleProfessionalApprove?: (id: string) => void;
+	handleProfessionalView?: (professional: Professional) => Promise<void>;
+	handleProfessionalRecovery?: (id: string) => void;
 	setEditDialogOpen?: Dispatch<SetStateAction<boolean>>;
 	setViewDialogOpen?: Dispatch<SetStateAction<boolean>>;
 	editDialogOpen?: boolean;
 	viewDialogOpen?: boolean;
 }
 
-export default function AdminManageTable(props: AdminManageTableProps) {
+export default function AdminProfessionalManageTable(
+	props: AdminProfessionalManageTableProps
+) {
 	const {
 		title,
 		description,
-		filteredSuppliers,
-		selectedSupplier,
-		setSelectedSupplier,
-		handleSupplierVisibility,
-		handleSupplierEdit,
-		handleSupplierSuspend,
-		handleSupplierApprove,
-		handleSupplierView,
-		handleSupplierRecovery,
-		supplierSearch,
-		setSupplierSearch,
-		supplierItems,
+		filteredProfessionals,
+		selectedProfessional,
+		setSelectedProfessional,
+		professionalSearch,
+		setProfessionalSearch,
+		handleProfessionalVisibility,
+		handleProfessionalEdit,
+		handleProfessionalSuspend,
+		handleProfessionalApprove,
+		handleProfessionalView,
+		handleProfessionalRecovery,
+		setEditDialogOpen,
+		setViewDialogOpen,
 		editDialogOpen,
 		viewDialogOpen,
-		setViewDialogOpen,
-		setEditDialogOpen,
 	} = props;
 	return (
 		<>
+			{" "}
 			<Card>
 				<CardHeader>
 					<div className="flex justify-between items-center">
@@ -77,9 +87,9 @@ export default function AdminManageTable(props: AdminManageTableProps) {
 							<div className="relative">
 								<Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
 								<Input
-									placeholder="Search suppliers..."
-									value={supplierSearch}
-									onChange={(e) => setSupplierSearch(e.target.value)}
+									placeholder="Search professionals..."
+									value={professionalSearch}
+									onChange={(e) => setProfessionalSearch(e.target.value)}
 									className="pl-8 w-64"
 								/>
 							</div>
@@ -95,112 +105,120 @@ export default function AdminManageTable(props: AdminManageTableProps) {
 									<TableHead>Contact</TableHead>
 									<TableHead>Location</TableHead>
 									<TableHead>Category</TableHead>
-									<TableHead>Products</TableHead>
+									<TableHead>Projects</TableHead>
+									<TableHead>CIOB Verified</TableHead>
 									<TableHead>Status</TableHead>
 									<TableHead>Rating</TableHead>
 									<TableHead className="text-right">Actions</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>
-								{filteredSuppliers.map(
-									(supplierWithRecord: SupplierWithRecord) => {
-										const supplier = supplierWithRecord.supplier;
+								{filteredProfessionals.map(
+									(professionalWithRecord: ProfessionalWithRecord) => {
+										const professional = professionalWithRecord.professional;
 										return (
-											<TableRow key={supplier.id}>
+											<TableRow key={professional.id}>
 												<TableCell className="font-medium">
-													{supplier.business_name}
+													{professional.company_name}
 												</TableCell>
 												<TableCell>
 													<div className="text-sm">
-														<div>{supplier.email}</div>
+														<div>{professional.email}</div>
 														<div className="text-muted-foreground">
-															{supplier.telephone}
+															{professional.telephone_number}
 														</div>
 													</div>
 												</TableCell>
-												<TableCell>{supplier.address}</TableCell>
+												<TableCell>{professional.address}</TableCell>
+												<TableCell>{professional.company_type}</TableCell>
 												<TableCell>
-													<Badge variant="outline">Business</Badge>
+													{professional.specializations?.length || 0}
 												</TableCell>
 												<TableCell>
-													<Badge variant="outline">PID: {supplier.pid}</Badge>
+													<Badge variant="secondary">Pending</Badge>
 												</TableCell>
 												<TableCell>
-													<Badge variant="default">
-														{supplier.status.toUpperCase()}
-													</Badge>
+													<Badge variant="default">{professional.status.toUpperCase()}</Badge>
 												</TableCell>
 												<TableCell>⭐ 4.0</TableCell>
 												<TableCell className="text-right space-x-2">
-													{handleSupplierVisibility && (
+													{handleProfessionalVisibility && (
 														<TooltipButton
 															variant="ghost"
 															size="icon"
 															onClick={(event) => {
-																handleSupplierVisibility(
-																	supplier.id,
-																	supplier.status
+																handleProfessionalVisibility(
+																	professional.id,
+																	professional.status
 																);
 															}}
 															tooltip={"Change Visibility"}
 														>
-															{supplier.status === "hidden" ? (
+															{professional.status === "hidden" ? (
 																<EyeClosed className="h-4 w-4" />
 															) : (
 																<Eye className="h-4 w-4" />
 															)}
 														</TooltipButton>
 													)}
-													{handleSupplierView && (
+													{handleProfessionalView && (
 														<TooltipButton
 															tooltip="View"
 															variant="ghost"
 															size="icon"
-															onClick={() => handleSupplierView(supplier)}
+															onClick={() =>
+																handleProfessionalView(professional)
+															}
 														>
 															<User className="h-4 w-4" />
 														</TooltipButton>
 													)}
-													{handleSupplierApprove && (
+													{handleProfessionalApprove && (
 														<TooltipButton
 															tooltip="Approve"
 															variant="ghost"
 															size="icon"
-															onClick={() => handleSupplierApprove(supplier.id)}
+															onClick={() =>
+																handleProfessionalApprove(professional.id)
+															}
 														>
 															<Check className="h-4 w-4" />
 														</TooltipButton>
 													)}
-													{handleSupplierEdit && setEditDialogOpen && (
+													{handleProfessionalEdit && setEditDialogOpen && (
 														<TooltipButton
 															tooltip="edit"
 															variant="ghost"
 															size="icon"
 															onClick={() => {
-																setSelectedSupplier(supplier),
+																setSelectedProfessional(professional),
 																	setEditDialogOpen(true);
 															}}
 														>
 															<Pencil className="h-4 w-4" />
 														</TooltipButton>
 													)}
-													{handleSupplierSuspend && (
+													{handleProfessionalSuspend && (
 														<TooltipButton
 															tooltip="Suspend"
 															variant="ghost"
 															size="icon"
 															className="text-destructive"
-															onClick={() => handleSupplierSuspend(supplier.id)}
+															onClick={() =>
+																handleProfessionalSuspend(professional.id)
+															}
 														>
 															<Ban className="h-4 w-4" />
 														</TooltipButton>
 													)}
-													{handleSupplierRecovery && (
+													{handleProfessionalRecovery && (
 														<TooltipButton
 															tooltip="Recover"
 															variant="ghost"
 															size="icon"
-															onClick={() => handleSupplierRecovery(supplier.id)}
+															onClick={() =>
+																handleProfessionalRecovery(professional.id)
+															}
 														>
 															<RotateCcw className="h-4 w-4" />
 														</TooltipButton>
@@ -216,26 +234,23 @@ export default function AdminManageTable(props: AdminManageTableProps) {
 				</CardContent>
 			</Card>
 			{editDialogOpen &&
-				selectedSupplier &&
+				selectedProfessional &&
 				setEditDialogOpen &&
-				handleSupplierEdit && (
-					<EditSupplierDialog
-						selectedSupplier={selectedSupplier}
+				handleProfessionalEdit && (
+					<EditProfessionalDialog
+						selectedProfessional={selectedProfessional}
 						dialogOpen={editDialogOpen}
 						setDialogOpen={setEditDialogOpen}
-						handleSupplierEdit={handleSupplierEdit}
+						handleProfessionalEdit={handleProfessionalEdit}
 					/>
 				)}
-			{selectedSupplier &&
-				viewDialogOpen &&
-				setViewDialogOpen && (
-					<ViewSupplierDialog
-						selectedSupplier={selectedSupplier}
-						dialogOpen={viewDialogOpen}
-						setDialogOpen={setViewDialogOpen}
-						supplierItems={supplierItems}
-					/>
-				)}
+			{selectedProfessional && viewDialogOpen && setViewDialogOpen && (
+				<ViewProfessionalDialog
+					selectedProfessional={selectedProfessional}
+					dialogOpen={viewDialogOpen}
+					setDialogOpen={setViewDialogOpen}
+				/>
+			)}
 		</>
 	);
 }

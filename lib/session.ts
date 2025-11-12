@@ -1,10 +1,6 @@
+import { UserSession } from "@/types";
 import { SessionOptions, getIronSession } from "iron-session";
 import { NextRequest, NextResponse } from "next/server";
-
-export interface UserSession {
-  username?: string;
-  role?: string;
-}
 
 export const sessionOptions: SessionOptions = {
   cookieName: "auth_session",

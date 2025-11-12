@@ -1,29 +1,36 @@
+"use client";
+
 import { Input } from "@/components/ui/input";
 import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
+	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "../ui/button";
 import { Supplier } from "@/types";
-import { FormEventHandler } from "react";
+import { Dispatch, FormEvent, SetStateAction } from "react";
 
 interface EditSupplierDialogProps {
-    selectedSupplier: Supplier | null;
-    setSelectedSupplier: (supplier: Supplier | null) => void;
-    handleSupplierUpdate: React.FormEventHandler<HTMLFormElement>;
+	dialogOpen: boolean;
+	selectedSupplier: Supplier;
+	setDialogOpen: Dispatch<SetStateAction<boolean>>;
+	handleSupplierEdit: ((e: FormEvent<HTMLFormElement>) => void);
 }
 
 export default function EditSupplierDialog(props: EditSupplierDialogProps) {
-    const { selectedSupplier, setSelectedSupplier, handleSupplierUpdate } = props;
+	const {
+		selectedSupplier,
+		dialogOpen,
+		setDialogOpen,
+		handleSupplierEdit,
+	} = props;
 	return (
-		<Dialog
-			open={!!selectedSupplier}
-			onOpenChange={() => setSelectedSupplier(null)}
-		>
+		<Dialog open={dialogOpen} onOpenChange={() => setDialogOpen(false)}>
 			<DialogContent className="max-w-2xl">
 				<DialogHeader>
 					<DialogTitle>Edit Supplier</DialogTitle>
@@ -31,9 +38,7 @@ export default function EditSupplierDialog(props: EditSupplierDialogProps) {
 						Update supplier information and account status.
 					</DialogDescription>
 				</DialogHeader>
-				<form
-					onSubmit={handleSupplierUpdate}
-				>
+				<form onSubmit={handleSupplierEdit}>
 					<div className="grid gap-4 py-4">
 						<div className="grid grid-cols-2 gap-4">
 							<div className="grid gap-2">
@@ -82,6 +87,16 @@ export default function EditSupplierDialog(props: EditSupplierDialogProps) {
 							/>
 						</div>
 					</div>
+					<DialogFooter>
+						<Button
+							type="button"
+							variant="outline"
+							onClick={() => setDialogOpen(false)}
+						>
+							Cancel
+						</Button>
+						<Button type="submit">Update Supplier</Button>
+					</DialogFooter>
 				</form>
 			</DialogContent>
 		</Dialog>

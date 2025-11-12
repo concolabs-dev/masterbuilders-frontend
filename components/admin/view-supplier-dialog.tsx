@@ -1,8 +1,8 @@
 "use client";
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { SupplierProfile } from "./supplier-profile";
-import { SupplierItemList } from "./supplier-item-list";
+import { SupplierProfile } from "../supplier-profile";
+import { SupplierItemList } from "../supplier-item-list";
 import { Dispatch, SetStateAction } from "react";
 import { Item, Supplier } from "@/types";
 
