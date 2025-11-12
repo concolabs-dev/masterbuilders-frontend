@@ -25,21 +25,8 @@ import {
 } from "@/components/ui/select";
 import Loading from "@/components/loading";
 import Link from "next/link";
-import { Category, Item } from "@/types";
-
-interface Material {
-	id: string;
-	Number: string;
-	Name: string;
-	Type: string;
-	Category: {
-		Category: string;
-		Subcategory: string | null;
-		"Sub subcategory": string | null;
-	};
-	Unit: string;
-	Prices: [string, number | null][];
-}
+import { Category, Item, Material } from "@/types";
+import { getConversionRate } from "@/lib/utils";
 
 export default function CataloguePage() {
 	const [materials, setMaterials] = useState<Material[]>([]);
@@ -76,12 +63,12 @@ export default function CataloguePage() {
 
 	// Scroll to results function
 	const scrollToResults = () => {
-		if (resultsRef.current) {
-			resultsRef.current.scrollIntoView({
-				behavior: "smooth",
-				block: "start",
-			});
-		}
+		// if (resultsRef.current) {
+		// 	resultsRef.current.scrollIntoView({
+		// 		behavior: "smooth",
+		// 		block: "start",
+		// 	});
+		// }
 	};
 
 	useEffect(() => {
@@ -172,7 +159,8 @@ export default function CataloguePage() {
 					// Fetch based on category when no search query
 					const data = await getMaterialsByCategory(
 						selectedCategory,
-						selectedSubcategory || undefined
+						selectedSubcategory || undefined,
+						selectedSubSubcategory || undefined
 					);
 					setMaterials(data);
 
@@ -184,19 +172,18 @@ export default function CataloguePage() {
 			}
 		};
 		fetchMaterials();
-	}, [selectedCategory, selectedSubcategory, searchQuery]);
-
-	// A helper to get the conversion rate (1 for LKR, or lookup from exchangeRates)
-	const getConversionRate = () => {
-		return selectedCurrency === "LKR"
-			? 1
-			: exchangeRates[selectedCurrency] || 1;
-	};
+	}, [
+		selectedCategory,
+		selectedSubcategory,
+		searchQuery,
+		selectedSubSubcategory,
+	]);
 
 	// Handle category selection with scroll
 	const handleCategorySelection = (category: string) => {
 		setSelectedCategory(category);
 		setSelectedSubcategory(null);
+		setSelectedSubSubcategory(null);
 		setExpandedCategories((prev) =>
 			prev.includes(category)
 				? prev.filter((c) => c !== category)
@@ -217,8 +204,12 @@ export default function CataloguePage() {
 	// 	}
 	// };
 
-	const handleSubcategorySelection = (subcategory: string) => {
+	const handleSubcategorySelection = (
+		subcategory: string,
+		category: string
+	) => {
 		setSelectedSubcategory(subcategory);
+		setSelectedCategory(category);
 		setSelectedSubSubcategory(null); // <-- Reset L3 state
 
 		// Toggle L3 expansion
@@ -234,8 +225,14 @@ export default function CataloguePage() {
 		}
 	};
 
-	const handleSubSubcategorySelection = (subSubcategory: string) => {
+	const handleSubSubcategorySelection = (
+		subSubcategory: string,
+		subcategory: string,
+		category: string
+	) => {
 		setSelectedSubSubcategory(subSubcategory);
+		setSelectedSubcategory(subcategory);
+		setSelectedCategory(category);
 
 		// Close sidebar on mobile after selection
 		if (window.innerWidth < 768) {
@@ -323,7 +320,7 @@ export default function CataloguePage() {
 																// --- MODIFIED CLICK HANDLER ---
 																// This now needs to expand L3
 																onClick={() =>
-																	handleSubcategorySelection(sub.name)
+																	handleSubcategorySelection(sub.name, category.name)
 																}
 															>
 																{/* --- ADDED CHEVRONS --- */}
@@ -337,9 +334,9 @@ export default function CataloguePage() {
 
 															{/* --- NEW L3 (Sub-Subcategory) LOOP --- */}
 															{expandedSubcategories.includes(sub.name) &&
-																sub.sub_subcategories && (
+																sub["Sub subcategories"] && (
 																	<div className="ml-8">
-																		{sub.sub_subcategories.map(
+																		{sub["Sub subcategories"].map(
 																			(subSub, index) => (
 																				<Button
 																					// Use index for key as strings may not be unique
@@ -353,7 +350,9 @@ export default function CataloguePage() {
 																					}`}
 																					onClick={() =>
 																						handleSubSubcategorySelection(
-																							subSub.name
+																							subSub.name,
+																							sub.name,
+																							category.name
 																						)
 																					}
 																				>
@@ -430,7 +429,10 @@ export default function CataloguePage() {
 										material.Prices.slice()
 											.reverse()
 											.find((p) => p[1])?.[1] || 0;
-									const conversionRate = getConversionRate();
+									const conversionRate = getConversionRate(
+										selectedCurrency,
+										exchangeRates
+									);
 									const displayedPrice = priceLKR * conversionRate;
 									return (
 										<MaterialCard
@@ -532,7 +534,7 @@ export default function CataloguePage() {
 																				: ""
 																		}`}
 																		onClick={() => {
-																			handleSubcategorySelection(sub.name);
+																			handleSubcategorySelection(sub.name, category.name);
 																			setShowSidebar(false); // Close modal after selection
 																		}}
 																	>
@@ -587,7 +589,10 @@ export default function CataloguePage() {
 															new Date(a[0]).getTime()
 													) // Sort by date descending
 													.find((p) => p[1])?.[1] || 0;
-											const conversionRate = getConversionRate();
+											const conversionRate = getConversionRate(
+												selectedCurrency,
+												exchangeRates
+											);
 											const displayedPrice = latestPriceLKR * conversionRate;
 											return (
 												<p className="text-gray-700 text-lg">
@@ -632,7 +637,10 @@ export default function CataloguePage() {
 								<PriceChart
 									itemName={selectedMaterial.Name}
 									prices={selectedMaterial.Prices.map(([date, price]) => {
-										const converted = price ? price * getConversionRate() : 0;
+										const converted = price
+											? price *
+											  getConversionRate(selectedCurrency, exchangeRates)
+											: 0;
 										return { date, price: converted };
 									})}
 									currency={selectedCurrency}

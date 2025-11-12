@@ -270,6 +270,7 @@ import { EditCoverImageDialog } from "./edit-cover-image-dialog"
 import { EditBusinessDetailsDialog } from "./edit-business-details-dialog"
 import { updateSupplier } from "@/app/api"
 import { ImageWithFallback } from "./ui/ImageWithFallback"
+import { Location, Supplier } from "@/types"
 
 interface SupplierProfileProps {
   supplier: {
@@ -287,27 +288,8 @@ interface SupplierProfileProps {
   admin?: boolean
 }
 
-export interface Location {
-  latitude: number
-  longitude: number
-}
-
-export interface Supplier {
-  id: string
-  email: string
-  pid: string
-  business_name: string
-  business_description: string
-  telephone: string
-  email_given: string
-  address: string
-  location?: Location
-  profile_pic_url: string
-  cover_pic_url: string
-}
-
 // Type for business details coming from the dialog
-interface BusinessDetails {
+interface BusinessDetailsProps {
   name: string
   description: string
   email: string
@@ -366,7 +348,7 @@ export function SupplierProfile({ supplier, onUpdate, admin }: SupplierProfilePr
     }
   }
 
-  const handleBusinessDetailsUpdate = async (details: BusinessDetails) => {
+  const handleBusinessDetailsUpdate = async (details: BusinessDetailsProps) => {
     try {
       const updatedSupplier: Supplier = await updateSupplier(currentSupplier.id, {
         business_name: details.name,

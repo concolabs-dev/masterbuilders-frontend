@@ -241,6 +241,7 @@ function ProfessionalRegistration() {
 			company_logo_url: formData.logo || "", // Maps to CompanyLogoUrl in Go
 			cover_image_url: formData.coverImage || "", // Maps to CoverImageURL in Go
 			pid: user?.sub || "", // Maps to PID in Go
+			status: "pending"
 		};
 		console.log("Professional Payload:", professionalPayload);
 

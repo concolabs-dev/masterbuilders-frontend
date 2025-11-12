@@ -149,6 +149,7 @@ function SupplierOnboarding() {
 			},
 			profile_pic_url: formData.profileImage,
 			cover_pic_url: formData.coverImage,
+			status: "pending"
 		};
 		try {
 			const response = await createSupplier(supplierPayload);
