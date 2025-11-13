@@ -1148,7 +1148,7 @@ function MaterialsUI() {
 
 											// Quick fix: Check if subSubcategories exists and is an array
 											const subSubcategories = (foundSubcategory as any)
-												?.subSubcategories;
+												?.["Sub subcategories"];
 
 											if (Array.isArray(subSubcategories)) {
 												return subSubcategories.map(
