@@ -87,14 +87,14 @@ export function PriceChart({
 										return (
 											<div className="rounded-lg border bg-background p-2 shadow-sm">
 												<div className="grid grid-cols-2 gap-2">
-													<div className="text-sm text-muted-foreground">
+													{/* <div className="text-sm text-muted-foreground">
 														Date
 													</div>
 													<div className="text-sm font-medium">
 														{new Date(
 															payload[0].payload.date
 														).toLocaleDateString()}
-													</div>
+													</div> */}
 													<div className="text-sm text-muted-foreground">
 														Price
 													</div>
