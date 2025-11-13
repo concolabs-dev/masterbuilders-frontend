@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Pencil, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { getSupplierByPID, Supplier } from "@/app/api"
+import { getSupplierByPID } from "@/app/api"
 import { ImageWithFallback } from "./ui/ImageWithFallback"
+import { Supplier } from "@/types"
 
 interface SupplierItemListProps {
   items: {

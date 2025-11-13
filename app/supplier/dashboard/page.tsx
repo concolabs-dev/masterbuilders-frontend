@@ -42,11 +42,8 @@ import {
 	getSupplierByPID,
 	getProfessionalByPID,
 	getPaymentRecordById,
-	PaymentRecord,
 } from "@/app/api";
 import Loading from "@/components/loading";
-
-import { Supplier, Item, Material, Category } from "@/app/api";
 import { ImageUpload } from "@/components/image-upload"; // adjust path as needed
 import {
 	Select,
@@ -62,6 +59,8 @@ import { PaymentMethods } from "@/components/payment-methods";
 import { PaymentDialog } from "@/components/payment-dialog";
 import { Package, PaymentManagePortal } from "@concolabs-dev/payment";
 import { RequirePaymentDialog } from "@/components/payment-require";
+import { Category, Item, Material, PaymentRecord, Supplier } from "@/types";
+import { SUPPLIER_PACKAGE } from "@/lib/constants";
 
 const mockInvoices = [
 	{
@@ -104,33 +103,6 @@ const mockPaymentMethods = [
 		type: "bank_account" as const,
 		last4: "1234",
 		isDefault: false,
-	},
-];
-
-const packageTypes: Package[] = [
-	{
-		title: "User Monthly",
-		price: "LKR 3,000",
-		features: [],
-		priceId: process.env.NEXT_PUBLIC_PRICE_ID_SUPPLIER_BASIC || "",
-		highlighted: false,
-		packageName: "BML_SUP_BASIC",
-	},
-	// {
-	//   title: "Gold User",
-	//   price: "LKR 10,000",
-	//   features: [],
-	//   highlighted: false,
-	//   priceId: "price_1SEsFYHb6l5GodkUuXISMv2N",
-	//   packageName: "BML_GOLD",
-	// },
-	{
-		title: "Year at Once",
-		price: "LKR 30,000",
-		features: [],
-		highlighted: false,
-		priceId: process.env.NEXT_PUBLIC_PRICE_ID_SUPPLIER_ANNUAL || "",
-		packageName: "BML_SUP_ANUAL",
 	},
 ];
 
@@ -414,12 +386,12 @@ function SupplierDashboardPage() {
 				<RequirePaymentDialog
 					open={isPaymentRequireDialogOpen}
 					onOpenChange={setIsPaymentRequireDialogOpen}
-					packageTypes={packageTypes}
+					packageTypes={SUPPLIER_PACKAGE}
 					puid={user?.sub || ""}
 					successUrl={(() => {
 						const base = process.env.NEXT_PUBLIC_FRONTEND_API_URL;
 						if (!base) return "";
-						return new URL("/onboarding/success", base).toString();
+						return new URL("/supplier/onboarding/success", base).toString();
 					})()}
 				/>
 			</div>
@@ -485,7 +457,7 @@ function SupplierDashboardPage() {
 							<div className="flex justify-between items-center">
 								<div className="flex-1 max-w-sm mb-3">
 									<Input
-										placeholder="Search your catalogue..."
+										placeholder="Search your catalogue"
 										value={searchQuery}
 										onChange={(e) => setSearchQuery(e.target.value)}
 									/>
@@ -507,7 +479,7 @@ function SupplierDashboardPage() {
 										<form onSubmit={handleAddItem}>
 											<div className="grid gap-4 py-4">
 												<div className="grid gap-2">
-													<Label htmlFor="name">Name</Label>
+													<Label htmlFor="name">Title</Label>
 													<Input id="name" name="name" required />
 												</div>
 												<div className="grid gap-2">

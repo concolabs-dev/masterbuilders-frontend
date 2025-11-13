@@ -8,13 +8,14 @@ import { MobileNav } from "@/components/mobile-nav";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useRouter } from "next/navigation";
 import { useState, KeyboardEvent, useEffect } from "react";
-import { Menu } from "@headlessui/react";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import {
 	getPaymentRecordById,
 	getProfessionalByPID,
 	getSupplierByPPID,
 } from "@/app/api"; // Import your API functions
-import { TopBanner } from "./top-banner";
+import { TopBanner } from "@/components/top-banner";
+import ConfirmationDialog from "@/components/conformation-dialog";
 
 export function SiteHeader() {
 	const { user, error, isLoading } = useUser();
@@ -24,6 +25,7 @@ export function SiteHeader() {
 		null
 	);
 	const [isBannerVisible, setIsBannerVisible] = useState(false);
+	const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
 	useEffect(() => {
 		const checkUserStatusAndPayment = async () => {
@@ -112,39 +114,39 @@ export function SiteHeader() {
 						{user ? (
 							<div className="relative z-[100]">
 								<Menu>
-									<Menu.Button
+									<MenuButton
 										as={Button}
 										className="hidden z-[100] md:flex items-center space-x-2"
 									>
 										<span>Dashboard</span>
 										<ChevronDown className="h-4 z-[100] w-4" />
-									</Menu.Button>
-									<Menu.Items className="absolute right-0  z-[100] mt-2 w-48 bg-white border rounded-md shadow-lg">
-										<Menu.Item>
-											{({ active }) => (
+									</MenuButton>
+									<MenuItems className="absolute right-0  z-[100] mt-2 w-48 bg-white border rounded-md shadow-lg">
+										<MenuItem>
+											{({ focus }) => (
 												<button
 													className={`${
-														active ? "bg-gray-100" : ""
+														focus ? "bg-gray-100" : ""
 													} w-full text-left px-4 py-2 z-[100] text-sm text-gray-700`}
 													onClick={handleDashboardClick}
 												>
 													Dashboard
 												</button>
 											)}
-										</Menu.Item>
-										<Menu.Item>
-											{({ active }) => (
+										</MenuItem>
+										<MenuItem>
+											{({ focus }) => (
 												<button
 													className={`${
-														active ? "bg-gray-100" : ""
+														focus ? "bg-gray-100" : ""
 													} w-full text-left px-4 z-[100] py-2 text-sm text-gray-700`}
-													onClick={handleLogout}
+													onClick={() => setIsDialogOpen(true)}
 												>
 													Logout
 												</button>
 											)}
-										</Menu.Item>
-									</Menu.Items>
+										</MenuItem>
+									</MenuItems>
 								</Menu>
 							</div>
 						) : (
@@ -167,6 +169,19 @@ export function SiteHeader() {
 				textColor="#1F1F1F"
 				isVisible={isBannerVisible}
 				onActivate={handleDashboardClick}
+			/>
+			<ConfirmationDialog
+				open={isDialogOpen}
+				onOpenChange={setIsDialogOpen}
+				title="Are you sure you want to log out?"
+				description={
+					"You will be returned to the Home page. Any unsaved changes may be lost."
+				}
+				onConfirm={() => {
+					setIsDialogOpen(false);
+					handleLogout();
+				}}
+				confirmText="Log Out"
 			/>
 		</>
 	);

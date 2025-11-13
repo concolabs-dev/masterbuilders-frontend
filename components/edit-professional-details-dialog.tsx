@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { PROFESSIONAL_TYPES } from "@/lib/constants"
 
 interface ProfessionalDetails {
   name: string
@@ -47,8 +48,6 @@ export function EditProfessionalDetailsDialog({
     onOpenChange(false)
   }
 
-  const professionalTypes = ["Architect", "Contractor", "Quantity Surveyor", "Interior Designer", "Structural Engineer"]
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[625px]">
@@ -67,7 +66,7 @@ export function EditProfessionalDetailsDialog({
                 <SelectValue placeholder="Select company type" />
               </SelectTrigger>
               <SelectContent>
-                {professionalTypes.map((type) => (
+                {PROFESSIONAL_TYPES.map((type) => (
                   <SelectItem key={type} value={type}>
                     {type}
                   </SelectItem>

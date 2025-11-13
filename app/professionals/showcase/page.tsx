@@ -17,13 +17,12 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { 
-  Professional, 
   getProfessionals, 
   searchProfessionals, 
   getProfessionalsWithFilters, 
   getProfessionalTypes,
-  ProfessionalSearchResult
 } from "@/app/api"
+import { Professional, ProfessionalSearchResult } from "@/types"
 
 export default function ProfessionalsShowcase() {
   const searchParams = useSearchParams()

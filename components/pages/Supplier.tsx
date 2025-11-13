@@ -8,9 +8,10 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search } from "lucide-react"
 import Head from 'next/head';
-import { getSuppliers, Supplier } from "@/app/api"
+import { getSuppliers } from "@/app/api"
 import { Suspense } from "react"
 import Loading from "@/components/loading"
+import { Supplier } from "@/types"
 
 export default function Page() {
   return (

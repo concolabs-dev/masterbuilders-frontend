@@ -22,40 +22,14 @@ import { Check, ChevronRight, MapPin } from "lucide-react";
 import {
 	createSupplier,
 	getSupplierByPID,
-	Supplier,
 	getSupplierByPPID,
-} from "../api";
+	getProfessionalByPID,
+} from "@/app/api";
 import { Package, PaymentContainer } from "@concolabs-dev/payment";
+import { Professional, Supplier } from "@/types";
+import { SUPPLIER_PACKAGE } from "@/lib/constants";
+import { z } from "zod";
 // import dynamic from "next/dynamic"
-
-// const DynamicMapPicker = dynamic(() => import("@/components/MapPicker"), { ssr: false })
-
-const packageTypes: Package[] = [
-	{
-		title: "User Monthly",
-		price: "LKR 3,000",
-		features: [],
-		priceId: process.env.NEXT_PUBLIC_PRICE_ID_SUPPLIER_BASIC || "",
-		highlighted: false,
-		packageName: "BML_SUP_BASIC",
-	},
-	// {
-	//   title: "Gold User",
-	//   price: "LKR 10,000",
-	//   features: [],
-	//   highlighted: false,
-	//   priceId: "price_1SEsFYHb6l5GodkUuXISMv2N",
-	//   packageName: "BML_GOLD",
-	// },
-	{
-		title: "Year at Once",
-		price: "LKR 30,000",
-		features: [],
-		highlighted: false,
-		priceId: process.env.NEXT_PUBLIC_PRICE_ID_SUPPLIER_ANNUAL || "",
-		packageName: "BML_SUP_ANUAL",
-	},
-];
 
 function SupplierOnboarding() {
 	const router = useRouter();
@@ -67,6 +41,7 @@ function SupplierOnboarding() {
 		boolean | undefined
 	>(undefined);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [errors, setErrors] = useState<Record<string, string>>({});
 
 	const formRef = React.useRef<HTMLFormElement>(null);
 
@@ -84,6 +59,18 @@ function SupplierOnboarding() {
 				}
 			})
 			.catch((err) => console.error("Failed checking supplier by PID:", err));
+		getProfessionalByPID(user.sub)
+			.then((existing: Professional | undefined) => {
+				if (existing) {
+					router.push("/professionals/dashboard");
+					setAlreadyRegistered(true);
+				} else {
+					setAlreadyRegistered(false);
+				}
+			})
+			.catch((err) =>
+				console.error("Failed checking professional by PID:", err)
+			);
 	}, [user?.sub, router]);
 
 	useEffect(() => {
@@ -101,51 +88,37 @@ function SupplierOnboarding() {
 		coverImage: "",
 		description: "",
 	});
-	const [errors, setErrors] = useState<Record<string, string>>({});
+	// const [errors, setErrors] = useState<Record<string, string>>({});
 
 	const updateFormData = (field: string, value: string) =>
 		setFormData({ ...formData, [field]: value });
 
-	const validateStep = () => {
-		const newErrors: Record<string, string> = {};
-		if (step === 1) {
-			if (!formData.name) newErrors.name = "Business name is required";
-			if (!formData.description || formData.description.length < 20) {
-				newErrors.description = "Description must be at least 20 characters";
-			}
-		}
-		if (step === 2) {
-			if (!formData.email) newErrors.email = "Email is required";
-			else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-				newErrors.email = "Invalid email format";
-			}
-			if (!formData.telephone) newErrors.telephone = "Telephone is required";
-			else if (!/^(0\d{9}|\+\d{2}\d{9})$/.test(formData.telephone)) {
-				newErrors.telephone = "Invalid telephone number";
-			}
-		}
-		if (step === 3) {
-			if (!formData.address) newErrors.address = "Address is required";
-			if (!formData.location.lat || !formData.location.lng) {
-				newErrors.location = "Coordinates are required";
-			}
-		}
-		if (step === 4) {
-			if (!formData.profileImage)
-				newErrors.profileImage = "Profile image is required";
-			if (!formData.coverImage)
-				newErrors.coverImage = "Cover image is required";
-		}
-		setErrors(newErrors);
-		return Object.keys(newErrors).length === 0;
-	};
-
 	const handleNext = () => {
-		if (validateStep()) {
+		setErrors({}); // Clear old errors
+
+		let currentSchema;
+		if (step === 1) currentSchema = step1Schema;
+		else if (step === 2) currentSchema = step2Schema;
+		else if (step === 3) currentSchema = step3Schema;
+		else {
+			setStep(step + 1); // just continue
+			return;
+		}
+
+		const validationResult = currentSchema.safeParse(formData);
+
+		if (validationResult.success) {
 			if (step < totalSteps) {
 				setStep(step + 1);
 				window.scrollTo(0, 0);
 			}
+		} else {
+			const newErrors: Record<string, string> = {};
+			for (const issue of validationResult.error.issues) {
+				const path = issue.path.join(".");
+				newErrors[path] = issue.message;
+			}
+			setErrors(newErrors);
 		}
 	};
 
@@ -160,7 +133,7 @@ function SupplierOnboarding() {
 		e.preventDefault();
 		// final validation
 		if (isSubmitting) return;
-		if (!validateStep()) return;
+		// if (!validateStep()) return;
 		setIsSubmitting(true);
 		const supplierPayload = {
 			email: formData.email,
@@ -176,6 +149,7 @@ function SupplierOnboarding() {
 			},
 			profile_pic_url: formData.profileImage,
 			cover_pic_url: formData.coverImage,
+			status: "pending"
 		};
 		try {
 			const response = await createSupplier(supplierPayload);
@@ -186,6 +160,49 @@ function SupplierOnboarding() {
 			// setIsSubmitting(false)
 		}
 	};
+
+	const onboardingSchema = z.object({
+		/**
+		 * Step 1: Basic Information
+		 */
+		name: z.string().min(1, { message: "Business name is required" }),
+		description: z
+			.string()
+			.max(400, { message: "Description cannot exceed 400 characters" })
+			.optional(),
+
+		/**
+		 * Step 2: Contact Details
+		 */
+		email: z.email({ message: "Invalid email address" }),
+		telephone: z
+			.string()
+			.regex(/^\d{10}$/, { message: "Must be a 10-digit telephone number" })
+			.min(1, { message: "Telephone number is required" }),
+		/**
+		 * Step 3: Location
+		 */
+		address: z.string().min(1, { message: "Address is required" }),
+		location: z.object({
+			lat: z.string().min(1, "Latitude is required"),
+			lng: z.string().min(1, "Longitude is required"),
+		}),
+	});
+
+	const step1Schema = onboardingSchema.pick({
+		name: true,
+		description: true,
+	});
+
+	const step2Schema = onboardingSchema.pick({
+		email: true,
+		telephone: true,
+	});
+
+	const step3Schema = onboardingSchema.pick({
+		address: true,
+		location: true,
+	});
 
 	return (
 		<div className="container max-w-3xl py-10">
@@ -236,6 +253,7 @@ function SupplierOnboarding() {
 										placeholder="Your business name"
 										value={formData.name}
 										onChange={(e) => updateFormData("name", e.target.value)}
+										className={errors.name ? "border-destructive" : ""}
 									/>
 									{errors.name && <p className="text-red-500">{errors.name}</p>}
 								</div>
@@ -248,7 +266,9 @@ function SupplierOnboarding() {
 										onChange={(e) =>
 											updateFormData("description", e.target.value)
 										}
-										className="min-h-[120px]"
+										className={`min-h-[120px] ${
+											errors.description ? "border-destructive" : ""
+										}`}
 									/>
 									{errors.description && (
 										<p className="text-red-500">{errors.description}</p>
@@ -267,6 +287,7 @@ function SupplierOnboarding() {
 										placeholder="your@email.com"
 										value={formData.email}
 										onChange={(e) => updateFormData("email", e.target.value)}
+										className={errors.email ? "border-destructive" : ""}
 									/>
 									{errors.email && (
 										<p className="text-red-500">{errors.email}</p>
@@ -282,6 +303,7 @@ function SupplierOnboarding() {
 										onChange={(e) =>
 											updateFormData("telephone", e.target.value)
 										}
+										className={errors.telephone ? "border-destructive" : ""}
 									/>
 									{errors.telephone && (
 										<p className="text-red-500">{errors.telephone}</p>
@@ -299,6 +321,7 @@ function SupplierOnboarding() {
 										placeholder="Your business address"
 										value={formData.address}
 										onChange={(e) => updateFormData("address", e.target.value)}
+										className={errors.address ? "border-destructive" : ""}
 									/>
 									{errors.address && (
 										<p className="text-red-500">{errors.address}</p>
@@ -317,7 +340,13 @@ function SupplierOnboarding() {
 													location: { ...prev.location, lat: e.target.value },
 												}))
 											}
+											className={
+												errors["location.lat"] ? "border-destructive" : ""
+											}
 										/>
+										{errors["location.lat"] && (
+											<p className="text-red-500">{errors["location.lat"]}</p>
+										)}
 									</div>
 									<div className="space-y-2">
 										<Label htmlFor="longitude">Longitude</Label>
@@ -331,12 +360,16 @@ function SupplierOnboarding() {
 													location: { ...prev.location, lng: e.target.value },
 												}))
 											}
+											className={
+												errors["location.lng"] ? "border-destructive" : ""
+											}
 										/>
+										{errors["location.lng"] && (
+											<p className="text-red-500">{errors["location.lng"]}</p>
+										)}
 									</div>
 								</div>
-								{errors.location && (
-									<p className="text-red-500">{errors.location}</p>
-								)}
+
 								<div className="flex items-center justify-center p-4 border rounded-md border-dashed">
 									<div className="text-center">
 										<MapPin className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
@@ -369,9 +402,6 @@ function SupplierOnboarding() {
 										allowedFormats={["image/jpeg", "image/png", "image/webp"]}
 										imageClassName="w-32 h-32 object-cover rounded-lg"
 									/>
-									{errors.profileImage && (
-										<p className="text-red-500">{errors.profileImage}</p>
-									)}
 								</div>
 								<div className="space-y-2">
 									<Label>Cover Image</Label>
@@ -387,9 +417,6 @@ function SupplierOnboarding() {
 										allowedFormats={["image/jpeg", "image/png", "image/webp"]}
 										imageClassName="w-full h-40 object-cover rounded-lg"
 									/>
-									{errors.coverImage && (
-										<p className="text-red-500">{errors.coverImage}</p>
-									)}
 								</div>
 							</div>
 						)}
@@ -401,11 +428,11 @@ function SupplierOnboarding() {
 									const base = process.env.NEXT_PUBLIC_FRONTEND_API_URL;
 									if (!base) return "";
 									return new URL(
-										"/api/auth/login?prompt=none&returnTo=/onboarding/success",
+										"/api/auth/login?prompt=none&returnTo=/supplier/onboarding/success",
 										base
 									).toString();
 								})()}
-								packageList={packageTypes}
+								packageList={SUPPLIER_PACKAGE}
 								stripekey={process.env.NEXT_PUBLIC_STRIPE_SECRET || ""}
 								puid={user?.sub || ""}
 								code={"BML"}
