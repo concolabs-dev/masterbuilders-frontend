@@ -147,61 +147,58 @@ function SupplierDashboardPage() {
 		console.log("Payment processed:", paymentData);
 		// In a real app, this would process the payment
 	};
-	// Fetch supplier using user's email.
+
 	useEffect(() => {
 		async function fetchData() {
-			if (user && typeof user.sub === "string") {
-				console.log(user.sub);
-				if (!user?.sub) return;
+			if (!user?.sub) {
+				setSupplierLoading(false);
+				return;
+			}
 
-				getSupplierByPPID(user.sub)
-					.then((existing: Supplier | undefined) => {
-						if (existing) {
-							setAlreadyRegistered(true);
-							setSupplier(existing);
-							setSupplierLoading(false);
-							return;
-						}
-					})
-					.catch((err) => {
-						console.error("Failed checking supplier by PID:", err);
-						setSupplierError(err);
-						setSupplierLoading(false);
-					});
-				// getSupplierByPID(user.sub)
-				// 	.then((data) => {
-				// 		setSupplier(data);
-				// 		setAlreadyRegistered(false);
-				// 		console.log("efef");
-				// 		setSupplierLoading(false);
-				// 	})
-				// 	.catch((err) => {
-				// 		console.error("Error fetching supplier:", err);
-				// 		setSupplierError(err);
-				// 		setSupplierLoading(false);
-				// 	});
-				getPaymentRecordById(user.sub, "supplier")
-					.then((data: PaymentRecord) => {
-						setPaidUserApprovedStatus(data.approved);
-						if (data.approved === false) {
-							setIsPaymentRequireDialogOpen(true);
-						}
-					})
-					.catch((err) => {
-						console.error("Error fetching supplier payments:", err);
-					});
-				const professional = getProfessionalByPID(user.sub);
-				if (await professional) {
-					// Redirect to professional dashboard if a professional exists
+			setSupplierLoading(true);
+			try {
+				// 1. Check if they are a professional first.
+				const professional = await getProfessionalByPID(user.sub);
+				if (professional) {
+					// If so, redirect immediately and stop.
 					router.push("/professionals/dashboard");
 					return;
 				}
-			} else {
+
+				// 2. If not a professional, check if they are an existing supplier.
+				const existingSupplier = await getSupplierByPPID(user.sub);
+				if (existingSupplier) {
+					setAlreadyRegistered(true);
+					setSupplier(existingSupplier);
+
+					// 3. If they are a supplier, check their payment status.
+					try {
+						const paymentRecord = await getPaymentRecordById(
+							user.sub,
+							"supplier"
+						);
+						setPaidUserApprovedStatus(paymentRecord.approved);
+						if (!paymentRecord.approved) {
+							setIsPaymentRequireDialogOpen(true);
+						}
+					} catch (paymentErr) {
+						console.error("Error fetching supplier payments:", paymentErr);
+						// Assume no payment record means they need to pay
+						setPaidUserApprovedStatus(false);
+						setIsPaymentRequireDialogOpen(true);
+					}
+				}
+				// 4. If not a professional AND not an existing supplier,
+				// supplier remains null, and the page will show "No supplier found".
+			} catch (err) {
+				console.error("Failed fetching data:", err);
+				setSupplierError(err as Error);
+			} finally {
 				setSupplierLoading(false);
 			}
 		}
 		fetchData();
-	}, [user]);
+	}, [user, router]);
 
 	// Fetch supplier items once the supplier data is loaded.
 	useEffect(() => {
@@ -369,7 +366,7 @@ function SupplierDashboardPage() {
 	// 	);
 	// }
 
-	if (alreadyRegistered && supplier && !paidUserApprovedStatus) {
+	if (alreadyRegistered && supplier && !paidUserApprovedStatus && !supplierLoading) {
 		return (
 			<div className="container max-w-3xl py-10 text-center">
 				<h1 className="text-2xl font-bold mb-4">You’re already registered!</h1>
@@ -468,7 +465,7 @@ function SupplierDashboardPage() {
 											<Plus className="mr-2 h-4 w-4" /> Add Item
 										</Button>
 									</DialogTrigger>
-									<DialogContent className="sm:max-w-[600px]">
+									<DialogContent className="sm:max-w-[600px] max-h-[90vh] flex flex-col">
 										<DialogHeader>
 											<DialogTitle>Add New Item</DialogTitle>
 											<DialogDescription>
@@ -476,16 +473,31 @@ function SupplierDashboardPage() {
 												category, subcategory and material.
 											</DialogDescription>
 										</DialogHeader>
-										<form onSubmit={handleAddItem}>
-											<div className="grid gap-4 py-4">
+
+										<form
+											onSubmit={handleAddItem}
+											className="flex flex-col flex-1 overflow-hidden"
+										>
+											<div className="grid gap-4 py-4 overflow-y-auto pr-2">
 												<div className="grid gap-2">
 													<Label htmlFor="name">Title</Label>
-													<Input id="name" name="name" required />
+													<Input
+														id="name"
+														name="name"
+														required
+														placeholder="Item name"
+													/>
 												</div>
+
 												<div className="grid gap-2">
 													<Label htmlFor="description">Description</Label>
-													<Textarea id="description" name="description" />
+													<Textarea
+														id="description"
+														name="description"
+														placeholder="Describe the item..."
+													/>
 												</div>
+
 												{/* Select for Type */}
 												<div className="grid gap-2">
 													<Label htmlFor="type">Type</Label>
@@ -494,21 +506,22 @@ function SupplierDashboardPage() {
 														value={selectedType}
 														onChange={(e) => {
 															setSelectedType(e.target.value);
-															// Reset dependent selections.
 															setSelectedCategory("");
 															setSelectedSubcategory("");
 														}}
-														className="p-2 border rounded"
+														// Updated class to match Shadcn Input styles
+														className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 														required
 													>
 														<option value="">Select Type</option>
-														{types.map((t) => (
+														{types?.map((t) => (
 															<option key={t.id} value={t.name}>
 																{t.name}
 															</option>
 														))}
 													</select>
 												</div>
+
 												{/* Select for Category */}
 												<div className="grid gap-2">
 													<Label htmlFor="category">Category</Label>
@@ -519,7 +532,7 @@ function SupplierDashboardPage() {
 															setSelectedCategory(e.target.value);
 															setSelectedSubcategory("");
 														}}
-														className="p-2 border rounded"
+														className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 														required
 													>
 														<option value="">Select Category</option>
@@ -533,6 +546,7 @@ function SupplierDashboardPage() {
 																))}
 													</select>
 												</div>
+
 												{/* Select for Subcategory */}
 												<div className="grid gap-2">
 													<Label htmlFor="subcategory">Subcategory</Label>
@@ -542,7 +556,7 @@ function SupplierDashboardPage() {
 														onChange={(e) =>
 															setSelectedSubcategory(e.target.value)
 														}
-														className="p-2 border rounded"
+														className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 													>
 														<option value="">Select Subcategory</option>
 														{selectedCategory &&
@@ -558,6 +572,7 @@ function SupplierDashboardPage() {
 																))}
 													</select>
 												</div>
+
 												{/* Select for Material */}
 												<div className="grid gap-2">
 													<Label htmlFor="material">Material</Label>
@@ -571,26 +586,28 @@ function SupplierDashboardPage() {
 															);
 															setUnit(foundMat?.Unit || "");
 														}}
-														className="p-2 border rounded"
+														className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 														required
 													>
 														<option value="">Select Material</option>
-														{materials.map((mat) => (
+														{materials?.map((mat) => (
 															<option key={mat.id} value={mat.id}>
 																{mat.Name}
 															</option>
 														))}
 													</select>
 												</div>
+
 												<div className="grid grid-cols-2 gap-4">
 													<div className="grid gap-2">
 														<Label htmlFor="unit">Unit</Label>
-														<input
+														<Input
 															id="unit"
 															name="unit"
 															value={unit}
 															onChange={(e) => setUnit(e.target.value)}
 															required
+															readOnly={!!selectedMaterial}
 														/>
 													</div>
 													<div className="grid gap-2">
@@ -603,7 +620,7 @@ function SupplierDashboardPage() {
 														/>
 													</div>
 												</div>
-												{/* Replace plain input with ImageUpload for add item */}
+
 												<div className="grid gap-2">
 													<Label htmlFor="image">Image URL</Label>
 													<ImageUpload
@@ -624,7 +641,8 @@ function SupplierDashboardPage() {
 													/>
 												</div>
 											</div>
-											<DialogFooter>
+
+											<DialogFooter className="pt-4 border-t">
 												<Button type="submit">Save Item</Button>
 											</DialogFooter>
 										</form>
@@ -734,7 +752,6 @@ function SupplierDashboardPage() {
 								const updatedItem = {
 									name: formData.get("name") as string,
 									description: formData.get("description") as string,
-
 									unit: formData.get("unit") as string,
 									price: Number(formData.get("price")),
 									imgUrl: editImageUrl,
