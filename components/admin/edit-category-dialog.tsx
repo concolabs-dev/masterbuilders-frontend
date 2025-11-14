@@ -102,13 +102,13 @@ export default function EditCategoryDialog(props: EditCategoryDialogProps) {
 			if (i !== catIndex) return cat;
 			const updatedSubcats = (cat.subcategories || []).map((subcat, j) => {
 				if (j !== subCatIndex) return subcat;
-				const updatedSubSubCats = (subcat["Sub subcategories"]|| []).map(
+				const updatedSubSubCats = (subcat["Sub subcategories"] || []).map(
 					(subsubcat, k) =>
 						k === subSubCatIndex ? { ...subsubcat, name: newName } : subsubcat
 				);
-				return { ...subcat, subSubcategory: updatedSubSubCats };
+				return { ...subcat, "Sub subcategories": updatedSubSubCats };
 			});
-			return { ...cat, subcategory: updatedSubcats };
+			return { ...cat, subcategories: updatedSubcats };
 		});
 		setSelectedCategory({ ...selectedCategory, categories: updatedCategories });
 	};
@@ -120,7 +120,7 @@ export default function EditCategoryDialog(props: EditCategoryDialogProps) {
 				if (j !== subCatIndex) return subcat;
 				const newSubSubCat = { name: "" };
 				const updatedSubSubCats = [
-					...(subcat["Sub subcategories"]|| []),
+					...(subcat["Sub subcategories"] || []),
 					newSubSubCat,
 				];
 				return { ...subcat, subSubcategory: updatedSubSubCats };
